@@ -1,0 +1,70 @@
+plugins {
+    alias(libs.plugins.multiplatform)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.serialization)
+}
+
+val artifact = VersionCatalog.artifactName("game")
+
+kotlin {
+    jvm()
+    androidTarget()
+
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+    macosX64()
+    macosArm64()
+
+    js(IR) {
+        nodejs()
+        browser()
+        binaries.executable()
+    }
+
+    applyDefaultHierarchyTemplate()
+
+    sourceSets {
+        commonMain.dependencies {
+            api(libs.coroutines)
+            implementation(libs.tooling)
+            implementation(libs.serialization)
+            implementation(libs.serialization.json)
+            implementation(libs.okio)
+            implementation(libs.codepoints)
+        }
+
+        val nonJsMain by creating {
+            dependsOn(commonMain.get())
+
+            jvmMain.get().dependsOn(this)
+            androidMain.get().dependsOn(this)
+            nativeMain.get().dependsOn(this)
+        }
+
+        val javaMain by creating {
+            dependsOn(nonJsMain)
+
+            jvmMain.get().dependsOn(this)
+            androidMain.get().dependsOn(this)
+
+            dependencies {
+                implementation(libs.apache.commons.io)
+            }
+        }
+    }
+}
+
+android {
+    compileSdk = Configuration.compileSdk
+    namespace = artifact
+
+    defaultConfig {
+        minSdk = Configuration.minSdk
+    }
+    compileOptions {
+        sourceCompatibility = CompileOptions.sourceCompatibility
+        targetCompatibility = CompileOptions.targetCompatibility
+    }
+}

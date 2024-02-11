@@ -88,6 +88,7 @@ kotlin {
 
             implementation(project(":settings"))
             implementation(project(":hltv"))
+            implementation(project(":game"))
         }
 
         jsMain.dependencies {
@@ -115,7 +116,7 @@ kotlin {
             dependsOn(commonMain.get())
 
             desktopMain.dependsOn(this)
-            // androidMain.get().dependsOn(this)
+            androidMain.get().dependsOn(this)
             nativeMain.get().dependsOn(this)
         }
     }

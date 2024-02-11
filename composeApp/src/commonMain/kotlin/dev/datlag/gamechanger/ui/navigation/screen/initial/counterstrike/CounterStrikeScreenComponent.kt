@@ -11,6 +11,10 @@ class CounterStrikeScreenComponent(
     private val onBack: () -> Unit
 ) : CounterStrikeComponent, ComponentContext by componentContext {
 
+    init {
+        showSteamFolder()
+    }
+
     @Composable
     override fun render() {
         onRender {
@@ -22,3 +26,5 @@ class CounterStrikeScreenComponent(
         onBack()
     }
 }
+
+expect fun showSteamFolder()

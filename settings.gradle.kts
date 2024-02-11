@@ -4,6 +4,7 @@ include(":composeApp")
 include(":settings")
 include(":hltv")
 include(":model")
+include(":game")
 
 pluginManagement {
     repositories {
