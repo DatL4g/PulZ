@@ -1,0 +1,79 @@
+[versions]
+app = "1.0.0"
+aboutlibraries = "10.9.2"
+activity = "1.8.2"
+android = "8.2.2"
+android-core = "1.12.0"
+appcompat = "1.6.1"
+coil = "3.0.0-alpha04"
+collections-immutable = "0.3.6"
+compose = "1.6.0-beta02"
+compottie = "1.1.0"
+complete-kotlin = "1.1.0"
+context-menu = "0.2.0"
+coroutines = "1.8.0-RC2"
+datastore = "1.1.0-beta01"
+datetime = "0.5.0"
+decompose = "3.0.0-alpha05"
+kodein = "7.21.1"
+kotlin = "1.9.22"
+ktsoup = "0.3.0"
+ktor = "2.3.8"
+# use when targets available
+# ksoup = "0.1.2"
+moko-resources = "0.24.0-alpha-3"
+multidex = "2.0.1"
+osdetector = "1.7.3"
+serialization = "1.6.2"
+tooling = "1.2.0"
+versions = "0.51.0"
+windowsize = "0.5.0-beta01"
+
+[libraries]
+android = { group = "androidx.core", name = "core-ktx", version.ref = "android-core" }
+coil = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil" }
+coil-network = { group = "io.coil-kt.coil3", name = "coil-network-ktor", version.ref = "coil" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil" }
+collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "collections-immutable" }
+compottie = { group = "io.github.alexzhirkevich", name = "compottie", version.ref = "compottie" }
+context-menu = { group = "io.github.dzirbel", name = "compose-material-context-menu", version.ref = "context-menu" }
+coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "coroutines" }
+datastore = { group = "androidx.datastore", name = "datastore-core-okio", version.ref = "datastore" }
+datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "datetime" }
+decompose = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decompose" }
+decompose-compose = { group = "com.arkivanov.decompose", name = "extensions-compose", version.ref = "decompose" }
+kodein = { group = "org.kodein.di", name = "kodein-di", version.ref = "kodein" }
+kodein-compose = { group = "org.kodein.di", name = "kodein-di-framework-compose", version.ref = "kodein" }
+ktsoup = { group = "org.drewcarlson", name = "ktsoup-core", version.ref = "ktsoup" }
+ktsoup-ktor = { group = "org.drewcarlson", name = "ktsoup-ktor", version.ref = "ktsoup" }
+ktor = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+ktor-jvm = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
+ktor-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }
+ktor-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
+# ksoup = { group = "com.fleeksoft.ksoup", name = "ksoup-network", version.ref = "ksoup" }
+# ksoup-network = { group = "com.fleeksoft.ksoup", name = "ksoup", version.ref = "ksoup" }
+moko-resources-compose = { group = "dev.icerock.moko", name = "resources-compose", version.ref = "moko-resources" }
+moko-resources-generator = { group = "dev.icerock.moko", name = "resources-generator", version.ref = "moko-resources" }
+serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
+serialization-protobuf = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-protobuf", version.ref = "serialization" }
+tooling = { group = "dev.datlag.tooling", name = "tooling-async", version.ref = "tooling" }
+tooling-country = { group = "dev.datlag.tooling", name = "tooling-country", version.ref = "tooling" }
+tooling-decompose = { group = "dev.datlag.tooling", name = "tooling-decompose", version.ref = "tooling" }
+windowsize = { group = "dev.chrisbanes.material3", name = "material3-window-size-class-multiplatform", version.ref = "windowsize" }
+
+[plugins]
+aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }
+android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-application = { id = "com.android.application", version.ref = "android" }
+android-library = { id = "com.android.library", version.ref = "android" }
+cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
+compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+complete-kotlin = { id = "com.louiscad.complete-kotlin", version.ref = "complete-kotlin" }
+moko-resources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "moko-resources" }
+multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+osdetector = { id = "com.google.osdetector", version.ref = "osdetector" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }
