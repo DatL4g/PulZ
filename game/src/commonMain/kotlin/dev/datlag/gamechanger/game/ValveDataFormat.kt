@@ -1,5 +1,6 @@
 package dev.datlag.gamechanger.game
 
+import dev.datlag.gamechanger.game.common.useCatching
 import dev.datlag.gamechanger.game.vdf.RootNodeSkipperDeserializationStrategy
 import dev.datlag.gamechanger.game.vdf.Vdf
 import dev.datlag.tooling.scopeCatching
@@ -60,9 +61,9 @@ open class ValveDataFormat internal constructor(val json: Json) {
     }
 
     inline fun <reified T> decodeStringFromBufferedSource(source: BufferedSource): T {
-        val data = source.peek().use {
+        val data = source.peek().useCatching {
             scopeCatching {
-                stringVdf.decodeFromBufferedSource<T>(RootNodeSkipperDeserializationStrategy(), source.peek())
+                stringVdf.decodeFromBufferedSource<T>(RootNodeSkipperDeserializationStrategy(), it)
             }.getOrNull()
         } ?: decodeFromString(source.readUtf8())
 
