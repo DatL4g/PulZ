@@ -3,6 +3,7 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial.counterstrike
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
 import dev.datlag.gamechanger.common.onRender
+import dev.datlag.gamechanger.game.SteamLauncher
 import org.kodein.di.DI
 
 class CounterStrikeScreenComponent(
@@ -12,7 +13,8 @@ class CounterStrikeScreenComponent(
 ) : CounterStrikeComponent, ComponentContext by componentContext {
 
     init {
-        showSteamFolder()
+        SteamLauncher.loggedInUsers.forEach(::println)
+        SteamLauncher.rootFolders.forEach(::println)
     }
 
     @Composable
@@ -26,5 +28,3 @@ class CounterStrikeScreenComponent(
         onBack()
     }
 }
-
-expect fun showSteamFolder()

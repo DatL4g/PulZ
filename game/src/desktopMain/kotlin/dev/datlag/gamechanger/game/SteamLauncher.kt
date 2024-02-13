@@ -12,14 +12,13 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonObject
 import okio.FileSystem
 import okio.Path
-import okio.Path.Companion.DIRECTORY_SEPARATOR
 import okio.Path.Companion.toPath
 import okio.buffer
 import kotlin.jvm.JvmStatic
 
-data object SteamLauncher : Launcher {
+actual data object SteamLauncher : Launcher {
 
-    val steamFolders by lazy {
+    actual val rootFolders: Set<Path> by lazy {
         Location.getForSystem().flatMap {
             val systemPath = it.resolvePath()
 
@@ -29,8 +28,8 @@ data object SteamLauncher : Launcher {
                 ),
                 setOf(
                     systemPath.resolve("libraryfolders.vdf", normalize = true),
-                    systemPath.resolve("steamapps${DIRECTORY_SEPARATOR}libraryfolders.vdf", normalize = true),
-                    systemPath.resolve("config${DIRECTORY_SEPARATOR}libraryfolders.vdf", normalize = true)
+                    systemPath.resolve("steamapps${Path.DIRECTORY_SEPARATOR}libraryfolders.vdf", normalize = true),
+                    systemPath.resolve("config${Path.DIRECTORY_SEPARATOR}libraryfolders.vdf", normalize = true)
                 ).filter { path ->
                     FileSystem.DEFAULT.exists(path)
                 }.flatMap { path ->
@@ -42,11 +41,11 @@ data object SteamLauncher : Launcher {
         }.toSet().normalize()
     }
 
-    val loggedInUsers by lazy {
-        steamFolders.asSequence().flatMap {
+    actual val loggedInUsers: Set<User> by lazy {
+        rootFolders.asSequence().flatMap {
             listOf(
-                it.resolve("config${DIRECTORY_SEPARATOR}loginusers.vdf", normalize = true),
-                it.resolve("config${DIRECTORY_SEPARATOR}loggedinusers.vdf", normalize = true)
+                it.resolve("config${Path.DIRECTORY_SEPARATOR}loginusers.vdf", normalize = true),
+                it.resolve("config${Path.DIRECTORY_SEPARATOR}loggedinusers.vdf", normalize = true)
             )
         }.filter { path ->
             FileSystem.DEFAULT.exists(path)
@@ -54,13 +53,13 @@ data object SteamLauncher : Launcher {
             userConfig(path)
         }.flatMap { config ->
             User.fromMap(config) { id ->
-                findUserAvatar(id, steamFolders)
+                findUserAvatar(id, rootFolders)
             }
         }.sortedWith(compareByDescending<User> { u ->
             u.config.mostRecent
         }.thenByDescending { u ->
             u.config.timestamp
-        }).distinctBy { u -> u.id }.toList()
+        }).distinctBy { u -> u.id }.toSet()
     }
 
     private val vdf = ValveDataFormat(Json {

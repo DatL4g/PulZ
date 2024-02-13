@@ -60,6 +60,15 @@ kotlin {
                 implementation(libs.apache.commons.io)
             }
         }
+
+        val desktopMain by creating {
+            dependsOn(nonJsMain)
+
+            jvmMain.get().dependsOn(this)
+            linuxMain.get().dependsOn(this)
+            mingwMain.get().dependsOn(this)
+            macosMain.get().dependsOn(this)
+        }
     }
 }
 
