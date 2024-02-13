@@ -12,6 +12,7 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonObject
 import okio.FileSystem
 import okio.Path
+import okio.Path.Companion.DIRECTORY_SEPARATOR
 import okio.Path.Companion.toPath
 import okio.buffer
 import kotlin.jvm.JvmStatic
@@ -60,6 +61,10 @@ actual data object SteamLauncher : Launcher {
         }.thenByDescending { u ->
             u.config.timestamp
         }).distinctBy { u -> u.id }.toSet()
+    }
+
+    override fun open(game: Game) {
+        // ToDo("move String.openInBrowser in correct tooling directory")
     }
 
     private val vdf = ValveDataFormat(Json {
@@ -161,48 +166,53 @@ actual data object SteamLauncher : Launcher {
             val relativeToUserDirectory: Boolean
 
             data object User : Linux {
-                override val path: String = ".local/share/Steam/"
+                override val path: String = ".local/share/Steam"
                 override val relativeToUserDirectory: Boolean = true
             }
 
             data object UserSymlink : Linux {
-                override val path: String = ".steam/steam/"
+                override val path: String = ".steam/steam"
                 override val relativeToUserDirectory: Boolean = true
             }
 
             data object Flatpak : Linux {
-                override val path: String = ".var/app/com.valvesoftware.Steam/.local/share/Steam/"
+                override val path: String = ".var/app/com.valvesoftware.Steam/.local/share/Steam"
                 override val relativeToUserDirectory: Boolean = true
             }
 
             data object FlatpakSymlink : Linux {
-                override val path: String = ".var/app/com.valvesoftware.Steam/.steam/steam/"
+                override val path: String = ".var/app/com.valvesoftware.Steam/.steam/steam"
                 override val relativeToUserDirectory: Boolean = true
             }
 
             companion object {
                 @JvmStatic
-                val all = mutableSetOf(User, UserSymlink, Flatpak, FlatpakSymlink)
+                val all = setOf(User, UserSymlink, Flatpak, FlatpakSymlink)
             }
         }
 
         sealed interface Windows : Location {
-            data object X86 : Windows {
-                override val path: String = "C:\\Program Files (x86)\\Steam\\"
+
+            val systemRoot: Path
+
+            data class X86(override val systemRoot: Path) : Windows {
+                override val path: String = systemRoot.resolve("Program Files (x86)${DIRECTORY_SEPARATOR}Steam", normalize = true).toString()
             }
 
-            data object X64 : Windows {
-                override val path: String = "C:\\Program Files\\Steam\\"
+            data class X64(override val systemRoot: Path) : Windows {
+                override val path: String = systemRoot.resolve("Program Files${DIRECTORY_SEPARATOR}Steam", normalize = true).toString()
             }
 
             companion object {
                 @JvmStatic
-                val all = mutableSetOf(X86, X64)
+                val all = systemRoots.flatMap {
+                    setOf(X86(it), X64(it))
+                }.toSet()
             }
         }
 
         data object MacOS : Location {
-            override val path: String = "Library/Application Support/Steam/"
+            override val path: String = "Library/Application Support/Steam"
         }
 
         companion object {

@@ -21,4 +21,6 @@ actual object SteamLauncher : Launcher {
      */
     actual val loggedInUsers: Set<User> = emptySet()
 
+    override fun open(game: Game) { }
+
 }

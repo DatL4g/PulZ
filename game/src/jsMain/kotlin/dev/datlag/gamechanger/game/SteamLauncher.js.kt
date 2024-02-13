@@ -1,6 +1,7 @@
 package dev.datlag.gamechanger.game
 
 import dev.datlag.gamechanger.game.model.steam.User
+import kotlinx.browser.window
 import okio.Path
 
 /**
@@ -21,4 +22,11 @@ actual object SteamLauncher : Launcher {
      */
     actual val loggedInUsers: Set<User> = emptySet()
 
+    override fun open(game: Game) {
+        when (game) {
+            is Game.Steam -> {
+                window.location.href = "steam://rungameid/${game.id}"
+            }
+        }
+    }
 }
