@@ -23,4 +23,15 @@ sealed interface Celebrity {
     data object RopZ : Celebrity {
         override val steamId: String = "76561197991272318"
     }
+
+    companion object {
+        fun valueOf(steamId: String): Celebrity? = when(steamId) {
+            OhnePixel.steamId -> OhnePixel
+            Papaplatte.steamId -> Papaplatte
+            Trilluxe.steamId -> Trilluxe
+            Dona.steamId -> Dona
+            RopZ.steamId -> RopZ
+            else -> null
+        }
+    }
 }

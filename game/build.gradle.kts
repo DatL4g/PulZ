@@ -38,6 +38,8 @@ kotlin {
             implementation(libs.serialization.json)
             implementation(libs.okio)
             implementation(libs.codepoints)
+
+            implementation(project(":model"))
         }
 
         val nonJsMain by creating {

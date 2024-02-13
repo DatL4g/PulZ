@@ -1,6 +1,8 @@
 package dev.datlag.gamechanger.game
 
+import dev.datlag.gamechanger.game.common.nameWithoutExtension
 import dev.datlag.gamechanger.game.model.steam.LibraryConfig
+import dev.datlag.gamechanger.game.model.steam.User
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.scopeCatching
 import dev.datlag.tooling.setFrom
@@ -17,22 +19,13 @@ import kotlin.jvm.JvmStatic
 
 data object SteamLauncher : Launcher {
 
-    val steamAppsFolders by lazy {
-        getSteamAppFolders()
-    }
-
-    private val vdf = ValveDataFormat(Json {
-        ignoreUnknownKeys = true
-        isLenient = true
-    })
-
-    private fun getSteamAppFolders(): Set<Path> {
-        return Location.getForSystem().flatMap {
+    val steamFolders by lazy {
+        Location.getForSystem().flatMap {
             val systemPath = it.resolvePath()
 
             setFrom(
                 setOf(
-                    systemPath.resolve("steamapps", normalize = true)
+                    systemPath
                 ),
                 setOf(
                     systemPath.resolve("libraryfolders.vdf", normalize = true),
@@ -41,15 +34,41 @@ data object SteamLauncher : Launcher {
                 ).filter { path ->
                     FileSystem.DEFAULT.exists(path)
                 }.flatMap { path ->
-                    steamLibraryConfig(path)
+                    libraryConfig(path)
                 }.map { config ->
-                    config.path.toPath(normalize = true).resolve("steamapps")
+                    config.path.toPath(normalize = true)
                 }
             )
         }.toSet().normalize()
     }
 
-    private fun steamLibraryConfig(path: Path): Set<LibraryConfig> {
+    val loggedInUsers by lazy {
+        steamFolders.asSequence().flatMap {
+            listOf(
+                it.resolve("config${DIRECTORY_SEPARATOR}loginusers.vdf", normalize = true),
+                it.resolve("config${DIRECTORY_SEPARATOR}loggedinusers.vdf", normalize = true)
+            )
+        }.filter { path ->
+            FileSystem.DEFAULT.exists(path)
+        }.map { path ->
+            userConfig(path)
+        }.flatMap { config ->
+            User.fromMap(config) { id ->
+                findUserAvatar(id, steamFolders)
+            }
+        }.sortedWith(compareByDescending<User> { u ->
+            u.config.mostRecent
+        }.thenByDescending { u ->
+            u.config.timestamp
+        }).distinctBy { u -> u.id }.toList()
+    }
+
+    private val vdf = ValveDataFormat(Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+    })
+
+    private fun libraryConfig(path: Path): Set<LibraryConfig> {
         val vdfData = scopeCatching {
             vdf.decodeStringFromBufferedSource<Map<String, LibraryConfig>>(FileSystem.DEFAULT.source(path).buffer())
         }.getOrNull()
@@ -70,6 +89,42 @@ data object SteamLauncher : Launcher {
             }?.toSet() ?: emptySet()
         } else {
             return vdfData.values.toSet()
+        }
+    }
+
+    private fun userConfig(path: Path): Map<String, User.Config> {
+        val vdfData = scopeCatching {
+            vdf.decodeStringFromBufferedSource<Map<String, User.Config>>(FileSystem.DEFAULT.source(path).buffer())
+        }.getOrNull() ?: emptyMap()
+
+        return vdfData.ifEmpty {
+            val jsonData: JsonElement? = scopeCatching {
+                vdf.decodeStringFromBufferedSource<JsonElement?>(FileSystem.DEFAULT.source(path).buffer())
+            }.getOrNull()
+
+            if (jsonData != null) {
+                scopeCatching {
+                    vdf.json.decodeFromJsonElement<Map<String, User.Config>>(jsonData)
+                }.getOrNull() ?: vdfData
+            } else {
+                vdfData
+            }
+        }
+    }
+
+    private fun findUserAvatar(id: String, paths: Collection<Path>): Path? {
+        val cachePaths = paths.map { it.resolve("config/avatarcache") }
+        val allPaths = cachePaths.flatMap {
+            FileSystem.DEFAULT.listOrNull(it) ?: emptyList()
+        }
+        return allPaths.firstOrNull {
+            it.nameWithoutExtension == id
+        } ?: allPaths.firstOrNull {
+            it.nameWithoutExtension.equals(id, true)
+        } ?: allPaths.firstOrNull {
+            it.name.startsWith(id)
+        } ?: allPaths.firstOrNull {
+            it.name.startsWith(id, true)
         }
     }
 
