@@ -17,7 +17,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import dev.chrisbanes.haze.haze
+import dev.datlag.gamechanger.LocalHaze
+import dev.datlag.gamechanger.LocalPaddingValues
 import dev.datlag.gamechanger.SharedRes
+import dev.datlag.gamechanger.common.plus
 import dev.datlag.gamechanger.ui.navigation.screen.initial.home.component.GameCover
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 
@@ -52,20 +56,24 @@ fun HomeScreen(component: HomeComponent) {
 
 @Composable
 private fun Overview(component: HomeComponent) {
+    val padding = PaddingValues(all = 16.dp)
+
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().haze(state = LocalHaze.current),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(all = 16.dp)
+        contentPadding = LocalPaddingValues.current?.plus(padding) ?: padding
     ) {
-        item {
-            GameCover(
-                title = "Counter Strike",
-                image = SharedRes.images.cs_banner,
-                color = Color(0xFFDB3D7F),
-                modifier = Modifier.width(512.dp).clip(RoundedCornerShape(24.dp))
-            ) {
-                component.showCounterStrike()
+        repeat(5) {
+            item {
+                GameCover(
+                    title = "Counter Strike",
+                    image = SharedRes.images.cs_banner,
+                    color = Color(0xFFDB3D7F),
+                    modifier = Modifier.width(512.dp).clip(RoundedCornerShape(24.dp))
+                ) {
+                    component.showCounterStrike()
+                }
             }
         }
     }

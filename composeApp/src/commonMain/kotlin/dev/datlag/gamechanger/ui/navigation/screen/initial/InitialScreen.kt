@@ -1,6 +1,7 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.shape.CircleShape
@@ -8,11 +9,10 @@ import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
@@ -20,6 +20,13 @@ import coil3.compose.AsyncImage
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.pages.Pages
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.hazeChild
+import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
+import dev.chrisbanes.haze.materials.HazeMaterials
+import dev.datlag.gamechanger.LocalHaze
+import dev.datlag.gamechanger.LocalPaddingValues
 import dev.datlag.gamechanger.ui.custom.ExpandedPages
 import dev.datlag.gamechanger.ui.theme.SchemeTheme
 import dev.datlag.tooling.compose.EndCornerShape
@@ -29,25 +36,37 @@ import dev.icerock.moko.resources.compose.stringResource
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun InitialScreen(component: InitialComponent) {
-    Box(
-        modifier = Modifier.fillMaxSize()
+    val haze = remember { HazeState() }
+
+    CompositionLocalProvider(
+        LocalHaze provides haze
     ) {
-        when (calculateWindowSizeClass().widthSizeClass) {
-            WindowWidthSizeClass.Compact -> CompactScreen(component)
-            WindowWidthSizeClass.Medium -> MediumScreen(component)
-            WindowWidthSizeClass.Expanded -> ExpandedScreen(component)
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            when (calculateWindowSizeClass().widthSizeClass) {
+                WindowWidthSizeClass.Compact -> CompactScreen(component)
+                WindowWidthSizeClass.Medium -> MediumScreen(component)
+                WindowWidthSizeClass.Expanded -> ExpandedScreen(component)
+            }
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalDecomposeApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalDecomposeApi::class, ExperimentalHazeMaterialsApi::class)
 @Composable
 private fun CompactScreen(component: InitialComponent) {
     val selectedPage by component.selectedPage.subscribeAsState()
 
     Scaffold(
         bottomBar = {
-            NavigationBar {
+            NavigationBar(
+                modifier = Modifier.hazeChild(
+                    state = LocalHaze.current,
+                    style = HazeMaterials.regular(NavigationBarDefaults.containerColor)
+                ).fillMaxWidth(),
+                containerColor = Color.Transparent
+            ) {
                 component.pagerItems.forEachIndexed { index, pagerItem ->
                     NavigationBarItem(
                         selected = selectedPage == index,
@@ -66,26 +85,30 @@ private fun CompactScreen(component: InitialComponent) {
             }
         }
     ) {
-        Box(
-            modifier = Modifier.padding(it)
+        CompositionLocalProvider(
+            LocalPaddingValues provides it
         ) {
-            Pages(
-                pages = component.pages,
-                onPageSelected = { index ->
-                    if (selectedPage != index) {
-                        component.selectPage(index)
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Pages(
+                    pages = component.pages,
+                    onPageSelected = { index ->
+                        if (selectedPage != index) {
+                            component.selectPage(index)
+                        }
+                    },
+                    pager = { modifier, state, key, pageContent ->
+                        HorizontalPager(
+                            modifier = modifier,
+                            state = state,
+                            key = key,
+                            pageContent = pageContent
+                        )
                     }
-                },
-                pager = { modifier, state, key, pageContent ->
-                    HorizontalPager(
-                        modifier = modifier,
-                        state = state,
-                        key = key,
-                        pageContent = pageContent
-                    )
+                ) { _, page ->
+                    page.render()
                 }
-            ) { _, page ->
-                page.render()
             }
         }
     }

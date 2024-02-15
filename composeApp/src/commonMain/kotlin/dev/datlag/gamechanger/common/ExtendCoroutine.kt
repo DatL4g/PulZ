@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 
-actual fun <T> Flow<T>.getValueBlocking(fallback: T & Any): T & Any {
+fun <T> Flow<T>.getValueBlocking(fallback: T & Any): T & Any {
     fun blocking(): T & Any {
         return scopeCatching {
             runBlocking(ioDispatcher()) {

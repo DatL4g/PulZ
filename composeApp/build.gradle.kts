@@ -34,16 +34,6 @@ kotlin {
         binaries.executable()
     }
     */
-
-    js(IR) {
-        moduleName = "gamechanger"
-        browser {
-            commonWebpackConfig {
-                outputFileName = "gamechanger.js"
-            }
-        }
-        binaries.executable()
-    }
     
     androidTarget()
     jvm("desktop")
@@ -91,17 +81,12 @@ kotlin {
             implementation(libs.kmpalette)
             implementation(libs.kolor)
 
+            implementation(libs.haze)
+            implementation(libs.haze.materials)
+
             implementation(project(":settings"))
             implementation(project(":hltv"))
             implementation(project(":game"))
-        }
-
-        jsMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.ui)
-
-            implementation(libs.ktor.js)
         }
 
         nativeMain.dependencies {
@@ -115,14 +100,6 @@ kotlin {
 
                 implementation(libs.ktor.jvm)
             }
-        }
-
-        val nonJsMain by creating {
-            dependsOn(commonMain.get())
-
-            desktopMain.dependsOn(this)
-            androidMain.get().dependsOn(this)
-            nativeMain.get().dependsOn(this)
         }
     }
 }
