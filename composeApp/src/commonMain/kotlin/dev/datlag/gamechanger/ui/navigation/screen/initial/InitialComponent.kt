@@ -1,11 +1,14 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.pages.ChildPages
 import com.arkivanov.decompose.value.Value
+import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.ui.navigation.Component
 import dev.icerock.moko.resources.StringResource
+import dev.icerock.moko.resources.compose.stringResource
 
 interface InitialComponent : Component {
 
@@ -18,7 +21,21 @@ interface InitialComponent : Component {
     fun selectPage(index: Int)
 
     data class PagerItem(
-        val label: StringResource,
-        val icon: ImageVector
-    )
+        val label: Any?,
+        val fallbackLabel: StringResource,
+        val icon: Any?,
+        val fallbackIcon: ImageVector,
+        val iconSchemeKey: Any? = null
+    ) {
+        constructor(label: StringResource, icon: ImageVector) : this(label, label, icon, icon)
+
+        @Composable
+        fun labelAsString(): String {
+            return if (label is StringResource) {
+                stringResource(label)
+            } else {
+                (label as? CharSequence)?.toString() ?: stringResource(fallbackLabel)
+            }
+        }
+    }
 }

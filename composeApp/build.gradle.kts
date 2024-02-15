@@ -84,7 +84,12 @@ kotlin {
             implementation(libs.coil)
             implementation(libs.coil.network)
             implementation(libs.coil.svg)
+            implementation(libs.coil.compose)
+
             implementation(libs.compottie)
+
+            implementation(libs.kmpalette)
+            implementation(libs.kolor)
 
             implementation(project(":settings"))
             implementation(project(":hltv"))

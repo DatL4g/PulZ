@@ -3,19 +3,27 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.pages.Pages
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import dev.datlag.gamechanger.ui.custom.ExpandedPages
+import dev.datlag.gamechanger.ui.theme.SchemeTheme
 import dev.datlag.tooling.compose.EndCornerShape
+import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -50,7 +58,7 @@ private fun CompactScreen(component: InitialComponent) {
                             component.selectPage(index)
                         },
                         label = {
-                            Text(text = stringResource(pagerItem.label))
+                            Text(text = pagerItem.labelAsString())
                         },
                         alwaysShowLabel = true
                     )
@@ -104,7 +112,7 @@ private fun MediumScreen(component: InitialComponent) {
                             component.selectPage(index)
                         },
                         label = {
-                            Text(text = stringResource(pagerItem.label))
+                            Text(text = pagerItem.labelAsString())
                         },
                         alwaysShowLabel = true
                     )
@@ -144,7 +152,7 @@ private fun ExpandedScreen(component: InitialComponent) {
                                 component.selectPage(index)
                             },
                             label = {
-                                Text(text = stringResource(pagerItem.label))
+                                Text(text = pagerItem.labelAsString())
                             }
                         )
                     }
@@ -163,9 +171,25 @@ private fun ExpandedScreen(component: InitialComponent) {
 
 @Composable
 private fun NavIcon(item: InitialComponent.PagerItem) {
-    Icon(
-        imageVector = item.icon,
-        contentDescription = stringResource(item.label),
-        modifier = Modifier.size(24.dp)
-    )
+    if (item.icon is ImageVector) {
+        Icon(
+            imageVector = item.icon,
+            contentDescription = item.labelAsString(),
+            modifier = Modifier.size(24.dp)
+        )
+    } else {
+        val scope = rememberCoroutineScope()
+
+        AsyncImage(
+            model = item.icon,
+            contentDescription = item.labelAsString(),
+            error = rememberVectorPainter(item.fallbackIcon),
+            placeholder = rememberVectorPainter(item.fallbackIcon),
+            modifier = Modifier.size(24.dp).clip(CircleShape),
+            clipToBounds = true,
+            onSuccess = { state ->
+                SchemeTheme.update(key = item.iconSchemeKey, state.painter, scope)
+            }
+        )
+    }
 }

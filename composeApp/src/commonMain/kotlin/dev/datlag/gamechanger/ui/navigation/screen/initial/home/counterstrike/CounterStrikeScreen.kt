@@ -1,4 +1,4 @@
-package dev.datlag.gamechanger.ui.navigation.screen.initial.counterstrike
+package dev.datlag.gamechanger.ui.navigation.screen.initial.home.counterstrike
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

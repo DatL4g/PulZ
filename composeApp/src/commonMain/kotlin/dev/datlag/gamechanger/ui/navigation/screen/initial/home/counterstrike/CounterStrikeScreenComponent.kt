@@ -1,4 +1,4 @@
-package dev.datlag.gamechanger.ui.navigation.screen.initial.counterstrike
+package dev.datlag.gamechanger.ui.navigation.screen.initial.home.counterstrike
 
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
@@ -26,5 +26,9 @@ class CounterStrikeScreenComponent(
 
     override fun back() {
         onBack()
+    }
+
+    override fun dismissContent() {
+        back()
     }
 }

@@ -7,5 +7,6 @@ sealed class View {
     @Serializable
     data object Home : View()
 
-    // ToDo("add something like settings etc")
+    @Serializable
+    data object User : View()
 }
