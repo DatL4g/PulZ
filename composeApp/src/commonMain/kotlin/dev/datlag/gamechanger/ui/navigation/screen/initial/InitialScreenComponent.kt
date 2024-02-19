@@ -25,7 +25,7 @@ class InitialScreenComponent(
 
     override val pagerItems: List<InitialComponent.PagerItem> = listOf(
         InitialComponent.PagerItem(
-            label = SharedRes.strings.app_name,
+            label = SharedRes.strings.home,
             icon = Icons.Default.Home
         ),
         run {

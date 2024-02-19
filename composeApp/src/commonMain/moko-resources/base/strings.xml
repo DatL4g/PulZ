@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
     <string name="app_name">Gamechanger</string>
+    <string name="home">Home</string>
     <string name="user">User</string>
     <string name="settings">Settings</string>
     <string name="steam">Steam</string>

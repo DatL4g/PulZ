@@ -31,7 +31,7 @@ import dev.icerock.moko.resources.compose.stringResource
 @Composable
 fun UserScreen(component: UserComponent) {
     LazyVerticalGrid(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().safeDrawingPadding(),
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(all = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
