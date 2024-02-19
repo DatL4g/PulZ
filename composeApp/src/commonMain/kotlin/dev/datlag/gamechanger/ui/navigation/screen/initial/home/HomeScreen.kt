@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdsClick
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,6 +24,8 @@ import dev.datlag.gamechanger.LocalPaddingValues
 import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.plus
 import dev.datlag.gamechanger.ui.navigation.screen.initial.home.component.GameCover
+import dev.datlag.gamechanger.ui.theme.SchemeTheme
+import dev.datlag.gamechanger.ui.theme.rememberSchemeThemeDominantColor
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 
 @Composable
@@ -69,7 +72,7 @@ private fun Overview(component: HomeComponent) {
                 GameCover(
                     title = "Counter Strike",
                     image = SharedRes.images.cs_banner,
-                    color = Color(0xFFDB3D7F),
+                    color = rememberSchemeThemeDominantColor("Counter Strike") ?: MaterialTheme.colorScheme.primary,
                     modifier = Modifier.width(512.dp).clip(RoundedCornerShape(24.dp))
                 ) {
                     component.showCounterStrike()

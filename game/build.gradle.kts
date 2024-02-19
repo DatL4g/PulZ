@@ -68,6 +68,10 @@ kotlin {
             linuxMain.get().dependsOn(this)
             mingwMain.get().dependsOn(this)
             macosMain.get().dependsOn(this)
+
+            dependencies {
+                implementation(libs.kommand)
+            }
         }
     }
 }

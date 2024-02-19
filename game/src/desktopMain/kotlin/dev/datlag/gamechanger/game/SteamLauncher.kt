@@ -12,7 +12,6 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonObject
 import okio.FileSystem
 import okio.Path
-import okio.Path.Companion.DIRECTORY_SEPARATOR
 import okio.Path.Companion.toPath
 import okio.buffer
 import kotlin.jvm.JvmStatic
@@ -63,8 +62,12 @@ actual data object SteamLauncher : Launcher {
         }).distinctBy { u -> u.id }.toSet()
     }
 
-    override fun open(game: Game) {
-        // ToDo("move String.openInBrowser in correct tooling directory")
+    override val launchSupported: Boolean = true
+
+    override fun launch(game: Game) {
+        if (game is Game.Steam) {
+            open(game.getRunGameUri())
+        }
     }
 
     private val vdf = ValveDataFormat(Json {
@@ -196,11 +199,17 @@ actual data object SteamLauncher : Launcher {
             val systemRoot: Path
 
             data class X86(override val systemRoot: Path) : Windows {
-                override val path: String = systemRoot.resolve("Program Files (x86)${DIRECTORY_SEPARATOR}Steam", normalize = true).toString()
+                override val path: String = systemRoot.resolve(
+                    "Program Files (x86)${Path.DIRECTORY_SEPARATOR}Steam",
+                    normalize = true
+                ).toString()
             }
 
             data class X64(override val systemRoot: Path) : Windows {
-                override val path: String = systemRoot.resolve("Program Files${DIRECTORY_SEPARATOR}Steam", normalize = true).toString()
+                override val path: String = systemRoot.resolve(
+                    "Program Files${Path.DIRECTORY_SEPARATOR}Steam",
+                    normalize = true
+                ).toString()
             }
 
             companion object {

@@ -21,6 +21,8 @@ actual object SteamLauncher : Launcher {
      */
     actual val loggedInUsers: Set<User> = emptySet()
 
-    override fun open(game: Game) { }
+    override val launchSupported: Boolean = false
+
+    override fun launch(game: Game) { }
 
 }

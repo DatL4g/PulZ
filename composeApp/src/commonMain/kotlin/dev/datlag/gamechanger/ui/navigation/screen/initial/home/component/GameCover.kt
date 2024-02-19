@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -15,6 +16,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import coil3.compose.AsyncImage
+import dev.datlag.gamechanger.ui.theme.SchemeTheme
+import dev.datlag.tooling.compose.launchIO
 import dev.datlag.tooling.compose.onClick
 import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.compose.painterResource
@@ -34,9 +38,11 @@ fun GameCover(
         },
         contentAlignment = Alignment.Center
     ) {
+        val painter = painterResource(image)
+
         Image(
             modifier = Modifier.fillMaxSize(),
-            painter = painterResource(image),
+            painter = painter,
             contentDescription = contentDescription,
             alignment = Alignment.Center,
             contentScale = ContentScale.FillWidth
@@ -59,5 +65,7 @@ fun GameCover(
                 )
             )
         )
+
+        SchemeTheme.update(key = title, input = painter)
     }
 }

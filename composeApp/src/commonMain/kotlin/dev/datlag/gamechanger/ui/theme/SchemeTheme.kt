@@ -70,7 +70,7 @@ data object SchemeTheme {
 }
 
 @Composable
-fun SchemeTheme(key: Any?, content: @Composable () -> Unit) {
+fun rememberSchemeThemeDominantColor(key: Any?): Color? {
     if (SchemeTheme._state == null) {
         SchemeTheme._state = rememberPainterDominantColorState()
     }
@@ -79,8 +79,13 @@ fun SchemeTheme(key: Any?, content: @Composable () -> Unit) {
         SchemeTheme.itemScheme.map { it[key] }
     }.collectAsStateWithLifecycle(SchemeTheme.itemScheme.value[key])
 
+    return color
+}
+
+@Composable
+fun SchemeTheme(key: Any?, content: @Composable () -> Unit) {
     AnimatedDynamicMaterialTheme(
-        seedColor = color ?: MaterialTheme.colorScheme.primary,
+        seedColor = rememberSchemeThemeDominantColor(key) ?: MaterialTheme.colorScheme.primary,
         useDarkTheme = LocalDarkMode.current
     ) {
         androidx.compose.material.MaterialTheme(

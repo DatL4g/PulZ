@@ -2,7 +2,15 @@ package dev.datlag.gamechanger.game
 
 interface Launcher {
 
-    fun open(game: Game)
+    val launchSupported: Boolean
 
-    companion object
+    fun launch(game: Game)
+
+    companion object {
+        fun launch(game: Game) {
+            when (game) {
+                is Game.Steam -> SteamLauncher.launch(game)
+            }
+        }
+    }
 }
