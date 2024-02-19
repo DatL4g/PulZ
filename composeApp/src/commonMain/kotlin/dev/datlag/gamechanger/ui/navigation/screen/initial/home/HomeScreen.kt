@@ -23,6 +23,7 @@ import dev.datlag.gamechanger.LocalHaze
 import dev.datlag.gamechanger.LocalPaddingValues
 import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.plus
+import dev.datlag.gamechanger.game.Game
 import dev.datlag.gamechanger.ui.navigation.screen.initial.home.component.GameCover
 import dev.datlag.gamechanger.ui.theme.SchemeTheme
 import dev.datlag.gamechanger.ui.theme.rememberSchemeThemeDominantColor
@@ -69,10 +70,13 @@ private fun Overview(component: HomeComponent) {
     ) {
         repeat(5) {
             item {
+                val game = Game.Steam.CounterStrike
+
                 GameCover(
                     title = "Counter Strike",
-                    image = SharedRes.images.cs_banner,
-                    color = rememberSchemeThemeDominantColor("Counter Strike") ?: MaterialTheme.colorScheme.primary,
+                    game = game,
+                    fallback = SharedRes.images.cs_banner,
+                    color = rememberSchemeThemeDominantColor(game) ?: MaterialTheme.colorScheme.primary,
                     modifier = Modifier.width(512.dp).clip(RoundedCornerShape(24.dp))
                 ) {
                     component.showCounterStrike()

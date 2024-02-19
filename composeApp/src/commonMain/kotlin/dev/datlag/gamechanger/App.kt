@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import dev.chrisbanes.haze.HazeState
 import dev.datlag.gamechanger.ui.theme.Colors
+import dev.datlag.gamechanger.ui.theme.CommonSchemeTheme
 import dev.datlag.tooling.compose.toLegacyColors
 import dev.datlag.tooling.compose.toLegacyShapes
 import org.kodein.di.DI
@@ -36,12 +37,14 @@ fun App(
                 shapes = MaterialTheme.shapes.toLegacyShapes()
             ) {
                 SystemProvider {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background,
-                        contentColor = MaterialTheme.colorScheme.onBackground
-                    ) {
-                        content()
+                    CommonSchemeTheme {
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background,
+                            contentColor = MaterialTheme.colorScheme.onBackground
+                        ) {
+                            content()
+                        }
                     }
                 }
             }

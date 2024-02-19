@@ -2,10 +2,12 @@ package dev.datlag.gamechanger.common
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleOwner
 import dev.datlag.gamechanger.LocalDI
 import dev.datlag.gamechanger.ui.navigation.Component
+import dev.datlag.gamechanger.ui.theme.SchemeTheme
 import dev.datlag.tooling.decompose.lifecycle.LocalLifecycleOwner
 
 /**
@@ -22,5 +24,24 @@ fun Component.onRender(content: @Composable () -> Unit) {
         }
     ) {
         content()
+    }
+}
+
+@Composable
+fun Component.onRenderWithScheme(key: Any?, content: @Composable () -> Unit) {
+    onRender {
+        SchemeTheme(key, content)
+    }
+}
+
+@Composable
+fun Component.onRenderApplyCommonScheme(key: Any?, content: @Composable () -> Unit) {
+    onRenderWithScheme(key, content)
+
+    SchemeTheme.setCommon(key)
+    DisposableEffect(key) {
+        onDispose {
+            SchemeTheme.setCommon(null)
+        }
     }
 }

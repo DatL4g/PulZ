@@ -3,6 +3,8 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial.home.counterstrike
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
 import dev.datlag.gamechanger.common.onRender
+import dev.datlag.gamechanger.common.onRenderApplyCommonScheme
+import dev.datlag.gamechanger.common.onRenderWithScheme
 import dev.datlag.gamechanger.game.Game
 import dev.datlag.gamechanger.game.SteamLauncher
 import org.kodein.di.DI
@@ -22,7 +24,7 @@ class CounterStrikeScreenComponent(
 
     @Composable
     override fun render() {
-        onRender {
+        onRenderApplyCommonScheme(Game.Steam.CounterStrike) {
             CounterStrikeScreen(this)
         }
     }

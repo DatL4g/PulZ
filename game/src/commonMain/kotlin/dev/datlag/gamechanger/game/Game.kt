@@ -9,18 +9,19 @@ sealed interface Game {
     sealed interface Steam : Game {
 
         val id: String
-        val runGame: String
-            get() = "steam://rungameid/"
 
-        val run: String
-            get() = "steam://run/"
+        val headerUrl: String
+            get() = "https://cdn.akamai.steamstatic.com/steam/apps/$id/header.jpg"
+
+        val heroUrl: String
+            get() = "https://cdn.akamai.steamstatic.com/steam/apps/$id/library_hero.jpg"
 
         fun getRunGameUri(): String {
-            return "$runGame$id"
+            return "$RUN_GAME$id"
         }
 
         fun getRunUri(): String {
-            return "$run$id"
+            return "$RUN$id"
         }
 
         override val launcherOpenSupported: Boolean
@@ -32,6 +33,11 @@ sealed interface Game {
 
         data object CounterStrike : Steam {
             override val id: String = "730"
+        }
+
+        companion object {
+            private const val RUN_GAME: String = "steam://rungameid/"
+            private const val RUN: String = "steam://run/"
         }
     }
 }

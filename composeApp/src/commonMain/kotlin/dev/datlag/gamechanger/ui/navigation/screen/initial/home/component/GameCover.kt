@@ -1,6 +1,5 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial.home.component
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,8 +16,9 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import coil3.compose.AsyncImage
+import coil3.compose.rememberAsyncImagePainter
+import dev.datlag.gamechanger.game.Game
 import dev.datlag.gamechanger.ui.theme.SchemeTheme
-import dev.datlag.tooling.compose.launchIO
 import dev.datlag.tooling.compose.onClick
 import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.compose.painterResource
@@ -26,7 +26,8 @@ import dev.icerock.moko.resources.compose.painterResource
 @Composable
 fun GameCover(
     title: String,
-    image: ImageResource,
+    game: Game?,
+    fallback: ImageResource,
     color: Color,
     modifier: Modifier = Modifier,
     contentDescription: String = title,
@@ -38,19 +39,50 @@ fun GameCover(
         },
         contentAlignment = Alignment.Center
     ) {
-        val painter = painterResource(image)
+        val painter = painterResource(fallback)
+        val scope = rememberCoroutineScope()
+        val model = if (game is Game.Steam) {
+            game.headerUrl
+        } else {
+            null
+        }
+        val fallbackPainter = if (game is Game.Steam) {
+            rememberAsyncImagePainter(
+                model = game.heroUrl,
+                placeholder = painter,
+                error = painter,
+                onSuccess = { state ->
+                    SchemeTheme.update(
+                        key = game,
+                        input = state.painter,
+                        scope = scope
+                    )
+                }
+            )
+        } else {
+            painter
+        }
 
-        Image(
+        AsyncImage(
             modifier = Modifier.fillMaxSize(),
-            painter = painter,
+            model = model,
             contentDescription = contentDescription,
             alignment = Alignment.Center,
-            contentScale = ContentScale.FillWidth
+            contentScale = ContentScale.FillWidth,
+            error = fallbackPainter,
+            placeholder = painter,
+            onSuccess = { state ->
+                SchemeTheme.update(
+                    key = game,
+                    input = state.painter,
+                    scope = scope
+                )
+            }
         )
         Box(
             modifier = Modifier.matchParentSize().background(
                 Brush.verticalGradient(
-                    colors = listOf(color.copy(alpha = 0.05F), color)
+                    colors = listOf(color.copy(alpha = 0.05F), color.copy(alpha = 0.5F))
                 )
             )
         )
@@ -65,7 +97,5 @@ fun GameCover(
                 )
             )
         )
-
-        SchemeTheme.update(key = title, input = painter)
     }
 }
