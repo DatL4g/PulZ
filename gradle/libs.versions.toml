@@ -29,6 +29,7 @@ ktor = "2.3.8"
 # ksoup = "0.1.2"
 moko-resources = "0.24.0-alpha-3"
 multidex = "2.0.1"
+napier = "2.7.1"
 okio = "3.8.0"
 osdetector = "1.7.3"
 serialization = "1.6.2"
@@ -38,7 +39,10 @@ windowsize = "0.5.0-beta01"
 
 [libraries]
 android = { group = "androidx.core", name = "core-ktx", version.ref = "android-core" }
+activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
+activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
 apache-commons-io = { group = "commons-io", name = "commons-io", version.ref = "apache-commons-io" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 codepoints = { group = "de.cketti.unicode", name = "kotlin-codepoints-deluxe", version.ref = "codepoints" }
 coil = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil" }
 coil-network = { group = "io.coil-kt.coil3", name = "coil-network-ktor", version.ref = "coil" }
@@ -71,6 +75,8 @@ ktor-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "k
 # ksoup-network = { group = "com.fleeksoft.ksoup", name = "ksoup", version.ref = "ksoup" }
 moko-resources-compose = { group = "dev.icerock.moko", name = "resources-compose", version.ref = "moko-resources" }
 moko-resources-generator = { group = "dev.icerock.moko", name = "resources-generator", version.ref = "moko-resources" }
+multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
+napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
 okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio" }
 serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "serialization" }
 serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }

@@ -2,6 +2,7 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial.home.counterstrike
 
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.essenty.backhandler.BackCallback
 import dev.datlag.gamechanger.common.onRender
 import dev.datlag.gamechanger.common.onRenderApplyCommonScheme
 import dev.datlag.gamechanger.common.onRenderWithScheme
@@ -17,7 +18,13 @@ class CounterStrikeScreenComponent(
 
     override val canLaunch: Boolean = SteamLauncher.launchSupported
 
+    private val backCallback = BackCallback {
+        back()
+    }
+
     init {
+        backHandler.register(backCallback)
+
         SteamLauncher.loggedInUsers.forEach(::println)
         SteamLauncher.rootFolders.forEach(::println)
     }

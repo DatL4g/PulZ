@@ -13,6 +13,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
@@ -32,6 +34,7 @@ import dev.datlag.gamechanger.ui.theme.SchemeTheme
 import dev.datlag.tooling.compose.EndCornerShape
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
+import io.github.aakira.napier.Napier
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
@@ -65,7 +68,8 @@ private fun CompactScreen(component: InitialComponent) {
                     state = LocalHaze.current,
                     style = HazeMaterials.regular(NavigationBarDefaults.containerColor)
                 ).fillMaxWidth(),
-                containerColor = Color.Transparent
+                containerColor = Color.Transparent,
+                contentColor = MaterialTheme.colorScheme.contentColorFor(NavigationBarDefaults.containerColor)
             ) {
                 component.pagerItems.forEachIndexed { index, pagerItem ->
                     NavigationBarItem(
@@ -198,10 +202,17 @@ private fun NavIcon(item: InitialComponent.PagerItem) {
         Icon(
             imageVector = item.icon,
             contentDescription = item.labelAsString(),
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(24.dp),
+            tint = LocalContentColor.current
         )
     } else {
         val scope = rememberCoroutineScope()
+        var applyColorFilter by remember { mutableStateOf(false) }
+        val colorFilter = if (applyColorFilter) {
+            ColorFilter.tint(color = LocalContentColor.current)
+        } else {
+            null
+        }
 
         AsyncImage(
             model = item.icon,
@@ -211,7 +222,15 @@ private fun NavIcon(item: InitialComponent.PagerItem) {
             modifier = Modifier.size(24.dp).clip(CircleShape),
             clipToBounds = true,
             onSuccess = { state ->
+                applyColorFilter = false
                 SchemeTheme.update(key = item.iconSchemeKey, state.painter, scope)
+            },
+            colorFilter = colorFilter,
+            onError = {
+                applyColorFilter = true
+            },
+            onLoading = {
+                applyColorFilter = true
             }
         )
     }

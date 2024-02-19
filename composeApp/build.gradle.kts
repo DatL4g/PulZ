@@ -67,6 +67,7 @@ kotlin {
             implementation(libs.kodein.compose)
 
             implementation(libs.tooling.decompose)
+            implementation(libs.napier)
             implementation(libs.moko.resources.compose)
 
             implementation(libs.windowsize)
@@ -91,6 +92,16 @@ kotlin {
 
         nativeMain.dependencies {
             implementation(libs.ktor.darwin)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.android)
+            implementation(libs.activity)
+            implementation(libs.activity.compose)
+            implementation(libs.appcompat)
+            implementation(libs.multidex)
+
+            implementation(libs.ktor.jvm)
         }
 
         val desktopMain by getting {
