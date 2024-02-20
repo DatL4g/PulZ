@@ -1,21 +1,20 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial.home
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdsClick
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import dev.chrisbanes.haze.haze
@@ -62,6 +61,10 @@ fun HomeScreen(component: HomeComponent) {
 @Composable
 private fun Overview(component: HomeComponent) {
     val padding = PaddingValues(all = 16.dp)
+    val csGame = Game.Steam.CounterStrike
+    val csColor = rememberSchemeThemeDominantColor(csGame) ?: MaterialTheme.colorScheme.primary
+    val rlGame = Game.Steam.RocketLeague
+    val rlColor = rememberSchemeThemeDominantColor(rlGame) ?: MaterialTheme.colorScheme.primary
 
     LazyColumn(
         modifier = Modifier.fillMaxSize().haze(state = LocalHaze.current),
@@ -69,20 +72,29 @@ private fun Overview(component: HomeComponent) {
         horizontalAlignment = Alignment.CenterHorizontally,
         contentPadding = LocalPaddingValues.current?.plus(padding) ?: padding
     ) {
-        repeat(5) {
-            item {
-                val game = Game.Steam.CounterStrike
-
-                GameCover(
-                    title = stringResource(SharedRes.strings.counter_strike),
-                    game = game,
-                    fallback = SharedRes.images.cs_banner,
-                    color = rememberSchemeThemeDominantColor(game) ?: MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.width(512.dp).clip(RoundedCornerShape(24.dp))
-                ) {
-                    component.showCounterStrike()
-                }
+        item(
+            key = listOf(csGame.id, csColor.toArgb())
+        ) {
+            GameCover(
+                title = stringResource(SharedRes.strings.counter_strike),
+                game = csGame,
+                fallback = SharedRes.images.cs_banner,
+                color = csColor,
+                modifier = Modifier.fillMaxWidth().clip(CardDefaults.shape)
+            ) {
+                component.showCounterStrike()
             }
+        }
+        item(
+            key = listOf(rlGame.id, rlColor.toArgb())
+        ) {
+            GameCover(
+                title = stringResource(SharedRes.strings.rocket_league),
+                game = rlGame,
+                fallback = SharedRes.images.cs_banner,
+                color = rlColor,
+                modifier = Modifier.fillMaxWidth().clip(CardDefaults.shape)
+            )
         }
     }
 }

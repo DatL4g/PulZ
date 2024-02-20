@@ -5,7 +5,7 @@ sealed interface Game {
     val launcherOpenSupported: Boolean
 
     fun launch()
-    
+
     sealed interface Steam : Game {
 
         val id: String
@@ -33,6 +33,10 @@ sealed interface Game {
 
         data object CounterStrike : Steam {
             override val id: String = "730"
+        }
+
+        data object RocketLeague : Steam {
+            override val id: String = "252950"
         }
 
         companion object {

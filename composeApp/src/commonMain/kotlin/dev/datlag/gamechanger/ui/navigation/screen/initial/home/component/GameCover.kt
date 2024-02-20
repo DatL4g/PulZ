@@ -21,6 +21,7 @@ import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
 import dev.datlag.gamechanger.game.Game
 import dev.datlag.gamechanger.ui.theme.SchemeTheme
+import dev.datlag.gamechanger.ui.theme.rememberSchemeThemeDominantColor
 import dev.datlag.tooling.compose.onClick
 import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.compose.painterResource
@@ -30,7 +31,7 @@ fun GameCover(
     title: String,
     game: Game?,
     fallback: ImageResource,
-    color: Color,
+    color: Color = rememberSchemeThemeDominantColor(game) ?: MaterialTheme.colorScheme.primary,
     modifier: Modifier = Modifier,
     contentDescription: String = title,
     onClick: () -> Unit = { }
@@ -87,7 +88,7 @@ fun GameCover(
         Box(
             modifier = Modifier.matchParentSize().background(
                 Brush.verticalGradient(
-                    colors = listOf(animatedColor.copy(alpha = 0.05F), animatedColor.copy(alpha = 0.5F))
+                    colors = listOf(animatedColor.copy(alpha = 0.1F), animatedColor.copy(alpha = 0.75F))
                 )
             )
         )
