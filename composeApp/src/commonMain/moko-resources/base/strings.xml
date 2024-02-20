@@ -10,4 +10,6 @@
     <string name="game">Game</string>
     <string name="info">Info</string>
     <string name="rocket_league">Rocket League</string>
+    <string name="event">Event</string>
+    <string name="trending">Trending</string>
 </resources>

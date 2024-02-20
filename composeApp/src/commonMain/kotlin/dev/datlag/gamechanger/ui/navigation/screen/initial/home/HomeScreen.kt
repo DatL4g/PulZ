@@ -3,6 +3,8 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial.home
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
@@ -66,11 +68,12 @@ private fun Overview(component: HomeComponent) {
     val rlGame = Game.Steam.RocketLeague
     val rlColor = rememberSchemeThemeDominantColor(rlGame) ?: MaterialTheme.colorScheme.primary
 
-    LazyColumn(
+    LazyVerticalGrid(
         modifier = Modifier.fillMaxSize().haze(state = LocalHaze.current),
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = LocalPaddingValues.current?.plus(padding) ?: padding
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+        contentPadding = LocalPaddingValues.current?.plus(padding) ?: padding,
+        columns = GridCells.Adaptive(512.dp)
     ) {
         item(
             key = listOf(csGame.id, csColor.toArgb())

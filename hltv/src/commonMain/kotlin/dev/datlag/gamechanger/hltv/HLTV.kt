@@ -33,8 +33,25 @@ data object HLTV {
                 null
             }
         }
+
+        val heroEl = doc.querySelector(".hero-con")?.querySelector("a")
+        val hero = heroEl?.let {
+            val href = it.attr("href")
+            val image = it.querySelector("img")?.attr("src")
+
+            if (!href.isNullOrBlank() && !image.isNullOrBlank()) {
+                Home.Hero(
+                    image = image,
+                    href = href
+                )
+            } else {
+                null
+            }
+        }
+
         return Home(
-            event = event
+            event = event,
+            hero = hero
         )
     }
 

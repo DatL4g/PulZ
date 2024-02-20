@@ -38,8 +38,7 @@ fun EventCover(
                 model = event.image,
                 contentDescription = event.title,
                 modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.FillWidth,
-                clipToBounds = true
+                contentScale = ContentScale.FillWidth
             )
             if (event.live) {
                 Text(
