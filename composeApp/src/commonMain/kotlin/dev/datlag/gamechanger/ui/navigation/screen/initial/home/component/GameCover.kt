@@ -1,11 +1,13 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial.home.component
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,6 +64,9 @@ fun GameCover(
         } else {
             painter
         }
+        val animatedColor by animateColorAsState(
+            targetValue = color
+        )
 
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
@@ -82,7 +87,7 @@ fun GameCover(
         Box(
             modifier = Modifier.matchParentSize().background(
                 Brush.verticalGradient(
-                    colors = listOf(color.copy(alpha = 0.05F), color.copy(alpha = 0.5F))
+                    colors = listOf(animatedColor.copy(alpha = 0.05F), animatedColor.copy(alpha = 0.5F))
                 )
             )
         )

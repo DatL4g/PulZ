@@ -1,11 +1,13 @@
 package dev.datlag.gamechanger.module
 
 import coil3.ImageLoader
+import coil3.SingletonImageLoader
 import coil3.disk.DiskCache
 import coil3.memory.MemoryCache
 import coil3.network.ktor.KtorNetworkFetcherFactory
 import coil3.request.crossfade
 import coil3.svg.SvgDecoder
+import dev.datlag.gamechanger.hltv.state.HomeStateMachine
 import io.ktor.client.*
 import okio.FileSystem
 import org.kodein.di.DI
@@ -37,7 +39,13 @@ data object NetworkModule {
                         .build()
                 }
                 .crossfade(true)
+                .extendImageLoader()
                 .build()
+        }
+        bindSingleton {
+            HomeStateMachine(instance())
         }
     }
 }
+
+expect fun ImageLoader.Builder.extendImageLoader(): ImageLoader.Builder

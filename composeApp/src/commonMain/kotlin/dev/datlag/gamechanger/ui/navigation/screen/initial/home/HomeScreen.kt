@@ -28,6 +28,7 @@ import dev.datlag.gamechanger.ui.navigation.screen.initial.home.component.GameCo
 import dev.datlag.gamechanger.ui.theme.SchemeTheme
 import dev.datlag.gamechanger.ui.theme.rememberSchemeThemeDominantColor
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
+import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun HomeScreen(component: HomeComponent) {
@@ -73,7 +74,7 @@ private fun Overview(component: HomeComponent) {
                 val game = Game.Steam.CounterStrike
 
                 GameCover(
-                    title = "Counter Strike",
+                    title = stringResource(SharedRes.strings.counter_strike),
                     game = game,
                     fallback = SharedRes.images.cs_banner,
                     color = rememberSchemeThemeDominantColor(game) ?: MaterialTheme.colorScheme.primary,

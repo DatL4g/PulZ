@@ -33,6 +33,8 @@ kotlin {
             api(libs.ktor)
             api(libs.datetime)
             api(libs.tooling.country)
+            api(libs.flowredux)
+            api(project(":model"))
         }
     }
 }

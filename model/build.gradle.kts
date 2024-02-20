@@ -22,4 +22,11 @@ kotlin {
         browser()
         binaries.executable()
     }
+
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.coroutines)
+            implementation(libs.tooling)
+        }
+    }
 }
