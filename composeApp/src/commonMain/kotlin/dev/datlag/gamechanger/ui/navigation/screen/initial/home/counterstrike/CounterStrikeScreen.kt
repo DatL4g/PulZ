@@ -1,14 +1,11 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial.home.counterstrike
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -31,7 +28,7 @@ fun CounterStrikeScreen(component: CounterStrikeComponent) {
             1
         }
     ) }
-    val htlvHome by component.hltvHomeState.collectAsStateWithLifecycle(initialValue = HomeStateMachine.State.Loading)
+    val hltvHome by component.hltvHomeState.collectAsStateWithLifecycle(initialValue = HomeStateMachine.State.Loading)
 
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize().safeDrawingPadding(),
@@ -90,7 +87,7 @@ fun CounterStrikeScreen(component: CounterStrikeComponent) {
                 // ToDo("game content")
             }
             1 -> {
-                HLTVContent(homeState = htlvHome)
+                HLTVContent(homeState = hltvHome)
             }
         }
     }

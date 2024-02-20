@@ -1,9 +1,6 @@
 package dev.datlag.gamechanger.game
 
 sealed interface Game {
-    
-    val launcherOpenSupported: Boolean
-
     fun launch()
 
     sealed interface Steam : Game {
@@ -24,9 +21,6 @@ sealed interface Game {
             return "$RUN$id"
         }
 
-        override val launcherOpenSupported: Boolean
-            get() = true
-
         override fun launch() {
             SteamLauncher.launch(this)
         }
@@ -42,6 +36,29 @@ sealed interface Game {
         companion object {
             private const val RUN_GAME: String = "steam://rungameid/"
             private const val RUN: String = "steam://run/"
+        }
+    }
+
+    sealed interface EpicGames : Game {
+
+        override fun launch() {
+            // ToDo("add launcher")
+        }
+
+        data object RocketLeague : EpicGames
+    }
+
+    sealed interface Multi : Game {
+        val steam: Steam?
+        val epicGames: EpicGames?
+
+        override fun launch() {
+            // ToDo("check which launcher to use")
+        }
+
+        data object RocketLeague : Multi {
+            override val steam: Steam = Steam.RocketLeague
+            override val epicGames: EpicGames = EpicGames.RocketLeague
         }
     }
 }
