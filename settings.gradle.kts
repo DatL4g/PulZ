@@ -1,6 +1,6 @@
 rootProject.name = "Gamechanger"
 
-include(":composeApp")
+include(":composeApp", ":composeApp:sekret")
 include(":settings")
 include(":hltv")
 include(":model")

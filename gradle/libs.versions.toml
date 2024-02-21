@@ -33,6 +33,7 @@ multidex = "2.0.1"
 napier = "2.7.1"
 okio = "3.8.0"
 osdetector = "1.7.3"
+sekret = "2.0.0-alpha-01"
 serialization = "1.6.2"
 tooling = "1.3.0"
 versions = "0.51.0"
@@ -99,5 +100,6 @@ complete-kotlin = { id = "com.louiscad.complete-kotlin", version.ref = "complete
 moko-resources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "moko-resources" }
 multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 osdetector = { id = "com.google.osdetector", version.ref = "osdetector" }
+sekret = { id = "dev.datlag.sekret", version.ref = "sekret" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }

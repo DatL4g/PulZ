@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.osdetector)
     alias(libs.plugins.moko.resources)
+    alias(libs.plugins.sekret)
     alias(libs.plugins.serialization)
 }
 
@@ -19,6 +20,16 @@ version = appVersion
 multiplatformResources {
     resourcesPackage.set(artifact)
     resourcesClassName.set("SharedRes")
+}
+
+sekret {
+    properties {
+        enabled.set(true)
+        packageName.set(artifact)
+
+        androidJNIFolder.set(project.layout.projectDirectory.dir("src/androidMain/jniLibs"))
+        desktopComposeResourcesFolder.set(project.layout.projectDirectory.dir("src/desktopMain/jniLibs"))
+    }
 }
 
 kotlin {
@@ -170,7 +181,9 @@ compose.desktop {
             packageName = "Gamechanger"
             packageVersion = appVersion
             outputBaseDir.set(rootProject.layout.buildDirectory.asFile.get().resolve("release"))
-            appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
+            appResourcesRootDir.set(project.layout.projectDirectory.dir("src/desktopMain/jniLibs").also {
+                println(it.asFile.canonicalPath)
+            })
 
             when (getHost()) {
                 Host.Linux -> targetFormats(

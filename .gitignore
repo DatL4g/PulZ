@@ -1,4 +1,6 @@
 TODO*
+composeApp/sekret.properties
+composeApp/sekret/src
 
 *.so
 *.dll
