@@ -5,6 +5,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class View {
     @Serializable
+    data object Discover : View()
+
+    @Serializable
     data object Home : View()
 
     @Serializable

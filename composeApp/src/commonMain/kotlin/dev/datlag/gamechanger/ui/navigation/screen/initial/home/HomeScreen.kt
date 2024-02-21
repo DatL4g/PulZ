@@ -64,9 +64,9 @@ fun HomeScreen(component: HomeComponent) {
 private fun Overview(component: HomeComponent) {
     val padding = PaddingValues(all = 16.dp)
     val csGame = Game.Steam.CounterStrike
-    val csColor = rememberSchemeThemeDominantColor(csGame) ?: MaterialTheme.colorScheme.primary
+    val csColor = rememberSchemeThemeDominantColor(csGame) ?: Color.Black
     val rlGame = Game.Steam.RocketLeague
-    val rlColor = rememberSchemeThemeDominantColor(rlGame) ?: MaterialTheme.colorScheme.primary
+    val rlColor = rememberSchemeThemeDominantColor(rlGame) ?: Color.Black
 
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize().haze(state = LocalHaze.current),

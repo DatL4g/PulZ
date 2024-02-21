@@ -1,4 +1,4 @@
-package dev.datlag.gamechanger.ui.navigation.screen.initial.home.component.hltv
+package dev.datlag.gamechanger.ui.navigation.screen.initial.home.counterstrike.component.hltv
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

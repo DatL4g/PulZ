@@ -10,6 +10,7 @@ interface Launcher {
         fun launch(game: Game) {
             when (game) {
                 is Game.Steam -> SteamLauncher.launch(game)
+                else -> { }
             }
         }
     }

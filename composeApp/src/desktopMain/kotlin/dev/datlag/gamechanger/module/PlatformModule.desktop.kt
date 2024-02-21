@@ -18,6 +18,10 @@ import dev.datlag.tooling.getRWUserDataFile
 import dev.datlag.tooling.systemProperty
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.json.Json
 import okio.FileSystem
 import okio.Path.Companion.toOkioPath
 import org.kodein.di.DI
@@ -32,6 +36,12 @@ actual object PlatformModule {
         systemProperty("jpackage.app-version")?.let {
             bindSingleton("APP_VERSION") {
                 it
+            }
+        }
+        bindSingleton {
+            Json {
+                ignoreUnknownKeys = true
+                isLenient = true
             }
         }
         bindSingleton {
@@ -56,6 +66,10 @@ actual object PlatformModule {
                     config {
                         followRedirects(true)
                     }
+                }
+                install(ContentNegotiation) {
+                    json(instance(), ContentType.Application.Json)
+                    json(instance(), ContentType.Text.Plain)
                 }
             }
         }

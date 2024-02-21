@@ -8,6 +8,10 @@ import dev.datlag.gamechanger.settings.DataStoreAppSettings
 import dev.datlag.gamechanger.settings.Settings
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.json.Json
 import okio.FileSystem
 import okio.Path.Companion.toOkioPath
 import org.kodein.di.DI
@@ -19,6 +23,12 @@ actual object PlatformModule {
     private const val NAME = "AndroidPlatformModule"
 
     actual val di = DI.Module(NAME) {
+        bindSingleton {
+            Json {
+                ignoreUnknownKeys = true
+                isLenient = true
+            }
+        }
         bindSingleton {
             val app: Context = instance()
             DataStoreFactory.create(
@@ -40,6 +50,10 @@ actual object PlatformModule {
                     config {
                         followRedirects(true)
                     }
+                }
+                install(ContentNegotiation) {
+                    json(instance(), ContentType.Application.Json)
+                    json(instance(), ContentType.Text.Plain)
                 }
             }
         }

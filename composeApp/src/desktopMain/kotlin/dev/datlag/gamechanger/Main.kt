@@ -22,7 +22,9 @@ import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleOwner
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import dev.datlag.gamechanger.module.NetworkModule
+import dev.datlag.gamechanger.other.StateSaver
 import dev.datlag.gamechanger.ui.navigation.RootComponent
+import dev.datlag.sekret.NativeLoader
 import dev.datlag.tooling.Tooling
 import dev.datlag.tooling.applicationTitle
 import dev.datlag.tooling.decompose.lifecycle.LocalLifecycleOwner
@@ -31,8 +33,10 @@ import dev.icerock.moko.resources.desc.Resource
 import dev.icerock.moko.resources.desc.StringDesc
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
+import java.io.File
 
 fun main(vararg args: String) {
+    StateSaver.sekretLibraryLoaded = NativeLoader.loadLibrary("sekret", systemProperty("compose.application.resources.dir")?.let { File(it) })
     val di = DI {
         import(NetworkModule.di)
     }

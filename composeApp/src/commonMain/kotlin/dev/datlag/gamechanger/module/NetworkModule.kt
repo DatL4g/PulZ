@@ -7,12 +7,20 @@ import coil3.memory.MemoryCache
 import coil3.network.ktor.KtorNetworkFetcherFactory
 import coil3.request.crossfade
 import coil3.svg.SvgDecoder
+import de.jensklingenberg.ktorfit.Ktorfit
+import de.jensklingenberg.ktorfit.ktorfitBuilder
 import dev.datlag.gamechanger.hltv.state.HomeStateMachine
+import dev.datlag.gamechanger.other.StateSaver
+import dev.datlag.gamechanger.rawg.RAWG
+import dev.datlag.gamechanger.rawg.state.GamesStateMachine
 import io.ktor.client.*
 import okio.FileSystem
 import org.kodein.di.DI
+import org.kodein.di.bindProvider
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
+import dev.datlag.gamechanger.Sekret
+import dev.datlag.gamechanger.getPackageName
 
 data object NetworkModule {
 
@@ -42,8 +50,29 @@ data object NetworkModule {
                 .extendImageLoader()
                 .build()
         }
-        bindSingleton {
+        bindSingleton<Ktorfit.Builder> {
+            ktorfitBuilder {
+                httpClient(instance<HttpClient>())
+            }
+        }
+        bindSingleton<RAWG> {
+            val builder = instance<Ktorfit.Builder>()
+            builder.build {
+                baseUrl("https://api.rawg.io/api/")
+            }.create<RAWG>()
+        }
+        bindProvider<HomeStateMachine> {
             HomeStateMachine(instance())
+        }
+        bindProvider<GamesStateMachine> {
+            GamesStateMachine(
+                rawg = instance(),
+                key = if (StateSaver.sekretLibraryLoaded) {
+                    Sekret.rawg(getPackageName())
+                } else {
+                    null
+                }
+            )
         }
     }
 }

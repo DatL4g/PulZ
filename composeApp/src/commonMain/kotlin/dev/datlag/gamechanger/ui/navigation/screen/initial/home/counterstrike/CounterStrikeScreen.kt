@@ -15,7 +15,8 @@ import dev.datlag.gamechanger.common.fullRow
 import dev.datlag.gamechanger.game.SteamLauncher
 import dev.datlag.gamechanger.hltv.state.HomeStateMachine
 import dev.datlag.gamechanger.ui.custom.RoundTab
-import dev.datlag.gamechanger.ui.navigation.screen.initial.home.component.HLTVContent
+import dev.datlag.gamechanger.ui.navigation.screen.initial.home.counterstrike.component.DropReset
+import dev.datlag.gamechanger.ui.navigation.screen.initial.home.counterstrike.component.HLTVContent
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -28,7 +29,7 @@ fun CounterStrikeScreen(component: CounterStrikeComponent) {
             1
         }
     ) }
-    val hltvHome by component.hltvHomeState.collectAsStateWithLifecycle(initialValue = HomeStateMachine.State.Loading)
+    val hltvHome by component.hltvHomeState.collectAsStateWithLifecycle(initialValue = HomeStateMachine.currentState)
 
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize().safeDrawingPadding(),
@@ -85,6 +86,7 @@ fun CounterStrikeScreen(component: CounterStrikeComponent) {
         when (selectedTab) {
             0 -> {
                 // ToDo("game content")
+                DropReset(component)
             }
             1 -> {
                 HLTVContent(homeState = hltvHome)

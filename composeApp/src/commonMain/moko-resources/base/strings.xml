@@ -12,4 +12,10 @@
     <string name="rocket_league">Rocket League</string>
     <string name="event">Event</string>
     <string name="trending">Trending</string>
+    <string name="drop_reset">Drop Reset</string>
+    <string name="placeholder_days">%d Days</string>
+    <string name="placeholder_hours">%d Hours</string>
+    <string name="placeholder_minutes">%d Minutes</string>
+    <string name="placeholder_seconds">%d Seconds</string>
+    <string name="discover">Discover</string>
 </resources>

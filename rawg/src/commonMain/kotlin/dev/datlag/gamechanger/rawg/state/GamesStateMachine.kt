@@ -1,39 +1,43 @@
-package dev.datlag.gamechanger.hltv.state
+package dev.datlag.gamechanger.rawg.state
 
 import com.freeletics.flowredux.dsl.FlowReduxStateMachine
-import dev.datlag.gamechanger.hltv.HLTV
-import dev.datlag.gamechanger.hltv.StateSaver
-import dev.datlag.gamechanger.hltv.model.Home
 import dev.datlag.gamechanger.model.CatchResult
-import io.ktor.client.*
+import dev.datlag.gamechanger.rawg.RAWG
+import dev.datlag.gamechanger.rawg.StateSaver
+import dev.datlag.gamechanger.rawg.model.Games
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class HomeStateMachine(
-    private val client: HttpClient
-) : FlowReduxStateMachine<HomeStateMachine.State, HomeStateMachine.Action>(initialState = StateSaver.homeState) {
+class GamesStateMachine(
+    private val rawg: RAWG,
+    private val key: String?
+) : FlowReduxStateMachine<GamesStateMachine.State, GamesStateMachine.Action>(initialState = StateSaver.gamesState) {
 
     init {
         spec {
             inState<State.Loading> {
                 onEnterEffect {
-                    StateSaver.homeState = it
+                    StateSaver.gamesState = it
                 }
                 onEnter { state ->
+                    if (key == null) {
+                        return@onEnter state.override { State.Error }
+                    }
+
                     val result = CatchResult.result<State> {
-                        State.Success(HLTV.home(client))
+                        State.Success(rawg.games(key))
                     }
                     state.override { result.asSuccess { State.Error } }
                 }
             }
             inState<State.Success> {
                 onEnterEffect {
-                    StateSaver.homeState = it
+                    StateSaver.gamesState = it
                 }
             }
             inState<State.Error> {
                 onEnterEffect {
-                    StateSaver.homeState = it
+                    StateSaver.gamesState = it
                 }
                 on<Action.Retry> { _, state ->
                     state.override { State.Loading }
@@ -44,7 +48,7 @@ class HomeStateMachine(
 
     sealed interface State {
         data object Loading : State
-        data class Success(val home: Home) : State
+        data class Success(val games: Games) : State
         data object Error : State
     }
 
@@ -55,8 +59,8 @@ class HomeStateMachine(
     companion object {
         var currentState: State
             set(value) {
-                StateSaver.homeState = value
+                StateSaver.gamesState = value
             }
-            get() = StateSaver.homeState
+            get() = StateSaver.gamesState
     }
 }

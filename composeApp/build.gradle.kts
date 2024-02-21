@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.moko.resources)
     alias(libs.plugins.sekret)
     alias(libs.plugins.serialization)
+    alias(libs.plugins.ktorfit)
 }
 
 val artifact = VersionCatalog.artifactName()
@@ -96,9 +97,14 @@ kotlin {
             implementation(libs.haze)
             implementation(libs.haze.materials)
 
+            implementation(libs.datetime)
+            implementation(libs.ktor.content.negotiation)
+            implementation(libs.ktor.serialization.json)
+
             implementation(project(":settings"))
             implementation(project(":hltv"))
             implementation(project(":game"))
+            implementation(project(":rawg"))
         }
 
         nativeMain.dependencies {

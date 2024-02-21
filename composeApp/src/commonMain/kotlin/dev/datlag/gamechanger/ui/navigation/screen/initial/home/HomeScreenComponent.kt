@@ -41,13 +41,6 @@ class HomeScreenComponent(
         }
     }
 
-    init {
-        ioScope().launchIO {
-            val all = HLTV.news(httpClient)
-            all.forEach(::println)
-        }
-    }
-
     @Composable
     override fun render() {
         onRender {

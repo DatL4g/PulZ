@@ -3,6 +3,7 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
@@ -14,6 +15,7 @@ import dev.datlag.gamechanger.common.onRender
 import dev.datlag.gamechanger.game.SteamLauncher
 import dev.datlag.gamechanger.ui.navigation.Component
 import dev.datlag.gamechanger.ui.navigation.ContentHolderComponent
+import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.DiscoverScreenComponent
 import dev.datlag.gamechanger.ui.navigation.screen.initial.home.HomeScreenComponent
 import dev.datlag.gamechanger.ui.navigation.screen.initial.user.UserScreenComponent
 import org.kodein.di.DI
@@ -24,6 +26,10 @@ class InitialScreenComponent(
 ) : InitialComponent, ComponentContext by componentContext {
 
     override val pagerItems: List<InitialComponent.PagerItem> = listOf(
+        InitialComponent.PagerItem(
+            label = SharedRes.strings.discover,
+            icon = Icons.Default.Search
+        ),
         InitialComponent.PagerItem(
             label = SharedRes.strings.home,
             icon = Icons.Default.Home
@@ -51,10 +57,11 @@ class InitialScreenComponent(
         initialPages = {
             Pages(
                 items = listOf(
+                    View.Discover,
                     View.Home,
                     View.User
                 ),
-                selectedIndex = 0
+                selectedIndex = 1
             )
         },
         childFactory = ::createChild
@@ -75,6 +82,10 @@ class InitialScreenComponent(
         context: ComponentContext
     ) : Component {
         return when (view) {
+            is View.Discover -> DiscoverScreenComponent(
+                componentContext = context,
+                di = di
+            )
             is View.Home -> HomeScreenComponent(
                 componentContext = context,
                 di = di

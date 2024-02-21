@@ -5,6 +5,7 @@ include(":settings")
 include(":hltv")
 include(":model")
 include(":game")
+include(":rawg")
 
 pluginManagement {
     repositories {

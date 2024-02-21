@@ -31,7 +31,7 @@ fun GameCover(
     title: String,
     game: Game?,
     fallback: ImageResource,
-    color: Color = rememberSchemeThemeDominantColor(game) ?: MaterialTheme.colorScheme.primary,
+    color: Color = rememberSchemeThemeDominantColor(game) ?: Color.Black,
     modifier: Modifier = Modifier,
     contentDescription: String = title,
     onClick: () -> Unit = { }
