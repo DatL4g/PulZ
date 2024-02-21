@@ -1,6 +1,9 @@
 package dev.datlag.gamechanger.module
 
 import coil3.PlatformContext
+import dev.datlag.gamechanger.getPackageName
+import dev.datlag.gamechanger.other.StateSaver
+import dev.datlag.gamechanger.rawg
 import io.ktor.client.*
 import io.ktor.client.engine.darwin.*
 import kotlinx.serialization.json.Json
@@ -37,6 +40,13 @@ actual object PlatformModule {
         }
         bindSingleton<PlatformContext> {
             PlatformContext.INSTANCE
+        }
+        bindSingleton("RAWG_API_KEY") {
+            if (StateSaver.sekretLibraryLoaded) {
+                rawg(getPackageName())
+            } else {
+                ""
+            }
         }
     }
 }

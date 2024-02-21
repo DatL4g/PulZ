@@ -9,7 +9,10 @@ import coil3.memory.MemoryCache
 import coil3.network.ktor.KtorNetworkFetcherFactory
 import coil3.request.crossfade
 import coil3.svg.SvgDecoder
+import dev.datlag.gamechanger.Sekret
 import dev.datlag.gamechanger.common.CONFIG_APP_NAME
+import dev.datlag.gamechanger.getPackageName
+import dev.datlag.gamechanger.other.StateSaver
 import dev.datlag.gamechanger.settings.ApplicationSettingsSerializer
 import dev.datlag.gamechanger.settings.DataStoreAppSettings
 import dev.datlag.gamechanger.settings.Settings
@@ -75,6 +78,13 @@ actual object PlatformModule {
         }
         bindSingleton<PlatformContext> {
             PlatformContext.INSTANCE
+        }
+        bindSingleton("RAWG_API_KEY") {
+            if (StateSaver.sekretLibraryLoaded) {
+                Sekret.rawg(getPackageName()) ?: ""
+            } else {
+                ""
+            }
         }
     }
 

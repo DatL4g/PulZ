@@ -3,6 +3,9 @@ package dev.datlag.gamechanger.module
 import android.content.Context
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.okio.OkioStorage
+import dev.datlag.gamechanger.Sekret
+import dev.datlag.gamechanger.getPackageName
+import dev.datlag.gamechanger.other.StateSaver
 import dev.datlag.gamechanger.settings.ApplicationSettingsSerializer
 import dev.datlag.gamechanger.settings.DataStoreAppSettings
 import dev.datlag.gamechanger.settings.Settings
@@ -55,6 +58,13 @@ actual object PlatformModule {
                     json(instance(), ContentType.Application.Json)
                     json(instance(), ContentType.Text.Plain)
                 }
+            }
+        }
+        bindSingleton("RAWG_API_KEY") {
+            if (StateSaver.sekretLibraryLoaded) {
+                Sekret.rawg(getPackageName()) ?: ""
+            } else {
+                ""
             }
         }
     }

@@ -15,12 +15,8 @@ import dev.datlag.gamechanger.rawg.RAWG
 import dev.datlag.gamechanger.rawg.state.GamesStateMachine
 import io.ktor.client.*
 import okio.FileSystem
-import org.kodein.di.DI
-import org.kodein.di.bindProvider
-import org.kodein.di.bindSingleton
-import org.kodein.di.instance
-import dev.datlag.gamechanger.Sekret
 import dev.datlag.gamechanger.getPackageName
+import org.kodein.di.*
 
 data object NetworkModule {
 
@@ -67,11 +63,7 @@ data object NetworkModule {
         bindProvider<GamesStateMachine> {
             GamesStateMachine(
                 rawg = instance(),
-                key = if (StateSaver.sekretLibraryLoaded) {
-                    Sekret.rawg(getPackageName())
-                } else {
-                    null
-                }
+                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null }
             )
         }
     }
