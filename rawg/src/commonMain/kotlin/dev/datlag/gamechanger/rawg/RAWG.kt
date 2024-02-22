@@ -7,9 +7,12 @@ import dev.datlag.gamechanger.rawg.model.Games
 interface RAWG {
 
     @GET("games")
-    suspend fun games(@Query("key") key: String): Games
-
-    @GET("games")
-    suspend fun games(@Query("key") key: String, @Query("page") page: Int): Games
+    suspend fun games(
+        @Query("key") key: String,
+        @Query("page") page: Int? = null,
+        @Query("dates") dates: String? = null,
+        @Query("metacritic") metacritic: String? = null,
+        @Query("ordering") ordering: String? = null
+    ): Games
 
 }

@@ -40,6 +40,14 @@ sealed interface CatchResult<T> {
         }
     }
 
+    fun asSuccessOrThrow(): T & Any {
+        return if (this is Success) {
+            this.data
+        } else {
+            throw (this as Error).throwable ?: IllegalStateException()
+        }
+    }
+
     fun asError(onSuccess: () -> Throwable? = { null }): Throwable? {
         return if (this is Error) {
             this.throwable

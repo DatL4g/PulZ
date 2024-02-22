@@ -1,16 +1,13 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial.discover
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -19,10 +16,17 @@ import coil3.compose.AsyncImage
 import dev.chrisbanes.haze.haze
 import dev.datlag.gamechanger.LocalHaze
 import dev.datlag.gamechanger.LocalPaddingValues
+import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.plus
 import dev.datlag.gamechanger.rawg.model.Game
+import dev.datlag.gamechanger.rawg.model.Games
 import dev.datlag.gamechanger.rawg.state.GamesStateMachine
+import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.OtherGameCard
+import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.TrendingGameCard
+import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.model.GameSectionType
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
+import dev.icerock.moko.resources.compose.stringResource
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 fun DiscoverScreen(component: DiscoverComponent) {
@@ -36,37 +40,96 @@ fun DiscoverScreen(component: DiscoverComponent) {
             Text(text = "Error loading games")
         }
         is GamesStateMachine.State.Success -> {
-            val padding = PaddingValues(all = 16.dp)
             val successState = state as GamesStateMachine.State.Success
+            GameOverview(
+                successState.trendingGames,
+                successState.topGames
+            )
+        }
+    }
+}
 
-            LazyVerticalStaggeredGrid(
-                modifier = Modifier.fillMaxSize().haze(state = LocalHaze.current),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-                verticalItemSpacing = 8.dp,
-                columns = StaggeredGridCells.Adaptive(256.dp),
-                contentPadding = LocalPaddingValues.current?.plus(padding) ?: padding
-            ) {
-                items(successState.games.results, key = { it.id }) {
-                    GameCard(it)
-                }
+@Composable
+private fun GameOverview(
+    trendingGames: Games?,
+    topGames: Games?,
+) {
+    val padding = PaddingValues(all = 16.dp)
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = LocalPaddingValues.current?.plus(padding) ?: padding
+    ) {
+        if (trendingGames != null) {
+            item {
+                Text(
+                    text = stringResource(SharedRes.strings.trending),
+                    style = MaterialTheme.typography.headlineLarge
+                )
+            }
+            item {
+                GameSection(trendingGames, GameSectionType.Trending)
+            }
+        }
+        if (topGames != null) {
+            item {
+                Text(
+                    text = stringResource(SharedRes.strings.top_rated),
+                    style = MaterialTheme.typography.headlineLarge
+                )
+            }
+            item {
+                GameSection(topGames, GameSectionType.Top)
             }
         }
     }
 }
 
 @Composable
-private fun GameCard(game: Game) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        onClick = {
+private fun GameSection(
+    games: Games,
+    type: GameSectionType
+) {
+    val listState = rememberLazyListState()
+    var highlightedItem by remember { mutableIntStateOf(0) }
 
-        }
+    LaunchedEffect(listState) {
+        snapshotFlow {
+            val layoutInfo = listState.layoutInfo
+            layoutInfo.visibleItemsInfo
+                .firstOrNull { it.offset >= layoutInfo.viewportStartOffset }
+                ?.index ?: 0
+        }.distinctUntilChanged()
+            .collect {
+                highlightedItem = it
+            }
+    }
+
+    LazyRow(
+        state = listState,
+        modifier = Modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        AsyncImage(
-            modifier = Modifier.fillMaxWidth(),
-            model = game.backgroundImage,
-            contentDescription = game.name,
-            contentScale = ContentScale.FillWidth
-        )
+        itemsIndexed(games.results, key = { _, it -> it.id }) { index, game ->
+            when (type) {
+                GameSectionType.Trending -> {
+                    TrendingGameCard(
+                        game = game,
+                        isHighlighted = index == highlightedItem,
+                        lazyListState = listState,
+                        modifier = Modifier
+                            .width(256.dp)
+                    )
+                }
+                else -> {
+                    OtherGameCard(
+                        game = game,
+                        isHighlighted = index == highlightedItem,
+                        lazyListState = listState,
+                        modifier = Modifier.width(200.dp).height(280.dp)
+                    )
+                }
+            }
+        }
     }
 }

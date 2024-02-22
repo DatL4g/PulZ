@@ -28,6 +28,7 @@ import dev.datlag.gamechanger.game.Game
 import dev.datlag.gamechanger.ui.navigation.screen.initial.home.component.GameCover
 import dev.datlag.gamechanger.ui.theme.SchemeTheme
 import dev.datlag.gamechanger.ui.theme.rememberSchemeThemeDominantColor
+import dev.datlag.gamechanger.ui.theme.rememberSchemeThemeDominantColorState
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import dev.icerock.moko.resources.compose.stringResource
 

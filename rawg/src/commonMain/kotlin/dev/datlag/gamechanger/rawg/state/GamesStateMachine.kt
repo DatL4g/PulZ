@@ -6,6 +6,7 @@ import dev.datlag.gamechanger.rawg.RAWG
 import dev.datlag.gamechanger.rawg.StateSaver
 import dev.datlag.gamechanger.rawg.model.Games
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.datetime.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GamesStateMachine(
@@ -24,10 +25,34 @@ class GamesStateMachine(
                         return@onEnter state.override { State.Error }
                     }
 
-                    val result = CatchResult.result<State> {
-                        State.Success(rawg.games(key))
+                    val trendingResult = CatchResult.result {
+                        rawg.games(
+                            key = key,
+                            dates = listOf(
+                                Clock.System.now().minus(1, DateTimeUnit.YEAR, TimeZone.currentSystemDefault()),
+                                Clock.System.now()
+                            ).joinToString(separator = ",") {
+                                it.toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
+                            },
+                            metacritic = "85,100",
+                            ordering = "-updated"
+                        )
                     }
-                    state.override { result.asSuccess { State.Error } }
+
+                    val topResult = CatchResult.result {
+                        rawg.games(
+                            key = key,
+                            metacritic = "95,100"
+                        )
+                    }
+
+                    val combinedResult = CatchResult.result<State> {
+                        State.Success(
+                            trendingGames = trendingResult.asNullableSuccess(),
+                            topGames = topResult.asNullableSuccess()
+                        )
+                    }
+                    state.override { combinedResult.asSuccess { State.Error } }
                 }
             }
             inState<State.Success> {
@@ -48,7 +73,10 @@ class GamesStateMachine(
 
     sealed interface State {
         data object Loading : State
-        data class Success(val games: Games) : State
+        data class Success(
+            val trendingGames: Games?,
+            val topGames: Games?,
+        ) : State
         data object Error : State
     }
 

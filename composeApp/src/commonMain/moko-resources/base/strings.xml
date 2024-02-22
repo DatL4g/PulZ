@@ -18,4 +18,5 @@
     <string name="placeholder_minutes">%d Minutes</string>
     <string name="placeholder_seconds">%d Seconds</string>
     <string name="discover">Discover</string>
+    <string name="top_rated">Top Rated</string>
 </resources>
