@@ -3,6 +3,7 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
@@ -16,16 +17,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.rawg.model.Game
 import dev.datlag.gamechanger.ui.custom.alignment.rememberParallaxAlignment
 import dev.datlag.gamechanger.ui.theme.SchemeTheme
 import dev.datlag.gamechanger.ui.theme.rememberSchemeThemeDominantColor
 import dev.datlag.gamechanger.ui.theme.rememberSchemeThemeDominantColorState
+import dev.icerock.moko.resources.ImageResource
+import dev.icerock.moko.resources.compose.painterResource
+import io.github.aakira.napier.Napier
 
 @Composable
 fun TrendingGameCard(
@@ -142,6 +148,7 @@ fun TrendingGameCard(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun OtherGameCard(
     game: Game,
@@ -235,9 +242,36 @@ fun OtherGameCard(
                     ) {
                         Rating(game)
                     }
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        game.allPlatforms.mapNotNull { it.name?.mapPlatformToIcon() }.distinct().forEach { icon ->
+                            Image(
+                                painter = painterResource(icon),
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp),
+                                colorFilter = ColorFilter.tint(color = LocalContentColor.current)
+                            )
+                        }
+                    }
                 }
             }
         }
+    }
+}
+
+private fun String.mapPlatformToIcon(): ImageResource? {
+    return when {
+        contains("playstation", ignoreCase = true) -> SharedRes.images.playstation
+        contains("pc", ignoreCase = true) -> SharedRes.images.windows
+        contains("xbox", ignoreCase = true) -> SharedRes.images.xbox
+        contains("Nintendo Switch", ignoreCase = true) -> SharedRes.images.nintendo_switch
+        contains("ios", ignoreCase = true) -> SharedRes.images.ios
+        contains("android", ignoreCase = true) -> SharedRes.images.android
+        contains("linux", ignoreCase = true) -> SharedRes.images.linux
+        else -> null
     }
 }
 

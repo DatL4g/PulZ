@@ -1,7 +1,8 @@
 package dev.datlag.gamechanger.rawg
 
-import dev.datlag.gamechanger.rawg.state.GamesStateMachine
+import dev.datlag.gamechanger.rawg.state.GamesState
 
 internal data object StateSaver {
-    var gamesState: GamesStateMachine.State = GamesStateMachine.State.Loading
+    var trending: GamesState = GamesState.Loading
+    var topRated: GamesState = GamesState.Loading
 }

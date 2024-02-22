@@ -1,7 +1,6 @@
 package dev.datlag.gamechanger.module
 
 import coil3.ImageLoader
-import coil3.SingletonImageLoader
 import coil3.disk.DiskCache
 import coil3.memory.MemoryCache
 import coil3.network.ktor.KtorNetworkFetcherFactory
@@ -10,12 +9,11 @@ import coil3.svg.SvgDecoder
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.ktorfitBuilder
 import dev.datlag.gamechanger.hltv.state.HomeStateMachine
-import dev.datlag.gamechanger.other.StateSaver
 import dev.datlag.gamechanger.rawg.RAWG
-import dev.datlag.gamechanger.rawg.state.GamesStateMachine
+import dev.datlag.gamechanger.rawg.state.TopRatedGamesStateMachine
+import dev.datlag.gamechanger.rawg.state.TrendingGamesStateMachine
 import io.ktor.client.*
 import okio.FileSystem
-import dev.datlag.gamechanger.getPackageName
 import org.kodein.di.*
 
 data object NetworkModule {
@@ -60,8 +58,14 @@ data object NetworkModule {
         bindProvider<HomeStateMachine> {
             HomeStateMachine(instance())
         }
-        bindProvider<GamesStateMachine> {
-            GamesStateMachine(
+        bindProvider<TrendingGamesStateMachine> {
+            TrendingGamesStateMachine(
+                rawg = instance(),
+                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null }
+            )
+        }
+        bindProvider<TopRatedGamesStateMachine> {
+            TopRatedGamesStateMachine(
                 rawg = instance(),
                 key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null }
             )

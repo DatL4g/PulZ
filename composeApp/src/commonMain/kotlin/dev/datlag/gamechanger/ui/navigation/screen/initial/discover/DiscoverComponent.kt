@@ -1,11 +1,13 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial.discover
 
-import dev.datlag.gamechanger.rawg.state.GamesStateMachine
+import dev.datlag.gamechanger.rawg.state.GamesState
+import dev.datlag.gamechanger.rawg.state.TrendingGamesStateMachine
 import dev.datlag.gamechanger.ui.navigation.Component
 import kotlinx.coroutines.flow.Flow
 
 interface DiscoverComponent : Component {
 
-    val gamesState: Flow<GamesStateMachine.State>
+    val trendingGamesState: Flow<GamesState>
+    val topRatedGamesState: Flow<GamesState>
 
 }
