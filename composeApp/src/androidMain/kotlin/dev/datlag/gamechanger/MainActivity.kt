@@ -11,6 +11,7 @@ import com.arkivanov.essenty.backhandler.backHandler
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleOwner
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
+import com.google.android.gms.ads.MobileAds
 import dev.datlag.gamechanger.ui.navigation.RootComponent
 import dev.datlag.tooling.decompose.lifecycle.LocalLifecycleOwner
 import dev.datlag.tooling.safeCast
@@ -35,6 +36,8 @@ class MainActivity : AppCompatActivity() {
             ),
             di = di
         )
+
+        MobileAds.initialize(this)
 
         setContent {
             CompositionLocalProvider(

@@ -12,7 +12,8 @@ interface RAWG {
         @Query("page") page: Int? = null,
         @Query("dates") dates: String? = null,
         @Query("metacritic") metacritic: String? = null,
-        @Query("ordering") ordering: String? = null
+        @Query("ordering") ordering: String? = null,
+        @Query("tags") tags: String? = null
     ): Games
 
 }

@@ -3,6 +3,7 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -285,7 +286,7 @@ private fun GenreChip(
     SuggestionChip(
         onClick = {},
         modifier = modifier.wrapContentHeight().height(32.dp),
-        border = SuggestionChipDefaults.suggestionChipBorder(enabled = false, borderColor = Color.Transparent, disabledBorderColor = Color.Transparent),
+        border = BorderStroke(0.dp, Color.Transparent),
         colors = SuggestionChipDefaults.suggestionChipColors(
             labelColor = labelColor,
             containerColor = containerColor
@@ -293,7 +294,10 @@ private fun GenreChip(
         label = {
             Text(
                 text = label,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Clip,
+                softWrap = true
             )
         }
     )

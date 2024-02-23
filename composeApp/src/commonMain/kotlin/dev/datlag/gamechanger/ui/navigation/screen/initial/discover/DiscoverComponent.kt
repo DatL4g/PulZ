@@ -9,5 +9,6 @@ interface DiscoverComponent : Component {
 
     val trendingGamesState: Flow<GamesState>
     val topRatedGamesState: Flow<GamesState>
+    val eSportGamesState: Flow<GamesState>
 
 }

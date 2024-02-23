@@ -9,14 +9,18 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.chrisbanes.haze.haze
+import dev.datlag.gamechanger.LocalHaze
 import dev.datlag.gamechanger.LocalPaddingValues
 import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.plus
 import dev.datlag.gamechanger.rawg.model.Game
 import dev.datlag.gamechanger.rawg.model.Games
+import dev.datlag.gamechanger.rawg.state.ESportGamesStateMachine
 import dev.datlag.gamechanger.rawg.state.GamesState
 import dev.datlag.gamechanger.rawg.state.TopRatedGamesStateMachine
 import dev.datlag.gamechanger.rawg.state.TrendingGamesStateMachine
+import dev.datlag.gamechanger.ui.custom.AdView
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.OtherGameCard
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.TrendingGameCard
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.model.GameSectionType
@@ -28,10 +32,11 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 fun DiscoverScreen(component: DiscoverComponent) {
     val trendingState by component.trendingGamesState.collectAsStateWithLifecycle(TrendingGamesStateMachine.currentState)
     val topRatedState by component.topRatedGamesState.collectAsStateWithLifecycle(TopRatedGamesStateMachine.currentState)
+    val eSportState by component.eSportGamesState.collectAsStateWithLifecycle(ESportGamesStateMachine.currentState)
 
     val padding = PaddingValues(all = 16.dp)
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().haze(state = LocalHaze.current),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = LocalPaddingValues.current?.plus(padding) ?: padding
     ) {
@@ -44,11 +49,21 @@ fun DiscoverScreen(component: DiscoverComponent) {
         TrendingOverview(trendingState)
         item {
             Text(
+                modifier = Modifier.padding(top = 16.dp),
                 text = stringResource(SharedRes.strings.top_rated),
                 style = MaterialTheme.typography.headlineLarge
             )
         }
-        TopRatedOverview(topRatedState)
+        OtherOverview(topRatedState)
+        item {
+            Text(
+                modifier = Modifier.padding(top = 16.dp),
+                text = stringResource(SharedRes.strings.esport),
+                style = MaterialTheme.typography.headlineLarge
+            )
+        }
+        OtherOverview(eSportState)
+        AdView("")
     }
 }
 
@@ -91,7 +106,7 @@ private fun LazyListScope.TrendingOverview(
     }
 }
 
-private fun LazyListScope.TopRatedOverview(
+private fun LazyListScope.OtherOverview(
     state: GamesState
 ) {
     when (state) {

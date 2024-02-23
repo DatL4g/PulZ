@@ -115,6 +115,7 @@ kotlin {
             implementation(libs.android)
             implementation(libs.activity)
             implementation(libs.activity.compose)
+            implementation(libs.ads)
             implementation(libs.appcompat)
             implementation(libs.multidex)
 

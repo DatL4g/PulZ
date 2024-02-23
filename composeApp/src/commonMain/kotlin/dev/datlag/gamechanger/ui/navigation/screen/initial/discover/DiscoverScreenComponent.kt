@@ -3,6 +3,7 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial.discover
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
 import dev.datlag.gamechanger.common.onRender
+import dev.datlag.gamechanger.rawg.state.ESportGamesStateMachine
 import dev.datlag.gamechanger.rawg.state.GamesState
 import dev.datlag.gamechanger.rawg.state.TopRatedGamesStateMachine
 import dev.datlag.gamechanger.rawg.state.TrendingGamesStateMachine
@@ -22,6 +23,9 @@ class DiscoverScreenComponent(
 
     private val topRatedGamesStateMachine by di.instance<TopRatedGamesStateMachine>()
     override val topRatedGamesState: Flow<GamesState> = topRatedGamesStateMachine.state.flowOn(ioDispatcher())
+
+    private val eSportGamesStateMachine by di.instance<ESportGamesStateMachine>()
+    override val eSportGamesState: Flow<GamesState> = eSportGamesStateMachine.state.flowOn(ioDispatcher())
 
     @Composable
     override fun render() {
