@@ -1,9 +1,11 @@
 package dev.datlag.gamechanger.common
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalLayoutDirection
 
@@ -49,4 +51,9 @@ operator fun PaddingValues.plus(other: PaddingValues): PaddingValues {
         end = this.calculateEndPadding(direction) + other.calculateEndPadding(direction),
         bottom = this.calculateBottomPadding() + other.calculateBottomPadding()
     )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+fun PagerState.calculateCurrentOffsetForPage(page: Int): Float {
+    return (currentPage - page) + currentPageOffsetFraction
 }

@@ -5,10 +5,14 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material3.*
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import dev.chrisbanes.haze.haze
 import dev.datlag.gamechanger.LocalHaze
 import dev.datlag.gamechanger.LocalPaddingValues
@@ -16,11 +20,10 @@ import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.plus
 import dev.datlag.gamechanger.rawg.model.Game
 import dev.datlag.gamechanger.rawg.model.Games
-import dev.datlag.gamechanger.rawg.state.ESportGamesStateMachine
-import dev.datlag.gamechanger.rawg.state.GamesState
-import dev.datlag.gamechanger.rawg.state.TopRatedGamesStateMachine
-import dev.datlag.gamechanger.rawg.state.TrendingGamesStateMachine
+import dev.datlag.gamechanger.rawg.state.*
+import dev.datlag.gamechanger.ui.custom.AdType
 import dev.datlag.gamechanger.ui.custom.AdView
+import dev.datlag.gamechanger.ui.custom.NativeAdView
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.OtherGameCard
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.TrendingGameCard
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.model.GameSectionType
@@ -28,15 +31,54 @@ import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.flow.distinctUntilChanged
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun DiscoverScreen(component: DiscoverComponent) {
+    when (calculateWindowSizeClass().widthSizeClass) {
+        WindowWidthSizeClass.Expanded -> ExpandedView(component)
+        else -> DefaultView(component)
+    }
+}
+
+@Composable
+private fun DefaultView(component: DiscoverComponent) {
+    val childState by component.child.subscribeAsState()
+
+    childState.child?.instance?.render() ?: MainView(component, Modifier.fillMaxWidth())
+}
+
+@Composable
+private fun ExpandedView(component: DiscoverComponent) {
+    val childState by component.child.subscribeAsState()
+
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        val modifier = if (childState.child?.configuration != null) {
+            Modifier.widthIn(max = 650.dp)
+        } else {
+            Modifier.fillMaxWidth()
+        }
+        MainView(component, modifier)
+
+        childState.child?.instance?.let {
+            Box(modifier = Modifier.weight(2F)) {
+                it.render()
+            }
+        }
+    }
+}
+
+@Composable
+private fun MainView(component: DiscoverComponent, modifier: Modifier = Modifier) {
     val trendingState by component.trendingGamesState.collectAsStateWithLifecycle(TrendingGamesStateMachine.currentState)
     val topRatedState by component.topRatedGamesState.collectAsStateWithLifecycle(TopRatedGamesStateMachine.currentState)
     val eSportState by component.eSportGamesState.collectAsStateWithLifecycle(ESportGamesStateMachine.currentState)
+    val coopState by component.coopGamesState.collectAsStateWithLifecycle(OnlineCoopGamesStateMachine.currentState)
 
     val padding = PaddingValues(all = 16.dp)
     LazyColumn(
-        modifier = Modifier.fillMaxSize().haze(state = LocalHaze.current),
+        modifier = modifier.haze(state = LocalHaze.current),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = LocalPaddingValues.current?.plus(padding) ?: padding
     ) {
@@ -46,7 +88,11 @@ fun DiscoverScreen(component: DiscoverComponent) {
                 style = MaterialTheme.typography.headlineLarge
             )
         }
-        TrendingOverview(trendingState)
+        TrendingOverview(
+            state = trendingState,
+            onClick = component::details,
+            retry = component::retryTrending
+        )
         item {
             Text(
                 modifier = Modifier.padding(top = 16.dp),
@@ -54,7 +100,11 @@ fun DiscoverScreen(component: DiscoverComponent) {
                 style = MaterialTheme.typography.headlineLarge
             )
         }
-        OtherOverview(topRatedState)
+        OtherOverview(
+            state = topRatedState,
+            onClick = component::details,
+            retry = component::retryTopRated
+        )
         item {
             Text(
                 modifier = Modifier.padding(top = 16.dp),
@@ -62,13 +112,31 @@ fun DiscoverScreen(component: DiscoverComponent) {
                 style = MaterialTheme.typography.headlineLarge
             )
         }
-        OtherOverview(eSportState)
-        AdView("")
+        OtherOverview(
+            state = eSportState,
+            onClick = component::details,
+            retry = component::retryESports
+        )
+        NativeAdView()
+        item {
+            Text(
+                modifier = Modifier.padding(top = 16.dp),
+                text = stringResource(SharedRes.strings.online_coop),
+                style = MaterialTheme.typography.headlineLarge
+            )
+        }
+        OtherOverview(
+            state = coopState,
+            onClick = component::details,
+            retry = component::retryCoop
+        )
     }
 }
 
 private fun LazyListScope.TrendingOverview(
-    state: GamesState
+    state: GamesState,
+    onClick: (Game) -> Unit,
+    retry: () -> Unit
 ) {
     when (state) {
         is GamesState.Loading -> {
@@ -83,9 +151,7 @@ private fun LazyListScope.TrendingOverview(
                     contentAlignment = Alignment.Center
                 ) {
                     Button(
-                        onClick = {
-
-                        }
+                        onClick = retry
                     ) {
                         Icon(
                             imageVector = Icons.Default.Repeat,
@@ -100,14 +166,16 @@ private fun LazyListScope.TrendingOverview(
         }
         is GamesState.Success -> {
             item {
-                GameSection(state.games, GameSectionType.Trending)
+                GameSection(state.games, GameSectionType.Trending, onClick)
             }
         }
     }
 }
 
 private fun LazyListScope.OtherOverview(
-    state: GamesState
+    state: GamesState,
+    onClick: (Game) -> Unit,
+    retry: () -> Unit
 ) {
     when (state) {
         is GamesState.Loading -> {
@@ -122,9 +190,7 @@ private fun LazyListScope.OtherOverview(
                     contentAlignment = Alignment.Center
                 ) {
                     Button(
-                        onClick = {
-
-                        }
+                        onClick = retry
                     ) {
                         Icon(
                             imageVector = Icons.Default.Repeat,
@@ -139,7 +205,7 @@ private fun LazyListScope.OtherOverview(
         }
         is GamesState.Success -> {
             item {
-                GameSection(state.games, GameSectionType.Top)
+                GameSection(state.games, GameSectionType.Default, onClick)
             }
         }
     }
@@ -148,7 +214,8 @@ private fun LazyListScope.OtherOverview(
 @Composable
 private fun GameSection(
     games: List<Game>,
-    type: GameSectionType
+    type: GameSectionType,
+    onClick: (Game) -> Unit
 ) {
     val listState = rememberLazyListState()
     var highlightedItem by remember { mutableIntStateOf(0) }
@@ -177,8 +244,8 @@ private fun GameSection(
                         game = game,
                         isHighlighted = index == highlightedItem,
                         lazyListState = listState,
-                        modifier = Modifier
-                            .width(256.dp)
+                        modifier = Modifier.width(256.dp),
+                        onClick = onClick
                     )
                 }
                 else -> {
@@ -186,7 +253,8 @@ private fun GameSection(
                         game = game,
                         isHighlighted = index == highlightedItem,
                         lazyListState = listState,
-                        modifier = Modifier.width(200.dp).height(280.dp)
+                        modifier = Modifier.width(200.dp).height(280.dp),
+                        onClick = onClick
                     )
                 }
             }

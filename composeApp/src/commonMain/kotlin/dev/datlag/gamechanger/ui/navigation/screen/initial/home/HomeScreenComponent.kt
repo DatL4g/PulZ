@@ -23,7 +23,6 @@ class HomeScreenComponent(
 ) : HomeComponent, ComponentContext by componentContext {
 
     val appSettings: Settings.PlatformAppSettings by di.instance()
-    val httpClient: HttpClient by di.instance()
 
     override val showWelcome: Flow<Boolean> = appSettings.showWelcome
 
@@ -59,6 +58,6 @@ class HomeScreenComponent(
     }
 
     override fun dismissContent() {
-        (child.value.child?.instance as? ContentHolderComponent)?.dismissContent()
+        (child.value.child?.instance as? ContentHolderComponent)?.dismissContent() ?: navigation.dismiss()
     }
 }

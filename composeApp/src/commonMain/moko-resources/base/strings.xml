@@ -20,4 +20,7 @@
     <string name="discover">Discover</string>
     <string name="top_rated">Top Rated</string>
     <string name="esport">E-Sports</string>
+    <string name="online_coop">Online Co-Op</string>
+    <string name="screenshots">Screenshots</string>
+    <string name="about">About</string>
 </resources>

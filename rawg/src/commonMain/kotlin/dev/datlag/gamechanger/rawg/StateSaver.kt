@@ -6,4 +6,5 @@ internal data object StateSaver {
     var trending: GamesState = GamesState.Loading
     var topRated: GamesState = GamesState.Loading
     var eSports: GamesState = GamesState.Loading
+    var coop: GamesState = GamesState.Loading
 }

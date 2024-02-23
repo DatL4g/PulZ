@@ -1,8 +1,6 @@
 package dev.datlag.gamechanger.ui.custom
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarOutline
@@ -131,7 +129,7 @@ fun NativeAdCard(
                     }
                     nativeAd.body?.ifBlank { null }?.let { body ->
                         NativeAdView(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
                             getView = {
                                 nativeAdView.bodyView = it
                             }
@@ -150,8 +148,7 @@ fun NativeAdCard(
                                     minHeight = 120.dp
                                 )
                                 .fillMaxWidth()
-                                .clip(MaterialTheme.shapes.small)
-                                .horizontalScroll(rememberScrollState()),
+                                .clip(MaterialTheme.shapes.small),
                             nativeAdView = nativeAdView,
                             mediaContent = media
                         )

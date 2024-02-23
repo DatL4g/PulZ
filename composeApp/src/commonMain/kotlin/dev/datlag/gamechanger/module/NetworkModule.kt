@@ -11,6 +11,7 @@ import de.jensklingenberg.ktorfit.ktorfitBuilder
 import dev.datlag.gamechanger.hltv.state.HomeStateMachine
 import dev.datlag.gamechanger.rawg.RAWG
 import dev.datlag.gamechanger.rawg.state.ESportGamesStateMachine
+import dev.datlag.gamechanger.rawg.state.OnlineCoopGamesStateMachine
 import dev.datlag.gamechanger.rawg.state.TopRatedGamesStateMachine
 import dev.datlag.gamechanger.rawg.state.TrendingGamesStateMachine
 import io.ktor.client.*
@@ -73,6 +74,12 @@ data object NetworkModule {
         }
         bindProvider<ESportGamesStateMachine> {
             ESportGamesStateMachine(
+                rawg = instance(),
+                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null }
+            )
+        }
+        bindProvider<OnlineCoopGamesStateMachine> {
+            OnlineCoopGamesStateMachine(
                 rawg = instance(),
                 key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null }
             )

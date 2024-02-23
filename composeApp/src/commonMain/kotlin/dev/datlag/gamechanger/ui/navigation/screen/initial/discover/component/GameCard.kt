@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.datlag.gamechanger.SharedRes
+import dev.datlag.gamechanger.common.mapToIcon
 import dev.datlag.gamechanger.rawg.model.Game
 import dev.datlag.gamechanger.ui.custom.alignment.rememberParallaxAlignment
 import dev.datlag.gamechanger.ui.theme.SchemeTheme
@@ -39,7 +40,8 @@ fun TrendingGameCard(
     game: Game,
     isHighlighted: Boolean,
     lazyListState: LazyListState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (Game) -> Unit
 ) {
     val scale by animateFloatAsState(
         targetValue = if (isHighlighted) 1f else 0.85f,
@@ -51,7 +53,7 @@ fun TrendingGameCard(
         Card(
             modifier = modifier.aspectRatio(1.1F, matchHeightConstraintsFirst = true).scale(scale),
             onClick = {
-
+                onClick(game)
             }
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
@@ -155,7 +157,8 @@ fun OtherGameCard(
     game: Game,
     isHighlighted: Boolean,
     lazyListState: LazyListState?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (Game) -> Unit
 ) {
     val scale by animateFloatAsState(
         targetValue = if (isHighlighted) 1f else 0.95f,
@@ -164,18 +167,18 @@ fun OtherGameCard(
     )
 
     SchemeTheme(
-        key = game
+        key = game.slug
     ) {
         Card(
             modifier = modifier.scale(scale),
             onClick = {
-
+                onClick(game)
             }
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
                 val scope = rememberCoroutineScope()
                 val colorState = rememberSchemeThemeDominantColorState(
-                    key = game,
+                    key = game.slug,
                     applyMinContrast = true,
                     minContrastBackgroundColor = MaterialTheme.colorScheme.surfaceVariant
                 )
@@ -195,7 +198,7 @@ fun OtherGameCard(
                     },
                     onSuccess = { state ->
                         SchemeTheme.update(
-                            key = game,
+                            key = game.slug,
                             input = state.painter,
                             scope = scope
                         )
@@ -248,7 +251,7 @@ fun OtherGameCard(
                         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        game.allPlatforms.mapNotNull { it.name?.mapPlatformToIcon() }.distinct().forEach { icon ->
+                        game.allPlatforms.mapNotNull { it.mapToIcon() }.distinct().forEach { icon ->
                             Image(
                                 painter = painterResource(icon),
                                 contentDescription = null,
@@ -260,19 +263,6 @@ fun OtherGameCard(
                 }
             }
         }
-    }
-}
-
-private fun String.mapPlatformToIcon(): ImageResource? {
-    return when {
-        contains("playstation", ignoreCase = true) -> SharedRes.images.playstation
-        contains("pc", ignoreCase = true) -> SharedRes.images.windows
-        contains("xbox", ignoreCase = true) -> SharedRes.images.xbox
-        contains("Nintendo Switch", ignoreCase = true) -> SharedRes.images.nintendo_switch
-        contains("ios", ignoreCase = true) -> SharedRes.images.ios
-        contains("android", ignoreCase = true) -> SharedRes.images.android
-        contains("linux", ignoreCase = true) -> SharedRes.images.linux
-        else -> null
     }
 }
 

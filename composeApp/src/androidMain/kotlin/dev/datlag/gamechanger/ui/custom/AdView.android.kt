@@ -10,13 +10,16 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.VideoOptions
 import com.google.android.gms.ads.nativead.NativeAdOptions
+import dev.datlag.gamechanger.Sekret
+import dev.datlag.gamechanger.getPackageName
+import dev.datlag.gamechanger.other.StateSaver
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import io.github.aakira.napier.Napier
 
-actual fun LazyListScope.AdView(id: String) {
-    item {
+actual fun LazyListScope.AdView(id: String, type: AdType) {
+    item(key = id) {
         val nativeAdState = rememberCustomNativeAdState(
-            adUnit = "ca-app-pub-3940256099942544/2247696110",
+            adUnit = id,
             nativeAdOptions = NativeAdOptions.Builder()
                 .setVideoOptions(
                     VideoOptions.Builder()
@@ -35,5 +38,15 @@ actual fun LazyListScope.AdView(id: String) {
         val nativeAd by nativeAdState.nativeAd.collectAsStateWithLifecycle()
 
         nativeAd?.let { NativeAdCard(it, Modifier.fillParentMaxWidth()) }
+    }
+}
+
+actual object Ads {
+    actual fun native(): String? {
+        return if (StateSaver.sekretLibraryLoaded) {
+            Sekret.androidAdNative(getPackageName())
+        } else {
+            null
+        }
     }
 }

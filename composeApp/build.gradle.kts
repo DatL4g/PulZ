@@ -121,6 +121,9 @@ kotlin {
 
             implementation(libs.ktor.jvm)
         }
+        androidMain.configure {
+            apply(plugin = "kotlin-parcelize")
+        }
 
         val desktopMain by getting {
             dependencies {

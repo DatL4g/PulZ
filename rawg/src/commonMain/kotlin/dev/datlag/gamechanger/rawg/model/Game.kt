@@ -1,5 +1,6 @@
 package dev.datlag.gamechanger.rawg.model
 
+import dev.datlag.gamechanger.rawg.common.normalize
 import dev.datlag.tooling.setFrom
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -8,17 +9,25 @@ import kotlinx.serialization.Transient
 @Serializable
 data class Game(
     @SerialName("id") val id: Int,
-    @SerialName("slug") val slug: String? = null,
-    @SerialName("name") val name: String,
-    @SerialName("released") val released: String,
+    @SerialName("slug") val slug: String,
+    @SerialName("name") val name: String = slug,
+    @SerialName("released") val released: String? = null,
     @SerialName("tba") val tba: Boolean = false,
-    @SerialName("background_image") val backgroundImage: String,
+    @SerialName("background_image") val backgroundImage: String? = null,
     @SerialName("rating") val rating: Float = -1F,
     @SerialName("rating_top") val ratingTop: Float = rating,
     @SerialName("short_screenshots") val screenshots: List<Screenshot> = emptyList(),
     @SerialName("genres") val genres: List<Genre> = emptyList(),
     @SerialName("platforms") val platforms: List<PlatformInfo> = emptyList(),
-    @SerialName("parent_platforms") val parentPlatforms: List<PlatformInfo> = emptyList()
+    @SerialName("parent_platforms") val parentPlatforms: List<PlatformInfo> = emptyList(),
+    @SerialName("description") val description: String? = null,
+    @SerialName("description_raw") val descriptionRaw: String? = null,
+    @SerialName("website") val website: String? = null,
+    @SerialName("reddit_url") val redditUrl: String? = null,
+    @SerialName("reddit_name") val redditName: String? = null,
+    @SerialName("reddit_description") val redditDescription: String? = null,
+    @SerialName("reddit_logo") val redditLogo: String? = null,
+    @SerialName("stores") val stores: List<StoreInfo> = emptyList()
 ) {
 
     @Transient
@@ -30,9 +39,60 @@ data class Game(
     val allPlatforms: Set<PlatformInfo.Platform> = setFrom(
         platforms,
         parentPlatforms
-    ).map {
+    ).mapNotNull {
         it.platform
     }.toSet()
+
+    fun combine(other: Game): Game {
+        return Game(
+            id = this.id,
+            slug = this.slug.ifBlank { other.slug },
+            name = when {
+                this.name.isBlank() -> other.name
+                this.name == slug -> other.name
+                else -> this.name
+            },
+            released = this.released?.ifBlank { null } ?: other.released,
+            tba = this.tba || other.tba,
+            backgroundImage = this.backgroundImage?.ifBlank { null } ?: other.backgroundImage,
+            rating = when {
+                this.rating <= 0.0F -> other.rating
+                else -> this.rating
+            },
+            ratingTop = when {
+                this.ratingTop <= 0.0F -> other.ratingTop
+                this.ratingTop == this.rating -> other.ratingTop
+                else -> this.ratingTop
+            },
+            screenshots = setFrom(
+                this.screenshots,
+                other.screenshots
+            ).toList(),
+            genres = setFrom(
+                this.genres,
+                other.genres
+            ).toList(),
+            platforms = setFrom(
+                this.platforms,
+                other.platforms
+            ).normalize().toList(),
+            parentPlatforms = setFrom(
+                this.parentPlatforms,
+                other.parentPlatforms
+            ).normalize().toList(),
+            description = this.description?.ifBlank { null } ?: other.description,
+            website = this.website?.ifBlank { null } ?: other.website,
+            redditUrl = this.redditUrl?.ifBlank { null } ?: other.redditUrl,
+            redditName = this.redditName?.ifBlank { null } ?: other.redditName,
+            redditDescription = this.redditDescription?.ifBlank { null } ?: other.redditDescription,
+            redditLogo = this.redditLogo?.ifBlank { null } ?: other.redditLogo,
+            stores = setFrom(
+                this.stores,
+                other.stores
+            ).toList(),
+            descriptionRaw = descriptionRaw?.ifBlank { null } ?: other.descriptionRaw
+        )
+    }
 
     @Serializable
     data class Screenshot(
@@ -42,18 +102,47 @@ data class Game(
 
     @Serializable
     data class Genre(
-        @SerialName("slug") val slug: String? = null,
-        @SerialName("name") val name: String? = slug
+        @SerialName("slug") val slug: String,
+        @SerialName("name") val name: String = slug
     )
 
     @Serializable
     data class PlatformInfo(
-        @SerialName("platform") val platform: Platform
+        @SerialName("platform") val platform: Platform? = null,
+        @SerialName("requirements") val requirements: Requirements? = null
     ) {
         @Serializable
         data class Platform(
             @SerialName("id") val id: Int = -1,
-            @SerialName("name") val name: String? = null
+            @SerialName("slug") val slug: String,
+            @SerialName("name") private val _name: String = slug
+        ) {
+            @Transient
+            val name = if (_name.equals("PC", true)) {
+                "Windows"
+            } else {
+                _name
+            }
+        }
+
+        @Serializable
+        data class Requirements(
+            @SerialName("minimum") val minimum: String? = null,
+            @SerialName("recommended") val recommended: String? = null,
+        )
+    }
+
+    @Serializable
+    data class StoreInfo(
+        @SerialName("id") val id: Int = -1,
+        @SerialName("url") val url: String? = null,
+        @SerialName("store") val store: Store? = null
+    ) {
+        @Serializable
+        data class Store(
+            @SerialName("id") val id: Int = -1,
+            @SerialName("name") val name: String? = null,
+            @SerialName("domain") val domain: String? = null,
         )
     }
 }
