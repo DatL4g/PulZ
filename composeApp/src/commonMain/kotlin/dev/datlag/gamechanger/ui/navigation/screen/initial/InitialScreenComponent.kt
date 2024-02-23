@@ -16,6 +16,7 @@ import dev.datlag.gamechanger.game.SteamLauncher
 import dev.datlag.gamechanger.ui.navigation.Component
 import dev.datlag.gamechanger.ui.navigation.ContentHolderComponent
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.DiscoverScreenComponent
+import dev.datlag.gamechanger.ui.navigation.screen.initial.home.HomeComponent
 import dev.datlag.gamechanger.ui.navigation.screen.initial.home.HomeScreenComponent
 import dev.datlag.gamechanger.ui.navigation.screen.initial.user.UserScreenComponent
 import org.kodein.di.DI
@@ -77,6 +78,7 @@ class InitialScreenComponent(
         }
     }
 
+    @OptIn(ExperimentalDecomposeApi::class)
     private fun createChild(
         view: View,
         context: ComponentContext
@@ -84,7 +86,15 @@ class InitialScreenComponent(
         return when (view) {
             is View.Discover -> DiscoverScreenComponent(
                 componentContext = context,
-                di = di
+                di = di,
+                showCounterStrike = {
+                    pagesNavigation.select(
+                        index = 1,
+                        onComplete = { _, _ ->
+                            (pages.value.items[pages.value.selectedIndex].instance as? HomeComponent)?.showCounterStrike()
+                        }
+                    )
+                }
             )
             is View.Home -> HomeScreenComponent(
                 componentContext = context,

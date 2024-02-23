@@ -10,8 +10,10 @@ interface DetailsComponent : ContentHolderComponent {
 
     val state: Flow<GameInfoStateMachine.State>
     val game: StateFlow<Game>
+    val isCounterStrike: Flow<Boolean>
 
     fun back()
     fun currentState(): GameInfoStateMachine.State
+    fun openCounterStrike()
 
 }

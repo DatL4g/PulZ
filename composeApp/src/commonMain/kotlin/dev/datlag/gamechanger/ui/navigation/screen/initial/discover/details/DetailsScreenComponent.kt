@@ -20,7 +20,8 @@ class DetailsScreenComponent(
     componentContext: ComponentContext,
     override val di: DI,
     private val initialGame: Game,
-    private val onBack: () -> Unit
+    private val onBack: () -> Unit,
+    private val showCounterStrike: () -> Unit
 ) : DetailsComponent, ComponentContext by componentContext {
 
     private val rawg by di.instance<RAWG>()
@@ -34,6 +35,16 @@ class DetailsScreenComponent(
     override val game: StateFlow<Game> = state.mapNotNull { it as? GameInfoStateMachine.State.Success }.map {
         it.game.combine(initialGame)
     }.stateIn(ioScope(), SharingStarted.WhileSubscribed(), initialGame)
+
+    override val isCounterStrike: Flow<Boolean> = game.transform {
+        if (it.slug.equals("counter-strike-2-2", ignoreCase = true) || it.id == 965470) {
+            return@transform emit(true)
+        } else if (it.slug.equals("counter-strike-global-offensive", ignoreCase = true) || it.id == 4291) {
+            return@transform emit(true)
+        } else {
+            return@transform emit(false)
+        }
+    }.flowOn(ioDispatcher())
 
     private val backCallback = BackCallback {
         back()
@@ -62,5 +73,9 @@ class DetailsScreenComponent(
 
     override fun back() {
         onBack()
+    }
+
+    override fun openCounterStrike() {
+        showCounterStrike()
     }
 }
