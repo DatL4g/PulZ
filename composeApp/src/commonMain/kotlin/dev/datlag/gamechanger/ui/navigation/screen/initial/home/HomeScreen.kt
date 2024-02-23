@@ -31,6 +31,7 @@ import dev.datlag.gamechanger.ui.theme.rememberSchemeThemeDominantColor
 import dev.datlag.gamechanger.ui.theme.rememberSchemeThemeDominantColorState
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import dev.icerock.moko.resources.compose.stringResource
+import io.github.aakira.napier.Napier
 
 @Composable
 fun HomeScreen(component: HomeComponent) {
@@ -61,6 +62,7 @@ fun HomeScreen(component: HomeComponent) {
     }*/
 }
 
+@OptIn(ExperimentalStdlibApi::class)
 @Composable
 private fun Overview(component: HomeComponent) {
     val padding = PaddingValues(all = 16.dp)
@@ -79,6 +81,7 @@ private fun Overview(component: HomeComponent) {
         item(
             key = listOf(csGame.id, csColor.toArgb())
         ) {
+            Napier.e("ARGB: ${csColor.toArgb().toHexString()}")
             GameCover(
                 title = stringResource(SharedRes.strings.counter_strike),
                 game = csGame,

@@ -88,8 +88,19 @@ class InitialScreenComponent(
                 componentContext = context,
                 di = di,
                 showCounterStrike = {
+                    var index = pages.value.items.indexOfFirst {
+                        it.instance is HomeComponent
+                    }
+                    if (index == -1) {
+                        index = pages.value.items.indexOfFirst {
+                            it.configuration is View.Home
+                        }
+                    }
+                    if (index == -1) {
+                        index = 1
+                    }
                     pagesNavigation.select(
-                        index = 1,
+                        index = index,
                         onComplete = { _, _ ->
                             (pages.value.items[pages.value.selectedIndex].instance as? HomeComponent)?.showCounterStrike()
                         }
