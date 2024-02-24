@@ -13,6 +13,10 @@ fun Game.PlatformInfo.Platform.mapToIcon(): ImageResource? {
         name.contains("ios", ignoreCase = true) || name.contains("macos", ignoreCase = true) -> SharedRes.images.ios
         name.contains("android", ignoreCase = true) -> SharedRes.images.android
         name.contains("linux", ignoreCase = true) -> SharedRes.images.linux
+        name.contains("wii", ignoreCase = true) -> SharedRes.images.wii
+        name.contains("nintendo 64", ignoreCase = true) -> SharedRes.images.n64
+        name.contains("nes", ignoreCase = true) -> SharedRes.images.nes
+        name.contains("gameboy", ignoreCase = true) -> SharedRes.images.gameboy
         else -> null
     }
 }
