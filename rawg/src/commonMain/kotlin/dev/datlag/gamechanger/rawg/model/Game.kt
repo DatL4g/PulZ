@@ -114,8 +114,31 @@ data class Game(
     @Serializable
     data class PlatformInfo(
         @SerialName("platform") val platform: Platform? = null,
-        @SerialName("requirements") val requirements: Requirements? = null
+        @SerialName("requirements") private val _requirements: Requirements? = null
     ) {
+
+        @Transient
+        val requirements: Requirements? = _requirements?.let {
+            var min = it.minimum?.trim()
+            if (min?.startsWith("Minimum:", ignoreCase = true) == true) {
+                min = min?.substring(8)
+            }
+
+            var rec = it.recommended?.trim()
+            if (rec?.startsWith("Recommended:", ignoreCase = true) == true) {
+                rec = rec?.substring(12)
+            }
+
+            if (min.isNullOrBlank() && rec.isNullOrBlank()) {
+                null
+            } else {
+                Requirements(
+                    minimum = min?.trim(),
+                    recommended = rec?.trim()
+                )
+            }
+        }
+
         @Serializable
         data class Platform(
             @SerialName("id") val id: Int = -1,

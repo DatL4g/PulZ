@@ -19,6 +19,9 @@ class OnlineCoopGamesStateMachine(
                     StateSaver.coop = it
                 }
                 onEnter { state ->
+                    StateSaver.Cache.coop?.let {
+                        return@onEnter state.override { GamesState.Success(it) }
+                    }
                     if (key == null) {
                         return@onEnter state.override { GamesState.Error }
                     }
@@ -28,7 +31,9 @@ class OnlineCoopGamesStateMachine(
                             rawg.games(
                                 key = key,
                                 tags = "9"
-                            )
+                            ).also {
+                                StateSaver.Cache.coop = it
+                            }
                         )
                     }
 

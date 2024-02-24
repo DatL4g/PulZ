@@ -22,6 +22,9 @@ class TrendingGamesStateMachine(
                     StateSaver.trending = it
                 }
                 onEnter { state ->
+                    StateSaver.Cache.trending?.let {
+                        return@onEnter state.override { GamesState.Success(it) }
+                    }
                     if (key == null) {
                         return@onEnter state.override { GamesState.Error }
                     }
@@ -38,7 +41,9 @@ class TrendingGamesStateMachine(
                                 },
                                 metacritic = "85,100",
                                 ordering = "-released"
-                            )
+                            ).also {
+                                StateSaver.Cache.trending = it
+                            }
                         )
                     }
 

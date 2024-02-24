@@ -37,7 +37,7 @@ fun Collection<Game.PlatformInfo>.normalize(): Set<Game.PlatformInfo> {
         }
         Game.PlatformInfo(
             platform = group.firstNotNullOfOrNull { it.platform },
-            requirements = requirements
+            _requirements = requirements
         )
     }
     return mapped.toSet()

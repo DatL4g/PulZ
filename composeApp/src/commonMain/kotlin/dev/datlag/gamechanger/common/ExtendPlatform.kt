@@ -17,6 +17,8 @@ fun Game.PlatformInfo.Platform.mapToIcon(): ImageResource? {
         name.contains("nintendo 64", ignoreCase = true) -> SharedRes.images.n64
         name.contains("nes", ignoreCase = true) -> SharedRes.images.nes
         name.contains("gameboy", ignoreCase = true) -> SharedRes.images.gameboy
+        name.contains("nintendo", ignoreCase = true) && name.contains("ds", ignoreCase = true) -> SharedRes.images.nintendo_ds
+        name.contains("gamecube", ignoreCase = true) -> SharedRes.images.gamecube
         else -> null
     }
 }

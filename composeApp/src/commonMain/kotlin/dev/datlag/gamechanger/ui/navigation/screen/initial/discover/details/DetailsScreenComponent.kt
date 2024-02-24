@@ -3,11 +3,15 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial.discover.details
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.slot.*
+import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
 import dev.datlag.gamechanger.common.onRenderApplyCommonScheme
 import dev.datlag.gamechanger.rawg.RAWG
 import dev.datlag.gamechanger.rawg.model.Game
 import dev.datlag.gamechanger.rawg.state.GameInfoStateMachine
+import dev.datlag.gamechanger.ui.navigation.DialogComponent
+import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.details.dialog.platform.requirements.PlatformRequirementsDialogComponent
 import dev.datlag.tooling.compose.ioDispatcher
 import dev.datlag.tooling.decompose.ioScope
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
@@ -46,6 +50,21 @@ class DetailsScreenComponent(
         }
     }.flowOn(ioDispatcher())
 
+    private val dialogNavigation = SlotNavigation<DialogConfig>()
+    override val dialog: Value<ChildSlot<DialogConfig, DialogComponent>> = childSlot(
+        source = dialogNavigation,
+        serializer = DialogConfig.serializer()
+    ) { config, context ->
+        when (config) {
+            is DialogConfig.PlatformRequirements -> PlatformRequirementsDialogComponent(
+                componentContext = context,
+                di = di,
+                platformInfo = config.platformInfo,
+                onDismiss = dialogNavigation::dismiss
+            )
+        }
+    }
+
     private val backCallback = BackCallback {
         back()
     }
@@ -77,5 +96,9 @@ class DetailsScreenComponent(
 
     override fun openCounterStrike() {
         showCounterStrike()
+    }
+
+    override fun showPlatformRequirements(platform: Game.PlatformInfo) {
+        dialogNavigation.activate(DialogConfig.PlatformRequirements(platform))
     }
 }

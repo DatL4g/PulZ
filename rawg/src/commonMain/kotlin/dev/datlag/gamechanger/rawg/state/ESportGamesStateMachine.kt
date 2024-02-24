@@ -19,6 +19,9 @@ class ESportGamesStateMachine(
                     StateSaver.eSports = it
                 }
                 onEnter { state ->
+                    StateSaver.Cache.eSports?.let {
+                        return@onEnter state.override { GamesState.Success(it) }
+                    }
                     if (key == null) {
                         return@onEnter state.override { GamesState.Error }
                     }
@@ -28,7 +31,9 @@ class ESportGamesStateMachine(
                             rawg.games(
                                 key = key,
                                 tags = "73"
-                            )
+                            ).also {
+                                StateSaver.Cache.eSports = it
+                            }
                         )
                     }
 

@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastDistinctBy
 import coil3.compose.AsyncImage
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import dev.chrisbanes.haze.haze
 import dev.datlag.gamechanger.LocalHaze
 import dev.datlag.gamechanger.LocalPaddingValues
@@ -37,6 +38,8 @@ import dev.icerock.moko.resources.compose.stringResource
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DetailsScreen(game: Game, component: DetailsComponent) {
+    val dialogState by component.dialog.subscribeAsState()
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -91,7 +94,9 @@ fun DetailsScreen(game: Game, component: DetailsComponent) {
                             Card(
                                 modifier = Modifier.fillMaxHeight(),
                                 onClick = {
-
+                                    if (platform.requirements != null) {
+                                        component.showPlatformRequirements(platform)
+                                    }
                                 }
                             ) {
                                 Row(
@@ -158,4 +163,6 @@ fun DetailsScreen(game: Game, component: DetailsComponent) {
             }
         }
     }
+
+    dialogState.child?.instance?.render()
 }

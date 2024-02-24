@@ -17,6 +17,8 @@ class GameInfoStateMachine(
     val currentState: State
         get() = _currentState
 
+    private var cache: Game? = null
+
     init {
         spec {
             inState<State.Loading> {
@@ -24,6 +26,9 @@ class GameInfoStateMachine(
                     _currentState = it
                 }
                 onEnter { state ->
+                    cache?.let {
+                        return@onEnter state.override { State.Success(it, state.snapshot.slug) }
+                    }
                     if (key == null) {
                         return@onEnter state.override {
                             State.Error(
@@ -38,7 +43,9 @@ class GameInfoStateMachine(
                             game = rawg.game(
                                 slug = state.snapshot.slug,
                                 key = key
-                            ),
+                            ).also {
+                                cache = it
+                            },
                             slug = state.snapshot.slug
                         )
                     }

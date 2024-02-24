@@ -19,6 +19,9 @@ class TopRatedGamesStateMachine(
                     StateSaver.topRated = it
                 }
                 onEnter { state ->
+                    StateSaver.Cache.topRated?.let {
+                        return@onEnter state.override { GamesState.Success(it) }
+                    }
                     if (key == null) {
                         return@onEnter state.override { GamesState.Error }
                     }
@@ -28,7 +31,9 @@ class TopRatedGamesStateMachine(
                             rawg.games(
                                 key = key,
                                 metacritic = "95,100"
-                            )
+                            ).also {
+                                StateSaver.Cache.topRated = it
+                            }
                         )
                     }
 

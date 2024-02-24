@@ -23,4 +23,8 @@
     <string name="online_coop">Online Co-Op</string>
     <string name="screenshots">Screenshots</string>
     <string name="about">About</string>
+    <string name="requirements">Requirements</string>
+    <string name="minimum">Minimum</string>
+    <string name="recommended">Recommended</string>
+    <string name="close">Close</string>
 </resources>
