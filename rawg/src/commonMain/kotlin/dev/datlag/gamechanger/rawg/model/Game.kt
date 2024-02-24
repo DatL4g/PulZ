@@ -47,9 +47,6 @@ data class Game(
     }.toSet()
 
     @Transient
-    val hasSocials: Boolean = !website.isNullOrBlank() || !redditUrl.isNullOrBlank()
-
-    @Transient
     val redditTitle: String? = redditName?.ifBlank { null } ?: redditUrl?.let {
         val url = scopeCatching {
             Url(it)
@@ -67,6 +64,10 @@ data class Game(
         }.getOrNull()
         url?.host?.substringAfter("www.")
     }
+
+    @Transient
+    val hasSocials: Boolean = (!website.isNullOrBlank() && !websiteTitle.isNullOrBlank())
+            || (!redditUrl.isNullOrBlank() && !redditTitle.isNullOrBlank())
 
     @Transient
     val stores: List<StoreInfo> = _stores.mapNotNull { info ->
