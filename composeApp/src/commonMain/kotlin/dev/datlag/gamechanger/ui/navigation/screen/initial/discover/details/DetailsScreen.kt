@@ -21,19 +21,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastDistinctBy
 import coil3.compose.AsyncImage
+import coil3.toUri
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import dev.chrisbanes.haze.haze
 import dev.datlag.gamechanger.LocalHaze
 import dev.datlag.gamechanger.LocalPaddingValues
 import dev.datlag.gamechanger.SharedRes
+import dev.datlag.gamechanger.common.browserClick
 import dev.datlag.gamechanger.common.mapToIcon
 import dev.datlag.gamechanger.common.plus
 import dev.datlag.gamechanger.rawg.model.Game
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.details.component.ScreenshotCarousel
 import dev.datlag.gamechanger.ui.theme.SchemeTheme
+import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.onClick
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
+import io.ktor.http.*
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -118,6 +123,62 @@ fun DetailsScreen(game: Game, component: DetailsComponent) {
                                         maxLines = 1
                                     )
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+            game.hasSocials.let {
+                item {
+                    Text(
+                        modifier = Modifier.padding(top = 16.dp),
+                        text = stringResource(SharedRes.strings.social),
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                }
+                item {
+                    Row(
+                        modifier = Modifier.fillParentMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            if (!game.website.isNullOrBlank()) {
+                                Text(
+                                    text = stringResource(SharedRes.strings.website_colon),
+                                    fontWeight = FontWeight.SemiBold,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    maxLines = 1
+                                )
+                            }
+                            if (!game.redditUrl.isNullOrBlank()) {
+                                Text(
+                                    text = stringResource(SharedRes.strings.reddit_colon),
+                                    fontWeight = FontWeight.SemiBold,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    maxLines = 1
+                                )
+                            }
+                        }
+                        Column(
+                            modifier = Modifier.weight(1F),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            if (!game.website.isNullOrBlank()) {
+                                Text(
+                                    text = game.websiteTitle ?: game.website!!,
+                                    maxLines = 1,
+                                    modifier = Modifier.browserClick(game.website)
+                                )
+                            }
+                            if (!game.redditUrl.isNullOrBlank()) {
+                                Text(
+                                    text = game.redditTitle ?: game.redditUrl!!,
+                                    maxLines = 1,
+                                    modifier = Modifier.browserClick(game.redditUrl)
+                                )
                             }
                         }
                     }

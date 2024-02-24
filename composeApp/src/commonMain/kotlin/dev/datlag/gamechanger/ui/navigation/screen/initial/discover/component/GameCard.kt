@@ -48,7 +48,7 @@ fun TrendingGameCard(
         animationSpec = tween()
     )
     SchemeTheme(
-        key = "${game.id}Trending"
+        key = game.slug
     ) {
         Card(
             modifier = modifier.aspectRatio(1.1F, matchHeightConstraintsFirst = true).scale(scale),
@@ -58,12 +58,12 @@ fun TrendingGameCard(
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
                 val backgroundImage = remember(game.id) {
-                    game.firstPositiveScreenshot?.image ?: game.backgroundImage
+                    game.backgroundImage
                 }
                 val scope = rememberCoroutineScope()
                 var backgroundNotLoaded by remember(game.id) { mutableStateOf<Boolean?>(null) }
                 val colorState = rememberSchemeThemeDominantColorState(
-                    key = "${game.id}Trending"
+                    key = game.slug
                 )
                 val animatedColor by animateColorAsState(
                     targetValue = colorState.color
@@ -78,7 +78,7 @@ fun TrendingGameCard(
                     onSuccess = { state ->
                         backgroundNotLoaded = false
                         SchemeTheme.update(
-                            key = "${game.id}Trending",
+                            key = game.slug,
                             input = state.painter,
                             scope = scope
                         )
@@ -125,7 +125,7 @@ fun TrendingGameCard(
                         onSuccess = { state ->
                             if (backgroundNotLoaded == true) {
                                 SchemeTheme.update(
-                                    key = "${game.id}Trending",
+                                    key = game.slug,
                                     input = state.painter,
                                     scope = scope
                                 )

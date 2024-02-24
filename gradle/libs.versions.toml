@@ -31,6 +31,7 @@ ktor = "2.3.8"
 ktorfit = "1.12.0"
 # use when targets available
 # ksoup = "0.1.2"
+markdown-renderer = "0.13.0-rc01"
 moko-resources = "0.24.0-alpha-3"
 multidex = "2.0.1"
 napier = "2.7.1"
@@ -84,6 +85,7 @@ ktor-content-negotiation = { group = "io.ktor", name = "ktor-client-content-nego
 ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 # ksoup = { group = "com.fleeksoft.ksoup", name = "ksoup-network", version.ref = "ksoup" }
 # ksoup-network = { group = "com.fleeksoft.ksoup", name = "ksoup", version.ref = "ksoup" }
+markdown-renderer = { group = "com.mikepenz", name = "multiplatform-markdown-renderer-m3", version.ref = "markdown-renderer" }
 moko-resources-compose = { group = "dev.icerock.moko", name = "resources-compose", version.ref = "moko-resources" }
 moko-resources-generator = { group = "dev.icerock.moko", name = "resources-generator", version.ref = "moko-resources" }
 multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }

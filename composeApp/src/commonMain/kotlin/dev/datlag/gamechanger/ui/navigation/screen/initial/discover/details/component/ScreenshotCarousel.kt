@@ -33,7 +33,7 @@ fun ScreenshotCarousel(screenshot: List<Game.Screenshot>) {
     val height = when (calculateWindowSizeClass().widthSizeClass) {
         WindowWidthSizeClass.Compact -> defaultHeight
         WindowWidthSizeClass.Medium -> defaultHeight * 2
-        WindowWidthSizeClass.Expanded -> defaultHeight * 2
+        WindowWidthSizeClass.Expanded -> defaultHeight * 3F
         else -> defaultHeight
     }
     HorizontalPager(

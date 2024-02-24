@@ -2,6 +2,7 @@ package dev.datlag.gamechanger.rawg.model
 
 import dev.datlag.gamechanger.rawg.common.normalize
 import dev.datlag.tooling.setFrom
+import io.ktor.http.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -36,17 +37,30 @@ data class Game(
     }
 
     @Transient
-    val firstPositiveScreenshot: Screenshot? = screenshots.firstOrNull {
-        it.id >= 0 && it.image.isNotBlank()
-    }
-
-    @Transient
     val allPlatforms: Set<PlatformInfo.Platform> = setFrom(
         platforms,
         parentPlatforms
     ).mapNotNull {
         it.platform
     }.toSet()
+
+    @Transient
+    val hasSocials: Boolean = !website.isNullOrBlank() || !redditUrl.isNullOrBlank()
+
+    @Transient
+    val redditTitle: String? = redditName?.ifBlank { null } ?: redditUrl?.let {
+        val url = Url(it)
+        val urlName = url.encodedPath.substringAfter("/r/").substringBefore('/').ifBlank { null }
+        urlName?.let { n ->
+            "r/$n"
+        } ?: url.host.substringAfter("www.")
+    }
+
+    @Transient
+    val websiteTitle: String? = website?.let {
+        val url = Url(it)
+        url.host.substringAfter("www.")
+    }
 
     fun combine(other: Game): Game {
         return Game(

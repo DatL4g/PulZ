@@ -27,4 +27,7 @@
     <string name="minimum">Minimum</string>
     <string name="recommended">Recommended</string>
     <string name="close">Close</string>
+    <string name="social">Social</string>
+    <string name="website_colon">Website:</string>
+    <string name="reddit_colon">Reddit:</string>
 </resources>
