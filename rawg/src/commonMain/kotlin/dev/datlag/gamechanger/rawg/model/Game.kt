@@ -1,6 +1,8 @@
 package dev.datlag.gamechanger.rawg.model
 
-import dev.datlag.gamechanger.rawg.common.normalize
+import dev.datlag.gamechanger.rawg.common.normalizePlatform
+import dev.datlag.gamechanger.rawg.common.normalizeStoreInfo
+import dev.datlag.tooling.scopeCatching
 import dev.datlag.tooling.setFrom
 import io.ktor.http.*
 import kotlinx.serialization.SerialName
@@ -28,7 +30,7 @@ data class Game(
     @SerialName("reddit_name") val redditName: String? = null,
     @SerialName("reddit_description") val redditDescription: String? = null,
     @SerialName("reddit_logo") val redditLogo: String? = null,
-    @SerialName("stores") val stores: List<StoreInfo> = emptyList()
+    @SerialName("stores") private val _stores: List<StoreInfo> = emptyList()
 ) {
 
     @Transient
@@ -49,18 +51,31 @@ data class Game(
 
     @Transient
     val redditTitle: String? = redditName?.ifBlank { null } ?: redditUrl?.let {
-        val url = Url(it)
-        val urlName = url.encodedPath.substringAfter("/r/").substringBefore('/').ifBlank { null }
+        val url = scopeCatching {
+            Url(it)
+        }.getOrNull()
+        val urlName = url?.encodedPath?.substringAfter("r/")?.substringBefore('/')?.ifBlank { null }
         urlName?.let { n ->
             "r/$n"
-        } ?: url.host.substringAfter("www.")
+        } ?: url?.host?.substringAfter("www.")
     }
 
     @Transient
     val websiteTitle: String? = website?.let {
-        val url = Url(it)
-        url.host.substringAfter("www.")
+        val url = scopeCatching {
+            Url(it)
+        }.getOrNull()
+        url?.host?.substringAfter("www.")
     }
+
+    @Transient
+    val stores: List<StoreInfo> = _stores.mapNotNull { info ->
+        if (info.isEmpty()) {
+            null
+        } else {
+            info
+        }
+    }.normalizeStoreInfo().toList()
 
     fun combine(other: Game): Game {
         return Game(
@@ -94,18 +109,18 @@ data class Game(
             platforms = setFrom(
                 this.platforms,
                 other.platforms
-            ).normalize().toList(),
+            ).normalizePlatform().toList(),
             parentPlatforms = setFrom(
                 this.parentPlatforms,
                 other.parentPlatforms
-            ).normalize().toList(),
+            ).normalizePlatform().toList(),
             description = this.description?.ifBlank { null } ?: other.description,
             website = this.website?.ifBlank { null } ?: other.website,
             redditUrl = this.redditUrl?.ifBlank { null } ?: other.redditUrl,
             redditName = this.redditName?.ifBlank { null } ?: other.redditName,
             redditDescription = this.redditDescription?.ifBlank { null } ?: other.redditDescription,
             redditLogo = this.redditLogo?.ifBlank { null } ?: other.redditLogo,
-            stores = setFrom(
+            _stores = setFrom(
                 this.stores,
                 other.stores
             ).toList(),
@@ -186,11 +201,45 @@ data class Game(
         @SerialName("url") val url: String? = null,
         @SerialName("store") val store: Store? = null
     ) {
+
+        @Transient
+        val title: String? = store?.name?.ifBlank { null } ?: store?.domain?.ifBlank { null }?.let {
+            val url = scopeCatching {
+                Url(it)
+            }.getOrNull()
+
+            url?.host?.substringAfter("www.")
+        }?.ifBlank { null } ?: url?.ifBlank { null }?.let {
+            val url = scopeCatching {
+                Url(it)
+            }.getOrNull()
+
+            url?.host?.substringAfter("www.")
+        }?.ifBlank { null } ?: store?.domain?.ifBlank { null } ?: url?.ifBlank { null }
+
+        @Transient
+        val redirect: String? = url?.ifBlank { null } ?: store?.domain?.ifBlank { null }?.let {
+            if (it.startsWith("https://", ignoreCase = true) || it.startsWith("http://", ignoreCase = true)) {
+                it
+            } else {
+                "https://$it"
+            }
+        }
+
+        internal fun isEmpty(): Boolean {
+            return (store == null || store.isEmpty()) && url.isNullOrBlank()
+        }
+
         @Serializable
         data class Store(
             @SerialName("id") val id: Int = -1,
-            @SerialName("name") val name: String? = null,
+            @SerialName("slug") val slug: String,
+            @SerialName("name") val name: String = slug,
             @SerialName("domain") val domain: String? = null,
-        )
+        ) {
+            internal fun isEmpty(): Boolean {
+                return id == -1 && name.isBlank() && domain.isNullOrBlank()
+            }
+        }
     }
 }

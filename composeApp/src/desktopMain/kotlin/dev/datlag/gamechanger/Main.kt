@@ -31,6 +31,8 @@ import dev.datlag.tooling.decompose.lifecycle.LocalLifecycleOwner
 import dev.datlag.tooling.systemProperty
 import dev.icerock.moko.resources.desc.Resource
 import dev.icerock.moko.resources.desc.StringDesc
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import java.io.File
