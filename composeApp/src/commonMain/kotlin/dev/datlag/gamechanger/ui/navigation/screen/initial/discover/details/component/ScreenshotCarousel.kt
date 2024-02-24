@@ -25,13 +25,7 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun ScreenshotCarousel(screenshot: List<Game.Screenshot>) {
-    val pagerState = rememberPagerState(
-        initialPage = if (screenshot.size > 2) {
-            (screenshot.size.toFloat() / 2F).roundToInt()
-        } else {
-            0
-        }
-    ) {
+    val pagerState = rememberPagerState {
         screenshot.size
     }
 

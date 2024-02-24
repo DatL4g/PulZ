@@ -16,7 +16,7 @@ data class Game(
     @SerialName("background_image") val backgroundImage: String? = null,
     @SerialName("rating") val rating: Float = -1F,
     @SerialName("rating_top") val ratingTop: Float = rating,
-    @SerialName("short_screenshots") val screenshots: List<Screenshot> = emptyList(),
+    @SerialName("short_screenshots") private val _screenshots: List<Screenshot> = emptyList(),
     @SerialName("genres") val genres: List<Genre> = emptyList(),
     @SerialName("platforms") val platforms: List<PlatformInfo> = emptyList(),
     @SerialName("parent_platforms") val parentPlatforms: List<PlatformInfo> = emptyList(),
@@ -29,6 +29,11 @@ data class Game(
     @SerialName("reddit_logo") val redditLogo: String? = null,
     @SerialName("stores") val stores: List<StoreInfo> = emptyList()
 ) {
+
+    @Transient
+    val screenshots = _screenshots.filterNot {
+        it.image == backgroundImage
+    }
 
     @Transient
     val firstPositiveScreenshot: Screenshot? = screenshots.firstOrNull {
@@ -64,7 +69,7 @@ data class Game(
                 this.ratingTop == this.rating -> other.ratingTop
                 else -> this.ratingTop
             },
-            screenshots = setFrom(
+            _screenshots = setFrom(
                 this.screenshots,
                 other.screenshots
             ).toList(),
