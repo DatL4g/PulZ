@@ -20,8 +20,15 @@ class HomeStateMachine(
                     StateSaver.homeState = it
                 }
                 onEnter { state ->
+                    StateSaver.Cache.home?.let {
+                        return@onEnter state.override { State.Success(it) }
+                    }
                     val result = CatchResult.result<State> {
-                        State.Success(HLTV.home(client))
+                        State.Success(
+                            home = HLTV.home(client).also {
+                                StateSaver.Cache.home = it
+                            }
+                        )
                     }
                     state.override { result.asSuccess { State.Error } }
                 }

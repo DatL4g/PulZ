@@ -107,7 +107,8 @@ private fun CompactScreen(component: InitialComponent) {
                             modifier = modifier,
                             state = state,
                             key = key,
-                            pageContent = pageContent
+                            pageContent = pageContent,
+                            userScrollEnabled = false
                         )
                     }
                 ) { _, page ->

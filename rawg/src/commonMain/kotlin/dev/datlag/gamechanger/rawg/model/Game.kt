@@ -121,12 +121,18 @@ data class Game(
         val requirements: Requirements? = _requirements?.let {
             var min = it.minimum?.trim()
             if (min?.startsWith("Minimum:", ignoreCase = true) == true) {
-                min = min?.substring(8)
+                min = min?.substring(8)?.trim()
+            }
+            if (min?.endsWith("Additional Notes:", ignoreCase = true) == true) {
+                min = min?.substring(startIndex = 0, endIndex = min!!.length - 17)?.trim()
             }
 
             var rec = it.recommended?.trim()
             if (rec?.startsWith("Recommended:", ignoreCase = true) == true) {
-                rec = rec?.substring(12)
+                rec = rec?.substring(12)?.trim()
+            }
+            if (rec?.endsWith("Additional Notes:", ignoreCase = true) == true) {
+                rec = rec?.substring(startIndex = 0, endIndex = rec!!.length - 17)?.trim()
             }
 
             if (min.isNullOrBlank() && rec.isNullOrBlank()) {
