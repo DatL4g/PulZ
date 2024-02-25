@@ -131,7 +131,7 @@ fun DetailsScreen(game: Game, component: DetailsComponent) {
                     }
                 }
             }
-            game.hasSocials.let {
+            if (game.hasSocials) {
                 item {
                     Text(
                         modifier = Modifier.padding(top = 16.dp),
@@ -164,6 +164,14 @@ fun DetailsScreen(game: Game, component: DetailsComponent) {
                                     maxLines = 1
                                 )
                             }
+                            if (game.metacritic > -1) {
+                                Text(
+                                    text = stringResource(SharedRes.strings.metacritic_colon),
+                                    fontWeight = FontWeight.SemiBold,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    maxLines = 1
+                                )
+                            }
                         }
                         Column(
                             modifier = Modifier.weight(1F),
@@ -181,6 +189,12 @@ fun DetailsScreen(game: Game, component: DetailsComponent) {
                                     text = game.redditTitle ?: game.redditUrl!!,
                                     maxLines = 1,
                                     modifier = Modifier.browserClick(game.redditUrl)
+                                )
+                            }
+                            if (game.metacritic > -1) {
+                                Text(
+                                    text = game.metacritic.toString(),
+                                    maxLines = 1
                                 )
                             }
                         }

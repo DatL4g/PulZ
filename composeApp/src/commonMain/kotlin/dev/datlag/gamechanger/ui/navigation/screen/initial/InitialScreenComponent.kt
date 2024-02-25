@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
@@ -40,9 +41,9 @@ class InitialScreenComponent(
 
             InitialComponent.PagerItem(
                 label = user?.name,
-                fallbackLabel = SharedRes.strings.user,
+                fallbackLabel = SharedRes.strings.settings,
                 icon = user?.avatarPath?.toString(),
-                fallbackIcon = Icons.Default.AccountCircle,
+                fallbackIcon = Icons.Default.Settings,
                 iconSchemeKey = user?.id
             )
         }

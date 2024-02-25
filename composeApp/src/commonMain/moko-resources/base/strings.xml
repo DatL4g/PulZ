@@ -30,5 +30,7 @@
     <string name="social">Social</string>
     <string name="website_colon">Website:</string>
     <string name="reddit_colon">Reddit:</string>
+    <string name="metacritic_colon">Metacritic:</string>
     <string name="stores">Stores</string>
+    <string name="settings">Settings</string>
 </resources>

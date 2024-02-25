@@ -8,6 +8,8 @@ import io.ktor.http.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlin.math.max
+import kotlin.math.min
 
 @Serializable
 data class Game(
@@ -30,7 +32,8 @@ data class Game(
     @SerialName("reddit_name") val redditName: String? = null,
     @SerialName("reddit_description") val redditDescription: String? = null,
     @SerialName("reddit_logo") val redditLogo: String? = null,
-    @SerialName("stores") private val _stores: List<StoreInfo> = emptyList()
+    @SerialName("stores") private val _stores: List<StoreInfo> = emptyList(),
+    @SerialName("metacritic") val metacritic: Int = -1
 ) {
 
     @Transient
@@ -68,6 +71,7 @@ data class Game(
     @Transient
     val hasSocials: Boolean = (!website.isNullOrBlank() && !websiteTitle.isNullOrBlank())
             || (!redditUrl.isNullOrBlank() && !redditTitle.isNullOrBlank())
+            || metacritic > -1
 
     @Transient
     val stores: List<StoreInfo> = _stores.mapNotNull { info ->
@@ -125,7 +129,8 @@ data class Game(
                 this.stores,
                 other.stores
             ).toList(),
-            descriptionRaw = descriptionRaw?.ifBlank { null } ?: other.descriptionRaw
+            descriptionRaw = descriptionRaw?.ifBlank { null } ?: other.descriptionRaw,
+            metacritic = min(max(this.metacritic, other.metacritic), 100)
         )
     }
 
