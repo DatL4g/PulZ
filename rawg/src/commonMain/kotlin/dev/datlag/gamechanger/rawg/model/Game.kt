@@ -2,12 +2,13 @@ package dev.datlag.gamechanger.rawg.model
 
 import dev.datlag.gamechanger.rawg.common.normalizePlatform
 import dev.datlag.gamechanger.rawg.common.normalizeStoreInfo
-import dev.datlag.tooling.scopeCatching
+import dev.datlag.tooling.async.scopeCatching
 import dev.datlag.tooling.setFrom
 import io.ktor.http.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlinx.serialization.json.*
 import kotlin.math.max
 import kotlin.math.min
 
@@ -33,8 +34,11 @@ data class Game(
     @SerialName("reddit_description") val redditDescription: String? = null,
     @SerialName("reddit_logo") val redditLogo: String? = null,
     @SerialName("stores") private val _stores: List<StoreInfo> = emptyList(),
-    @SerialName("metacritic") val metacritic: Int = -1
+    @SerialName("metacritic") private val _metacritic: JsonPrimitive = JsonNull
 ) {
+
+    @Transient
+    val metacritic = _metacritic.intOrNull ?: -1
 
     @Transient
     val screenshots = _screenshots.filterNot {
@@ -130,7 +134,7 @@ data class Game(
                 other.stores
             ).toList(),
             descriptionRaw = descriptionRaw?.ifBlank { null } ?: other.descriptionRaw,
-            metacritic = min(max(this.metacritic, other.metacritic), 100)
+            _metacritic = JsonPrimitive(min(max(this.metacritic, other.metacritic), 100))
         )
     }
 

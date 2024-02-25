@@ -24,19 +24,19 @@ sealed interface CatchResult<T> {
         }
     }
 
-    fun asSuccess(onError: () -> T & Any): T & Any {
+    fun asSuccess(onError: (Throwable?) -> T & Any): T & Any {
         return if (this is Success) {
             this.data
         } else {
-            onError()
+            onError((this as? Error)?.throwable)
         }
     }
 
-    fun asNullableSuccess(onError: () -> T? = { null }): T? {
+    fun asNullableSuccess(onError: (Throwable?) -> T? = { null }): T? {
         return if (this is Success) {
             this.data
         } else {
-            onError()
+            onError((this as? Error)?.throwable)
         }
     }
 
