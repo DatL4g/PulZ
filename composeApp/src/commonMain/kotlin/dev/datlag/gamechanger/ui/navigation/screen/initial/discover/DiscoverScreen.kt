@@ -1,9 +1,14 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial.discover
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -19,10 +24,7 @@ import dev.datlag.gamechanger.LocalPaddingValues
 import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.plus
 import dev.datlag.gamechanger.rawg.model.Game
-import dev.datlag.gamechanger.rawg.model.Games
 import dev.datlag.gamechanger.rawg.state.*
-import dev.datlag.gamechanger.ui.custom.AdType
-import dev.datlag.gamechanger.ui.custom.AdView
 import dev.datlag.gamechanger.ui.custom.NativeAdView
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.OtherGameCard
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.TrendingGameCard
@@ -80,6 +82,9 @@ private fun MainView(component: DiscoverComponent, modifier: Modifier = Modifier
         contentPadding = LocalPaddingValues.current?.plus(padding) ?: padding
     ) {
         item {
+            Search(component)
+        }
+        item {
             Text(
                 text = stringResource(SharedRes.strings.trending),
                 style = MaterialTheme.typography.headlineLarge
@@ -131,6 +136,53 @@ private fun MainView(component: DiscoverComponent, modifier: Modifier = Modifier
             retry = component::retryCoop
         )
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun Search(component: DiscoverComponent) {
+    val searchQuery by component.searchQuery.subscribeAsState()
+
+    DockedSearchBar(
+        query = searchQuery,
+        onQueryChange = {
+            component.updateSearchQuery(it)
+        },
+        onSearch = {
+            component.search(it)
+        },
+        active = false,
+        onActiveChange = {},
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = "Search"
+            )
+        },
+        trailingIcon = {
+            AnimatedVisibility(
+                visible = searchQuery.isNotBlank(),
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                IconButton(
+                    onClick = {
+                        component.updateSearchQuery("")
+                    },
+                    enabled = searchQuery.isNotBlank()
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "Clear"
+                    )
+                }
+            }
+        },
+        placeholder = {
+            Text(text = "Search for games")
+        },
+        modifier = Modifier.fillMaxWidth()
+    ) {}
 }
 
 private fun LazyListScope.TrendingOverview(

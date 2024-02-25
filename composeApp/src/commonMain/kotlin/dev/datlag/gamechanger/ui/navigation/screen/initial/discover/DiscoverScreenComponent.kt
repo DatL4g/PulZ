@@ -3,6 +3,7 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial.discover
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.*
+import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import dev.datlag.gamechanger.common.onRender
 import dev.datlag.gamechanger.rawg.model.Game
@@ -33,6 +34,10 @@ class DiscoverScreenComponent(
 
     private val coopGamesStateMachine by di.instance<OnlineCoopGamesStateMachine>()
     override val coopGamesState: Flow<GamesState> = coopGamesStateMachine.state.flowOn(ioDispatcher())
+
+    private val searchGamesStateMachine by di.instance<SearchGamesStateMachine>()
+    override val searchGamesState: Flow<SearchGamesStateMachine.State> = searchGamesStateMachine.state.flowOn(ioDispatcher())
+    override val searchQuery: MutableValue<String> = MutableValue("")
 
     private val navigation = SlotNavigation<DiscoverConfig>()
     override val child: Value<ChildSlot<DiscoverConfig, Component>> = childSlot(
@@ -86,6 +91,26 @@ class DiscoverScreenComponent(
     override fun retryCoop() {
         launchIO {
             coopGamesStateMachine.dispatch(GamesAction.Retry)
+        }
+    }
+
+    override fun updateSearchQuery(value: String) {
+        searchQuery.value = value
+
+        if (value.isBlank()) {
+            launchIO {
+                searchGamesStateMachine.dispatch(SearchGamesStateMachine.Action.Clear)
+            }
+        }
+    }
+
+    override fun search(value: String) {
+        updateSearchQuery(value)
+
+        if (value.isNotBlank()) {
+            launchIO {
+                searchGamesStateMachine.dispatch(SearchGamesStateMachine.Action.Load(value))
+            }
         }
     }
 }
