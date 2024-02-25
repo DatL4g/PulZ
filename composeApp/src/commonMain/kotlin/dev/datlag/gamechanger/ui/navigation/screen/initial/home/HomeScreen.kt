@@ -62,7 +62,6 @@ fun HomeScreen(component: HomeComponent) {
     }*/
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 @Composable
 private fun Overview(component: HomeComponent) {
     val padding = PaddingValues(all = 16.dp)
@@ -81,7 +80,6 @@ private fun Overview(component: HomeComponent) {
         item(
             key = listOf(csGame.id, csColor.toArgb())
         ) {
-            Napier.e("ARGB: ${csColor.toArgb().toHexString()}")
             GameCover(
                 title = stringResource(SharedRes.strings.counter_strike),
                 game = csGame,
@@ -98,7 +96,7 @@ private fun Overview(component: HomeComponent) {
             GameCover(
                 title = stringResource(SharedRes.strings.rocket_league),
                 game = rlGame,
-                fallback = SharedRes.images.cs_banner,
+                fallback = SharedRes.images.rl_banner,
                 color = rlColor,
                 modifier = Modifier.fillMaxWidth().clip(CardDefaults.shape)
             )

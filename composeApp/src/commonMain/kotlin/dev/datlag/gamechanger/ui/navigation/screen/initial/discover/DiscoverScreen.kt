@@ -29,6 +29,7 @@ import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.Tr
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.model.GameSectionType
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import dev.icerock.moko.resources.compose.stringResource
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -71,12 +72,8 @@ private fun ExpandedView(component: DiscoverComponent) {
 
 @Composable
 private fun MainView(component: DiscoverComponent, modifier: Modifier = Modifier) {
-    val trendingState by component.trendingGamesState.collectAsStateWithLifecycle(TrendingGamesStateMachine.currentState)
-    val topRatedState by component.topRatedGamesState.collectAsStateWithLifecycle(TopRatedGamesStateMachine.currentState)
-    val eSportState by component.eSportGamesState.collectAsStateWithLifecycle(ESportGamesStateMachine.currentState)
-    val coopState by component.coopGamesState.collectAsStateWithLifecycle(OnlineCoopGamesStateMachine.currentState)
-
     val padding = PaddingValues(all = 16.dp)
+
     LazyColumn(
         modifier = modifier.haze(state = LocalHaze.current),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -89,7 +86,7 @@ private fun MainView(component: DiscoverComponent, modifier: Modifier = Modifier
             )
         }
         TrendingOverview(
-            state = trendingState,
+            component = component,
             onClick = component::details,
             retry = component::retryTrending
         )
@@ -101,7 +98,8 @@ private fun MainView(component: DiscoverComponent, modifier: Modifier = Modifier
             )
         }
         OtherOverview(
-            state = topRatedState,
+            state = component.topRatedGamesState,
+            initialState = TopRatedGamesStateMachine.currentState,
             onClick = component::details,
             retry = component::retryTopRated
         )
@@ -113,7 +111,8 @@ private fun MainView(component: DiscoverComponent, modifier: Modifier = Modifier
             )
         }
         OtherOverview(
-            state = eSportState,
+            state = component.eSportGamesState,
+            initialState = ESportGamesStateMachine.currentState,
             onClick = component::details,
             retry = component::retryESports
         )
@@ -126,7 +125,8 @@ private fun MainView(component: DiscoverComponent, modifier: Modifier = Modifier
             )
         }
         OtherOverview(
-            state = coopState,
+            state = component.coopGamesState,
+            initialState = OnlineCoopGamesStateMachine.currentState,
             onClick = component::details,
             retry = component::retryCoop
         )
@@ -134,18 +134,18 @@ private fun MainView(component: DiscoverComponent, modifier: Modifier = Modifier
 }
 
 private fun LazyListScope.TrendingOverview(
-    state: GamesState,
+    component: DiscoverComponent,
     onClick: (Game) -> Unit,
     retry: () -> Unit
 ) {
-    when (state) {
-        is GamesState.Loading -> {
-            item {
+    item {
+        val trendingState by component.trendingGamesState.collectAsStateWithLifecycle(TrendingGamesStateMachine.currentState)
+
+        when (val state = trendingState) {
+            is GamesState.Loading -> {
                 Text(text = "Loading")
             }
-        }
-        is GamesState.Error -> {
-            item {
+            is GamesState.Error -> {
                 Box(
                     modifier = Modifier.fillMaxWidth().padding(16.dp),
                     contentAlignment = Alignment.Center
@@ -163,9 +163,7 @@ private fun LazyListScope.TrendingOverview(
                     }
                 }
             }
-        }
-        is GamesState.Success -> {
-            item {
+            is GamesState.Success -> {
                 GameSection(state.games, GameSectionType.Trending, onClick)
             }
         }
@@ -173,18 +171,19 @@ private fun LazyListScope.TrendingOverview(
 }
 
 private fun LazyListScope.OtherOverview(
-    state: GamesState,
+    state: Flow<GamesState>,
+    initialState: GamesState,
     onClick: (Game) -> Unit,
     retry: () -> Unit
 ) {
-    when (state) {
-        is GamesState.Loading -> {
-            item {
+    item {
+        val loadingState by state.collectAsStateWithLifecycle(initialState)
+
+        when (val reachedState = loadingState) {
+            is GamesState.Loading -> {
                 Text(text = "Loading")
             }
-        }
-        is GamesState.Error -> {
-            item {
+            is GamesState.Error -> {
                 Box(
                     modifier = Modifier.fillMaxWidth().padding(16.dp),
                     contentAlignment = Alignment.Center
@@ -202,10 +201,8 @@ private fun LazyListScope.OtherOverview(
                     }
                 }
             }
-        }
-        is GamesState.Success -> {
-            item {
-                GameSection(state.games, GameSectionType.Default, onClick)
+            is GamesState.Success -> {
+                GameSection(reachedState.games, GameSectionType.Default, onClick)
             }
         }
     }

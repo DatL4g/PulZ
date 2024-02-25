@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
 import dev.datlag.gamechanger.game.Game
@@ -87,12 +89,18 @@ fun GameCover(
         )
         Box(
             modifier = Modifier.matchParentSize().background(
-                Brush.verticalGradient(
-                    colors = listOf(animatedColor.copy(alpha = 0.1F), animatedColor.copy(alpha = 0.75F))
+                brush = Brush.verticalGradient(
+                    0.0f to Color.Transparent,
+                    0.1f to animatedColor.copy(alpha = 0.15f),
+                    0.3f to animatedColor.copy(alpha = 0.35f),
+                    0.5f to animatedColor.copy(alpha = 0.55f),
+                    0.7f to animatedColor.copy(alpha = 0.75f),
+                    0.9f to animatedColor
                 )
             )
         )
         Text(
+            modifier = Modifier.align(Alignment.BottomStart).padding(8.dp),
             text = title,
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineMedium.copy(
