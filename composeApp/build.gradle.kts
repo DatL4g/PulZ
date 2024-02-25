@@ -118,6 +118,7 @@ kotlin {
             implementation(libs.ads)
             implementation(libs.appcompat)
             implementation(libs.multidex)
+            implementation(libs.splashscreen)
 
             implementation(libs.ktor.jvm)
         }
