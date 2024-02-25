@@ -3,12 +3,12 @@ package dev.datlag.gamechanger.ui.custom
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.VideoOptions
+import androidx.compose.ui.viewinterop.AndroidView
+import com.google.android.gms.ads.*
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import dev.datlag.gamechanger.Sekret
 import dev.datlag.gamechanger.getPackageName
@@ -49,4 +49,26 @@ actual object Ads {
             null
         }
     }
+
+    actual fun banner(): String? {
+        return if (StateSaver.sekretLibraryLoaded) {
+            Sekret.androidAdBanner(getPackageName())
+        } else {
+            null
+        }
+    }
+}
+
+@Composable
+actual fun BannerAd(id: String, modifier: Modifier) {
+    AndroidView(
+        factory = { context ->
+            AdView(context).apply {
+                adUnitId = id
+                setAdSize(AdSize.BANNER)
+                loadAd(AdRequest.Builder().build())
+            }
+        },
+        modifier = modifier
+    )
 }

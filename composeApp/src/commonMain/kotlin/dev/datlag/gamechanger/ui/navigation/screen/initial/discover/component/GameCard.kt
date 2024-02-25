@@ -29,7 +29,6 @@ import dev.datlag.gamechanger.common.mapToIcon
 import dev.datlag.gamechanger.rawg.model.Game
 import dev.datlag.gamechanger.ui.custom.alignment.rememberParallaxAlignment
 import dev.datlag.gamechanger.ui.theme.SchemeTheme
-import dev.datlag.gamechanger.ui.theme.rememberSchemeThemeDominantColor
 import dev.datlag.gamechanger.ui.theme.rememberSchemeThemeDominantColorState
 import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.compose.painterResource
