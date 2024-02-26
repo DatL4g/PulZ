@@ -12,8 +12,8 @@ import dev.datlag.gamechanger.ui.navigation.Component
 import dev.datlag.gamechanger.ui.navigation.ContentHolderComponent
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.details.DetailsScreenComponent
 import dev.datlag.tooling.compose.ioDispatcher
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
+import dev.datlag.tooling.decompose.ioScope
+import kotlinx.coroutines.flow.*
 import org.kodein.di.DI
 import org.kodein.di.instance
 
@@ -24,19 +24,50 @@ class DiscoverScreenComponent(
 ) : DiscoverComponent, ComponentContext by componentContext {
 
     private val trendingGamesStateMachine by di.instance<TrendingGamesStateMachine>()
-    override val trendingGamesState: Flow<GamesState> = trendingGamesStateMachine.state.flowOn(ioDispatcher())
+    override val trendingGamesState: StateFlow<GamesState> = trendingGamesStateMachine.state.flowOn(
+        context = ioDispatcher()
+    ).stateIn(
+        scope = ioScope(),
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = TrendingGamesStateMachine.currentState
+    )
 
     private val topRatedGamesStateMachine by di.instance<TopRatedGamesStateMachine>()
-    override val topRatedGamesState: Flow<GamesState> = topRatedGamesStateMachine.state.flowOn(ioDispatcher())
+    override val topRatedGamesState: StateFlow<GamesState> = topRatedGamesStateMachine.state.flowOn(
+        context = ioDispatcher()
+    ).stateIn(
+        scope = ioScope(),
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = TopRatedGamesStateMachine.currentState
+    )
 
     private val eSportGamesStateMachine by di.instance<ESportGamesStateMachine>()
-    override val eSportGamesState: Flow<GamesState> = eSportGamesStateMachine.state.flowOn(ioDispatcher())
+    override val eSportGamesState: StateFlow<GamesState> = eSportGamesStateMachine.state.flowOn(
+        context = ioDispatcher()
+    ).stateIn(
+        scope = ioScope(),
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = ESportGamesStateMachine.currentState
+    )
 
     private val coopGamesStateMachine by di.instance<OnlineCoopGamesStateMachine>()
-    override val coopGamesState: Flow<GamesState> = coopGamesStateMachine.state.flowOn(ioDispatcher())
+    override val coopGamesState: StateFlow<GamesState> = coopGamesStateMachine.state.flowOn(
+        context = ioDispatcher()
+    ).stateIn(
+        scope = ioScope(),
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = OnlineCoopGamesStateMachine.currentState
+    )
 
     private val searchGamesStateMachine by di.instance<SearchGamesStateMachine>()
-    override val searchGamesState: Flow<SearchGamesStateMachine.State> = searchGamesStateMachine.state.flowOn(ioDispatcher())
+    override val searchGamesState: StateFlow<SearchGamesStateMachine.State> = searchGamesStateMachine.state.flowOn(
+        context = ioDispatcher()
+    ).stateIn(
+        scope = ioScope(),
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = SearchGamesStateMachine.State.Waiting
+    )
+
     override val searchQuery: MutableValue<String> = MutableValue("")
 
     private val navigation = SlotNavigation<DiscoverConfig>()

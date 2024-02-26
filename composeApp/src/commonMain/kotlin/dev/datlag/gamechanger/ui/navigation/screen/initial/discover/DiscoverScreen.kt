@@ -26,8 +26,10 @@ import dev.datlag.gamechanger.common.plus
 import dev.datlag.gamechanger.rawg.model.Game
 import dev.datlag.gamechanger.rawg.state.*
 import dev.datlag.gamechanger.ui.custom.NativeAdView
+import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.DefaultOverview
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.OtherGameCard
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.TrendingGameCard
+import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.TrendingOverview
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.model.GameSectionType
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import dev.icerock.moko.resources.compose.stringResource
@@ -90,11 +92,13 @@ private fun MainView(component: DiscoverComponent, modifier: Modifier = Modifier
                 style = MaterialTheme.typography.headlineLarge
             )
         }
-        TrendingOverview(
-            component = component,
-            onClick = component::details,
-            retry = component::retryTrending
-        )
+        item {
+            TrendingOverview(
+                state = component.trendingGamesState,
+                onClick = component::details,
+                retry = component::retryTrending
+            )
+        }
         item {
             Text(
                 modifier = Modifier.padding(top = 16.dp),
@@ -102,12 +106,13 @@ private fun MainView(component: DiscoverComponent, modifier: Modifier = Modifier
                 style = MaterialTheme.typography.headlineLarge
             )
         }
-        OtherOverview(
-            state = component.topRatedGamesState,
-            initialState = TopRatedGamesStateMachine.currentState,
-            onClick = component::details,
-            retry = component::retryTopRated
-        )
+        item {
+            DefaultOverview(
+                state = component.topRatedGamesState,
+                onClick = component::details,
+                retry = component::retryTopRated
+            )
+        }
         item {
             Text(
                 modifier = Modifier.padding(top = 16.dp),
@@ -115,12 +120,13 @@ private fun MainView(component: DiscoverComponent, modifier: Modifier = Modifier
                 style = MaterialTheme.typography.headlineLarge
             )
         }
-        OtherOverview(
-            state = component.eSportGamesState,
-            initialState = ESportGamesStateMachine.currentState,
-            onClick = component::details,
-            retry = component::retryESports
-        )
+        item {
+            DefaultOverview(
+                state = component.eSportGamesState,
+                onClick = component::details,
+                retry = component::retryESports
+            )
+        }
         NativeAdView()
         item {
             Text(
@@ -129,12 +135,13 @@ private fun MainView(component: DiscoverComponent, modifier: Modifier = Modifier
                 style = MaterialTheme.typography.headlineLarge
             )
         }
-        OtherOverview(
-            state = component.coopGamesState,
-            initialState = OnlineCoopGamesStateMachine.currentState,
-            onClick = component::details,
-            retry = component::retryCoop
-        )
+        item {
+            DefaultOverview(
+                state = component.coopGamesState,
+                onClick = component::details,
+                retry = component::retryCoop
+            )
+        }
     }
 }
 
@@ -183,130 +190,4 @@ private fun Search(component: DiscoverComponent) {
         },
         modifier = Modifier.fillMaxWidth()
     ) {}
-}
-
-private fun LazyListScope.TrendingOverview(
-    component: DiscoverComponent,
-    onClick: (Game) -> Unit,
-    retry: () -> Unit
-) {
-    item {
-        val trendingState by component.trendingGamesState.collectAsStateWithLifecycle(TrendingGamesStateMachine.currentState)
-
-        when (val state = trendingState) {
-            is GamesState.Loading -> {
-                Text(text = "Loading")
-            }
-            is GamesState.Error -> {
-                Box(
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Button(
-                        onClick = retry
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Repeat,
-                            contentDescription = null,
-                            modifier = Modifier.size(ButtonDefaults.IconSize)
-                        )
-                        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                        Text(text = "Retry")
-                    }
-                }
-            }
-            is GamesState.Success -> {
-                GameSection(state.games, GameSectionType.Trending, onClick)
-            }
-        }
-    }
-}
-
-private fun LazyListScope.OtherOverview(
-    state: Flow<GamesState>,
-    initialState: GamesState,
-    onClick: (Game) -> Unit,
-    retry: () -> Unit
-) {
-    item {
-        val loadingState by state.collectAsStateWithLifecycle(initialState)
-
-        when (val reachedState = loadingState) {
-            is GamesState.Loading -> {
-                Text(text = "Loading")
-            }
-            is GamesState.Error -> {
-                Box(
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Button(
-                        onClick = retry
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Repeat,
-                            contentDescription = null,
-                            modifier = Modifier.size(ButtonDefaults.IconSize)
-                        )
-                        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                        Text(text = "Retry")
-                    }
-                }
-            }
-            is GamesState.Success -> {
-                GameSection(reachedState.games, GameSectionType.Default, onClick)
-            }
-        }
-    }
-}
-
-@Composable
-private fun GameSection(
-    games: List<Game>,
-    type: GameSectionType,
-    onClick: (Game) -> Unit
-) {
-    val listState = rememberLazyListState()
-    var highlightedItem by remember { mutableIntStateOf(0) }
-
-    LaunchedEffect(listState) {
-        snapshotFlow {
-            val layoutInfo = listState.layoutInfo
-            layoutInfo.visibleItemsInfo
-                .firstOrNull { it.offset >= layoutInfo.viewportStartOffset }
-                ?.index ?: 0
-        }.distinctUntilChanged()
-            .collect {
-                highlightedItem = it
-            }
-    }
-
-    LazyRow(
-        state = listState,
-        modifier = Modifier.fillMaxSize(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        itemsIndexed(games, key = { _, it -> it.id }) { index, game ->
-            when (type) {
-                GameSectionType.Trending -> {
-                    TrendingGameCard(
-                        game = game,
-                        isHighlighted = index == highlightedItem,
-                        lazyListState = listState,
-                        modifier = Modifier.width(256.dp),
-                        onClick = onClick
-                    )
-                }
-                else -> {
-                    OtherGameCard(
-                        game = game,
-                        isHighlighted = index == highlightedItem,
-                        lazyListState = listState,
-                        modifier = Modifier.width(200.dp).height(280.dp),
-                        onClick = onClick
-                    )
-                }
-            }
-        }
-    }
 }

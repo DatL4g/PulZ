@@ -10,14 +10,15 @@ import dev.datlag.gamechanger.rawg.state.TrendingGamesStateMachine
 import dev.datlag.gamechanger.ui.navigation.Component
 import dev.datlag.gamechanger.ui.navigation.ContentHolderComponent
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 interface DiscoverComponent : ContentHolderComponent {
 
-    val trendingGamesState: Flow<GamesState>
-    val topRatedGamesState: Flow<GamesState>
-    val eSportGamesState: Flow<GamesState>
-    val coopGamesState: Flow<GamesState>
-    val searchGamesState: Flow<SearchGamesStateMachine.State>
+    val trendingGamesState: StateFlow<GamesState>
+    val topRatedGamesState: StateFlow<GamesState>
+    val eSportGamesState: StateFlow<GamesState>
+    val coopGamesState: StateFlow<GamesState>
+    val searchGamesState: StateFlow<SearchGamesStateMachine.State>
 
     val child: Value<ChildSlot<DiscoverConfig, Component>>
     val searchQuery: Value<String>
