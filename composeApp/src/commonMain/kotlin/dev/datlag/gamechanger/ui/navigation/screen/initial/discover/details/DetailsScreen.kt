@@ -1,11 +1,14 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial.discover.details
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -15,6 +18,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -36,6 +40,7 @@ import dev.datlag.gamechanger.ui.custom.BrowserClickCard
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.details.component.ScreenshotCarousel
 import dev.datlag.gamechanger.ui.theme.SchemeTheme
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.TopStartBottomEndCornerShape
 import dev.datlag.tooling.compose.onClick
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import dev.icerock.moko.resources.compose.painterResource
@@ -67,19 +72,37 @@ fun DetailsScreen(game: Game, component: DetailsComponent) {
                 ) {
                     val scope = rememberCoroutineScope()
 
-                    AsyncImage(
-                        model = game.backgroundImage,
-                        modifier = Modifier.fillMaxWidth(),
-                        contentScale = ContentScale.FillWidth,
-                        contentDescription = null,
-                        onSuccess = { state ->
-                            SchemeTheme.update(
-                                key = game.slug,
-                                input = state.painter,
-                                scope = scope
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        AsyncImage(
+                            model = game.backgroundImage,
+                            modifier = Modifier.fillMaxWidth(),
+                            contentScale = ContentScale.FillWidth,
+                            contentDescription = null,
+                            onSuccess = { state ->
+                                SchemeTheme.update(
+                                    key = game.slug,
+                                    input = state.painter,
+                                    scope = scope
+                                )
+                            }
+                        )
+                        IconButton(
+                            onClick = {
+                                component.back()
+                            },
+                            modifier = Modifier.background(Color.Black.copy(alpha = 0.5F), shape = TopStartBottomEndCornerShape(
+                                RoundedCornerShape(12.dp)
+                            ))
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBackIosNew,
+                                contentDescription = stringResource(SharedRes.strings.back),
+                                tint = Color.White
                             )
                         }
-                    )
+                    }
                 }
             }
             item {

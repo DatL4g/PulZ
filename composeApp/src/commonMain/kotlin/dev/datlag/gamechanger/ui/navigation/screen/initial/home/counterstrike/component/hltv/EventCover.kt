@@ -46,7 +46,7 @@ fun EventCover(
                     modifier = Modifier.background(
                         color = Color.Red,
                         shape = TopEndBottomStartCornerShape(
-                            baseShape = RoundedCornerShape(16.dp)
+                            baseShape = RoundedCornerShape(12.dp)
                         )
                     ).padding(vertical = 4.dp, horizontal = 8.dp).align(Alignment.TopEnd),
                     color = Color.White,
