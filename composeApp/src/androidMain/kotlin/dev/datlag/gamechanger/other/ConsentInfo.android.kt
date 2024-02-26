@@ -5,7 +5,6 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.ump.ConsentDebugSettings
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
-import com.google.android.ump.FormError
 import com.google.android.ump.UserMessagingPlatform
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -34,6 +33,7 @@ actual class ConsentInfo(private val activity: Activity) {
                 UserMessagingPlatform.loadAndShowConsentFormIfRequired(
                     activity
                 ) {
+                    // dismiss
                     initializeMobileAds()
                 }
             },
