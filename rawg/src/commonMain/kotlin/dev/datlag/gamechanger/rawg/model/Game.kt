@@ -8,7 +8,6 @@ import io.ktor.http.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import kotlinx.serialization.json.*
 import kotlin.math.max
 import kotlin.math.min
 
@@ -22,10 +21,10 @@ data class Game(
     @SerialName("background_image") val backgroundImage: String? = null,
     @SerialName("rating") val rating: Float = -1F,
     @SerialName("rating_top") val ratingTop: Float = rating,
-    @SerialName("short_screenshots") private val _screenshots: List<Screenshot> = emptyList(),
-    @SerialName("genres") val genres: List<Genre> = emptyList(),
-    @SerialName("platforms") val platforms: List<PlatformInfo> = emptyList(),
-    @SerialName("parent_platforms") val parentPlatforms: List<PlatformInfo> = emptyList(),
+    @SerialName("short_screenshots") private val _screenshots: List<Screenshot>? = emptyList(),
+    @SerialName("genres") private val _genres: List<Genre>? = emptyList(),
+    @SerialName("platforms") private val _platforms: List<PlatformInfo>? = emptyList(),
+    @SerialName("parent_platforms") private val _parentPlatforms: List<PlatformInfo>? = emptyList(),
     @SerialName("description") val description: String? = null,
     @SerialName("description_raw") val descriptionRaw: String? = null,
     @SerialName("website") val website: String? = null,
@@ -33,17 +32,26 @@ data class Game(
     @SerialName("reddit_name") val redditName: String? = null,
     @SerialName("reddit_description") val redditDescription: String? = null,
     @SerialName("reddit_logo") val redditLogo: String? = null,
-    @SerialName("stores") private val _stores: List<StoreInfo> = emptyList(),
-    @SerialName("metacritic") private val _metacritic: JsonPrimitive = JsonNull
+    @SerialName("stores") private val _stores: List<StoreInfo>? = emptyList(),
+    @SerialName("metacritic") private val _metacritic: Int? = -1
 ) {
 
     @Transient
-    val metacritic = _metacritic.intOrNull ?: -1
+    val metacritic = _metacritic ?: -1
 
     @Transient
-    val screenshots = _screenshots.filterNot {
+    val genres = _genres ?: emptyList()
+
+    @Transient
+    val platforms = _platforms ?: emptyList()
+
+    @Transient
+    val parentPlatforms = _parentPlatforms ?: emptyList()
+
+    @Transient
+    val screenshots = _screenshots?.filterNot {
         it.image == backgroundImage
-    }
+    } ?: emptyList()
 
     @Transient
     val allPlatforms: Set<PlatformInfo.Platform> = setFrom(
@@ -78,13 +86,13 @@ data class Game(
             || metacritic > -1
 
     @Transient
-    val stores: List<StoreInfo> = _stores.mapNotNull { info ->
+    val stores: List<StoreInfo> = _stores?.mapNotNull { info ->
         if (info.isEmpty()) {
             null
         } else {
             info
         }
-    }.normalizeStoreInfo().toList()
+    }?.normalizeStoreInfo()?.toList() ?: emptyList()
 
     fun combine(other: Game): Game {
         return Game(
@@ -111,15 +119,15 @@ data class Game(
                 this.screenshots,
                 other.screenshots
             ).toList(),
-            genres = setFrom(
+            _genres = setFrom(
                 this.genres,
                 other.genres
             ).toList(),
-            platforms = setFrom(
+            _platforms = setFrom(
                 this.platforms,
                 other.platforms
             ).normalizePlatform().toList(),
-            parentPlatforms = setFrom(
+            _parentPlatforms = setFrom(
                 this.parentPlatforms,
                 other.parentPlatforms
             ).normalizePlatform().toList(),
@@ -134,7 +142,7 @@ data class Game(
                 other.stores
             ).toList(),
             descriptionRaw = descriptionRaw?.ifBlank { null } ?: other.descriptionRaw,
-            _metacritic = JsonPrimitive(min(max(this.metacritic, other.metacritic), 100))
+            _metacritic = min(max(this.metacritic, other.metacritic), 100)
         )
     }
 

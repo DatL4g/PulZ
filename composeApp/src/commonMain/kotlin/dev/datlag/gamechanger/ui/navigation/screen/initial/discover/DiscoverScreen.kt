@@ -4,7 +4,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
@@ -13,18 +14,17 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import dev.chrisbanes.haze.haze
-import dev.datlag.gamechanger.LocalHaze
 import dev.datlag.gamechanger.LocalPaddingValues
-import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.plus
-import dev.datlag.gamechanger.ui.custom.NativeAdView
-import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.DefaultOverview
-import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.TrendingOverview
-import dev.icerock.moko.resources.compose.stringResource
+import dev.datlag.gamechanger.common.shimmer
+import dev.datlag.gamechanger.rawg.state.SearchGamesStateMachine
+import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.Overview
+import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.SearchOverview
+import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
@@ -66,71 +66,48 @@ private fun ExpandedView(component: DiscoverComponent) {
 
 @Composable
 private fun MainView(component: DiscoverComponent, modifier: Modifier = Modifier) {
+    val searchState by component.searchGamesState.collectAsStateWithLifecycle()
     val padding = PaddingValues(all = 16.dp)
+    val localPadding = LocalPaddingValues.current?.plus(padding) ?: padding
 
-    LazyColumn(
-        modifier = modifier.haze(state = LocalHaze.current),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = LocalPaddingValues.current?.plus(padding) ?: padding
-    ) {
-        item {
-            Search(component)
-        }
-        item {
-            Text(
-                text = stringResource(SharedRes.strings.trending),
-                style = MaterialTheme.typography.headlineLarge
+    when (val state = searchState) {
+        is SearchGamesStateMachine.State.Waiting -> {
+            Overview(
+                component = component,
+                paddingValues = localPadding,
+                searchbar = {
+                    Search(component)
+                },
+                modifier = modifier
             )
         }
-        item {
-            TrendingOverview(
-                state = component.trendingGamesState,
+        is SearchGamesStateMachine.State.Loading -> {
+            Loading(localPadding)
+        }
+        is SearchGamesStateMachine.State.Success -> {
+            SearchOverview(
+                games = state.games,
+                paddingValues = localPadding,
+                searchbar = {
+                    Search(component)
+                },
                 onClick = component::details,
-                retry = component::retryTrending
+                modifier = modifier
             )
         }
-        item {
-            Text(
-                modifier = Modifier.padding(top = 16.dp),
-                text = stringResource(SharedRes.strings.top_rated),
-                style = MaterialTheme.typography.headlineLarge
-            )
-        }
-        item {
-            DefaultOverview(
-                state = component.topRatedGamesState,
-                onClick = component::details,
-                retry = component::retryTopRated
-            )
-        }
-        item {
-            Text(
-                modifier = Modifier.padding(top = 16.dp),
-                text = stringResource(SharedRes.strings.esport),
-                style = MaterialTheme.typography.headlineLarge
-            )
-        }
-        item {
-            DefaultOverview(
-                state = component.eSportGamesState,
-                onClick = component::details,
-                retry = component::retryESports
-            )
-        }
-        NativeAdView()
-        item {
-            Text(
-                modifier = Modifier.padding(top = 16.dp),
-                text = stringResource(SharedRes.strings.online_coop),
-                style = MaterialTheme.typography.headlineLarge
-            )
-        }
-        item {
-            DefaultOverview(
-                state = component.coopGamesState,
-                onClick = component::details,
-                retry = component::retryCoop
-            )
+        is SearchGamesStateMachine.State.Error -> {
+            Box(
+                modifier = Modifier.fillMaxSize().padding(localPadding),
+                contentAlignment = Alignment.Center
+            ) {
+                Button(
+                    onClick = {
+
+                    }
+                ) {
+                    Text(text = "Retry")
+                }
+            }
         }
     }
 }
@@ -180,4 +157,25 @@ private fun Search(component: DiscoverComponent) {
         },
         modifier = Modifier.fillMaxWidth()
     ) {}
+}
+
+@Composable
+private fun Loading(paddingValues: PaddingValues) {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(200.dp),
+        contentPadding = paddingValues,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        repeat(5) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(280.dp)
+                        .shimmer(CardDefaults.shape)
+                )
+            }
+        }
+    }
 }

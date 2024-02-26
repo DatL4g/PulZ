@@ -10,7 +10,7 @@ sealed interface GamesState {
     ) : GamesState {
         constructor(games: Games) : this(games.results)
     }
-    data object Error : GamesState
+    data class Error(val canRetry: Boolean) : GamesState
 }
 
 sealed interface GamesAction {

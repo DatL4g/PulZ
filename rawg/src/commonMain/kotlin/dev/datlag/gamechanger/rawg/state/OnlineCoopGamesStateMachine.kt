@@ -16,14 +16,14 @@ class OnlineCoopGamesStateMachine(
         spec {
             inState<GamesState.Loading> {
                 onEnterEffect {
-                    StateSaver.coop = it
+                    currentState = it
                 }
                 onEnter { state ->
                     StateSaver.Cache.coop?.let {
                         return@onEnter state.override { GamesState.Success(it) }
                     }
                     if (key == null) {
-                        return@onEnter state.override { GamesState.Error }
+                        return@onEnter state.override { GamesState.Error(canRetry = false) }
                     }
 
                     val result = CatchResult.result<GamesState> {
@@ -37,20 +37,24 @@ class OnlineCoopGamesStateMachine(
                         )
                     }
 
-                    state.override { result.asSuccess { GamesState.Error } }
+                    state.override { result.asSuccess { GamesState.Error(canRetry = true) } }
                 }
             }
             inState<GamesState.Success> {
                 onEnterEffect {
-                    StateSaver.coop = it
+                    currentState = it
                 }
             }
             inState<GamesState.Error> {
                 onEnterEffect {
-                    StateSaver.coop = it
+                    currentState = it
                 }
                 on<GamesAction.Retry> { _, state ->
-                    state.override { GamesState.Loading }
+                    if (state.snapshot.canRetry) {
+                        state.override { GamesState.Loading }
+                    } else {
+                        state.noChange()
+                    }
                 }
             }
         }

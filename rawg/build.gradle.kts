@@ -37,7 +37,6 @@ kotlin {
             implementation(libs.tooling)
             api(libs.ktorfit)
             implementation(libs.serialization)
-            implementation(libs.serialization.json)
             implementation(libs.datetime)
             api(libs.flowredux)
             api(project(":model"))

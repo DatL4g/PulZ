@@ -65,7 +65,7 @@ class DiscoverScreenComponent(
     ).stateIn(
         scope = ioScope(),
         started = SharingStarted.WhileSubscribed(),
-        initialValue = SearchGamesStateMachine.State.Waiting
+        initialValue = SearchGamesStateMachine.currentState
     )
 
     override val searchQuery: MutableValue<String> = MutableValue("")
