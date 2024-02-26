@@ -18,6 +18,8 @@ interface DiscoverComponent : ContentHolderComponent {
     val topRatedGamesState: StateFlow<GamesState>
     val eSportGamesState: StateFlow<GamesState>
     val coopGamesState: StateFlow<GamesState>
+    val freeGamesState: StateFlow<GamesState>
+    val multiplayerGamesState: StateFlow<GamesState>
     val searchGamesState: StateFlow<SearchGamesStateMachine.State>
 
     val child: Value<ChildSlot<DiscoverConfig, Component>>

@@ -37,4 +37,6 @@
     <string name="search_for_games">Search for Games</string>
     <string name="clear">Clear</string>
     <string name="back">Back</string>
+    <string name="free">Free</string>
+    <string name="multiplayer">Multiplayer</string>
 </resources>

@@ -4,17 +4,13 @@ import com.freeletics.flowredux.dsl.FlowReduxStateMachine
 import dev.datlag.gamechanger.model.CatchResult
 import dev.datlag.gamechanger.rawg.RAWG
 import dev.datlag.gamechanger.rawg.StateSaver
-import dev.datlag.gamechanger.rawg.model.Game
-import dev.datlag.gamechanger.rawg.model.Games
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.datetime.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class TrendingGamesStateMachine(
+class FreeGamesStateMachine(
     private val rawg: RAWG,
     private val key: String?
 ) : FlowReduxStateMachine<GamesState, GamesAction>(initialState = currentState) {
-
     init {
         spec {
             inState<GamesState.Loading> {
@@ -22,7 +18,7 @@ class TrendingGamesStateMachine(
                     currentState = it
                 }
                 onEnter { state ->
-                    StateSaver.Cache.trending?.let {
+                    StateSaver.Cache.free?.let {
                         return@onEnter state.override { GamesState.Success(it) }
                     }
                     if (key == null) {
@@ -33,16 +29,9 @@ class TrendingGamesStateMachine(
                         GamesState.Success(
                             rawg.games(
                                 key = key,
-                                dates = listOf(
-                                    Clock.System.now().minus(1, DateTimeUnit.YEAR, TimeZone.currentSystemDefault()),
-                                    Clock.System.now()
-                                ).joinToString(separator = ",") {
-                                    it.toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
-                                },
-                                metacritic = "85,100",
-                                ordering = "-released"
+                                tags = "79"
                             ).also {
-                                StateSaver.Cache.trending = it
+                                StateSaver.Cache.free = it
                             }
                         )
                     }
@@ -73,8 +62,8 @@ class TrendingGamesStateMachine(
     companion object {
         var currentState: GamesState
             set(value) {
-                StateSaver.trending = value
+                StateSaver.free = value
             }
-            get() = StateSaver.trending
+            get() = StateSaver.free
     }
 }

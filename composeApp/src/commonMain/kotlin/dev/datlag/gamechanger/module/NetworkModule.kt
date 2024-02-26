@@ -87,6 +87,18 @@ data object NetworkModule {
                 key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null }
             )
         }
+        bindProvider<FreeGamesStateMachine> {
+            FreeGamesStateMachine(
+                rawg = instance(),
+                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null }
+            )
+        }
+        bindProvider<MultiplayerGamesStateMachine> {
+            MultiplayerGamesStateMachine(
+                rawg = instance(),
+                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null }
+            )
+        }
     }
 }
 

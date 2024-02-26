@@ -10,7 +10,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class ESportGamesStateMachine(
     private val rawg: RAWG,
     private val key: String?
-) : FlowReduxStateMachine<GamesState, GamesAction>(initialState = StateSaver.eSports) {
+) : FlowReduxStateMachine<GamesState, GamesAction>(initialState = currentState) {
 
     init {
         spec {

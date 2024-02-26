@@ -10,7 +10,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class OnlineCoopGamesStateMachine(
     private val rawg: RAWG,
     private val key: String?
-) : FlowReduxStateMachine<GamesState, GamesAction>(initialState = StateSaver.coop) {
+) : FlowReduxStateMachine<GamesState, GamesAction>(initialState = currentState) {
 
     init {
         spec {

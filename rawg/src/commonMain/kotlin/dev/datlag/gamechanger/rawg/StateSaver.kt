@@ -9,6 +9,8 @@ internal data object StateSaver {
     var topRated: GamesState = GamesState.Loading
     var eSports: GamesState = GamesState.Loading
     var coop: GamesState = GamesState.Loading
+    var free: GamesState = GamesState.Loading
+    var multiplayer: GamesState = GamesState.Loading
 
     var search: SearchGamesStateMachine.State = SearchGamesStateMachine.State.Waiting
 
@@ -17,5 +19,7 @@ internal data object StateSaver {
         var topRated: Games? = null
         var eSports: Games? = null
         var coop: Games? = null
+        var free: Games? = null
+        var multiplayer: Games? = null
     }
 }

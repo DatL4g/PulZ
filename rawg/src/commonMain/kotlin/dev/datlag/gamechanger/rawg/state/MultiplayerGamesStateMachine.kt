@@ -4,13 +4,10 @@ import com.freeletics.flowredux.dsl.FlowReduxStateMachine
 import dev.datlag.gamechanger.model.CatchResult
 import dev.datlag.gamechanger.rawg.RAWG
 import dev.datlag.gamechanger.rawg.StateSaver
-import dev.datlag.gamechanger.rawg.model.Game
-import dev.datlag.gamechanger.rawg.model.Games
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.datetime.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class TrendingGamesStateMachine(
+class MultiplayerGamesStateMachine(
     private val rawg: RAWG,
     private val key: String?
 ) : FlowReduxStateMachine<GamesState, GamesAction>(initialState = currentState) {
@@ -19,10 +16,10 @@ class TrendingGamesStateMachine(
         spec {
             inState<GamesState.Loading> {
                 onEnterEffect {
-                    currentState = it
+                    ESportGamesStateMachine.currentState = it
                 }
                 onEnter { state ->
-                    StateSaver.Cache.trending?.let {
+                    StateSaver.Cache.multiplayer?.let {
                         return@onEnter state.override { GamesState.Success(it) }
                     }
                     if (key == null) {
@@ -33,16 +30,9 @@ class TrendingGamesStateMachine(
                         GamesState.Success(
                             rawg.games(
                                 key = key,
-                                dates = listOf(
-                                    Clock.System.now().minus(1, DateTimeUnit.YEAR, TimeZone.currentSystemDefault()),
-                                    Clock.System.now()
-                                ).joinToString(separator = ",") {
-                                    it.toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
-                                },
-                                metacritic = "85,100",
-                                ordering = "-released"
+                                tags = "59"
                             ).also {
-                                StateSaver.Cache.trending = it
+                                StateSaver.Cache.multiplayer = it
                             }
                         )
                     }
@@ -52,12 +42,12 @@ class TrendingGamesStateMachine(
             }
             inState<GamesState.Success> {
                 onEnterEffect {
-                    currentState = it
+                    ESportGamesStateMachine.currentState = it
                 }
             }
             inState<GamesState.Error> {
                 onEnterEffect {
-                    currentState = it
+                    ESportGamesStateMachine.currentState = it
                 }
                 on<GamesAction.Retry> { _, state ->
                     if (state.snapshot.canRetry) {
@@ -73,8 +63,8 @@ class TrendingGamesStateMachine(
     companion object {
         var currentState: GamesState
             set(value) {
-                StateSaver.trending = value
+                StateSaver.multiplayer = value
             }
-            get() = StateSaver.trending
+            get() = StateSaver.multiplayer
     }
 }

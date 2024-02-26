@@ -59,6 +59,24 @@ class DiscoverScreenComponent(
         initialValue = OnlineCoopGamesStateMachine.currentState
     )
 
+    private val freeGamesStateMachine by di.instance<FreeGamesStateMachine>()
+    override val freeGamesState: StateFlow<GamesState> = freeGamesStateMachine.state.flowOn(
+        context = ioDispatcher()
+    ).stateIn(
+        scope = ioScope(),
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = FreeGamesStateMachine.currentState
+    )
+
+    private val multiplayerGamesStateMachine by di.instance<MultiplayerGamesStateMachine>()
+    override val multiplayerGamesState: StateFlow<GamesState> = multiplayerGamesStateMachine.state.flowOn(
+        context = ioDispatcher()
+    ).stateIn(
+        scope = ioScope(),
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = MultiplayerGamesStateMachine.currentState
+    )
+
     private val searchGamesStateMachine by di.instance<SearchGamesStateMachine>()
     override val searchGamesState: StateFlow<SearchGamesStateMachine.State> = searchGamesStateMachine.state.flowOn(
         context = ioDispatcher()
