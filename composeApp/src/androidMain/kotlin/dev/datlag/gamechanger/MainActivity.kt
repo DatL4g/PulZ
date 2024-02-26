@@ -63,7 +63,6 @@ class MainActivity : AppCompatActivity() {
                     di = di
                 ) {
                     LaunchedEffect(consentInfo) {
-                        consentInfo.reset()
                         consentInfo.initialize()
                     }
 
