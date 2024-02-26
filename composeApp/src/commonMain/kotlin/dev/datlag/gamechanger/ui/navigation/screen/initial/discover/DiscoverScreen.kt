@@ -19,12 +19,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import dev.datlag.gamechanger.LocalPaddingValues
+import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.plus
 import dev.datlag.gamechanger.common.shimmer
 import dev.datlag.gamechanger.rawg.state.SearchGamesStateMachine
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.Overview
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.SearchOverview
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
+import dev.icerock.moko.resources.compose.stringResource
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
@@ -130,7 +132,7 @@ private fun Search(component: DiscoverComponent) {
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,
-                contentDescription = "Search"
+                contentDescription = stringResource(SharedRes.strings.search)
             )
         },
         trailingIcon = {
@@ -147,13 +149,13 @@ private fun Search(component: DiscoverComponent) {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Clear,
-                        contentDescription = "Clear"
+                        contentDescription = stringResource(SharedRes.strings.clear)
                     )
                 }
             }
         },
         placeholder = {
-            Text(text = "Search for games")
+            Text(text = stringResource(SharedRes.strings.search_for_games))
         },
         modifier = Modifier.fillMaxWidth()
     ) {}

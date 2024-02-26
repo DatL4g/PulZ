@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
@@ -19,7 +20,7 @@ import dev.datlag.gamechanger.rawg.model.Game
 fun SearchOverview(
     games: List<Game>,
     paddingValues: PaddingValues,
-    searchbar: @Composable () -> Unit,
+    searchbar: @Composable LazyGridItemScope.() -> Unit,
     onClick: (Game) -> Unit,
     modifier: Modifier = Modifier
 ) {

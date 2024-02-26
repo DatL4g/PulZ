@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.haze
 import dev.datlag.gamechanger.LocalHaze
 import dev.datlag.gamechanger.SharedRes
-import dev.datlag.gamechanger.rawg.model.Game
 import dev.datlag.gamechanger.ui.custom.NativeAdView
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.DiscoverComponent
 import dev.icerock.moko.resources.compose.stringResource
@@ -21,7 +21,7 @@ import dev.icerock.moko.resources.compose.stringResource
 fun Overview(
     component: DiscoverComponent,
     paddingValues: PaddingValues,
-    searchbar: @Composable () -> Unit,
+    searchbar: @Composable LazyItemScope.() -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(

@@ -13,6 +13,10 @@ fun Game.StoreInfo.mapToIcon(): ImageResource? {
         name.contains("epic games", ignoreCase = true)
                 || name.contains("epicgames", ignoreCase = true) -> SharedRes.images.epic_games
         name.contains("steam", ignoreCase = true) -> SharedRes.images.steam
+        name.contains("google play", ignoreCase = true)
+                || name.contains("play store", ignoreCase = true) -> SharedRes.images.google_play
+        name.contains("app store", ignoreCase = true) -> SharedRes.images.app_store
+        name.contains("nintendo", ignoreCase = true) -> SharedRes.images.nintendo_eshop
         else -> null
     }
 }
