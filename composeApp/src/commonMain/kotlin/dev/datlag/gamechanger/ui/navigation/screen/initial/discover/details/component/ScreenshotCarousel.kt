@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import coil3.compose.AsyncImage
 import dev.datlag.gamechanger.common.calculateCurrentOffsetForPage
+import dev.datlag.gamechanger.common.shimmerPainter
 import dev.datlag.gamechanger.rawg.model.Game
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
@@ -79,7 +80,8 @@ private fun ParallaxCarouselItem(
                 scaleY = transformation
             },
             contentScale = ContentScale.FillBounds,
-            contentDescription = null
+            contentDescription = null,
+            placeholder = shimmerPainter()
         )
     }
 }

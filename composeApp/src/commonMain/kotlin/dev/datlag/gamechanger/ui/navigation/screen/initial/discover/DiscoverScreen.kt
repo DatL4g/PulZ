@@ -7,14 +7,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
@@ -23,18 +21,10 @@ import dev.datlag.gamechanger.LocalHaze
 import dev.datlag.gamechanger.LocalPaddingValues
 import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.plus
-import dev.datlag.gamechanger.rawg.model.Game
-import dev.datlag.gamechanger.rawg.state.*
 import dev.datlag.gamechanger.ui.custom.NativeAdView
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.DefaultOverview
-import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.OtherGameCard
-import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.TrendingGameCard
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.TrendingOverview
-import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.model.GameSectionType
-import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import dev.icerock.moko.resources.compose.stringResource
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable

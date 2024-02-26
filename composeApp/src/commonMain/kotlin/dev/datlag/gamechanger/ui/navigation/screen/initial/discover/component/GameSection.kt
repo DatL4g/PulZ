@@ -52,7 +52,7 @@ fun GameSection(
                     )
                 }
                 else -> {
-                    OtherGameCard(
+                    DefaultGameCard(
                         game = game,
                         isHighlighted = index == highlightedItem,
                         lazyListState = listState,

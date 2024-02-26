@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
+import dev.datlag.gamechanger.common.bottomShadowBrush
 import dev.datlag.gamechanger.game.Game
 import dev.datlag.gamechanger.ui.theme.SchemeTheme
 import dev.datlag.gamechanger.ui.theme.rememberSchemeThemeDominantColor
@@ -89,16 +90,7 @@ fun GameCover(
             }
         )
         Box(
-            modifier = Modifier.matchParentSize().background(
-                brush = Brush.verticalGradient(
-                    0.0f to Color.Transparent,
-                    0.1f to animatedColor.copy(alpha = 0.15f),
-                    0.3f to animatedColor.copy(alpha = 0.35f),
-                    0.5f to animatedColor.copy(alpha = 0.55f),
-                    0.7f to animatedColor.copy(alpha = 0.75f),
-                    0.9f to animatedColor
-                )
-            )
+            modifier = Modifier.matchParentSize().bottomShadowBrush(animatedColor)
         )
         Text(
             modifier = Modifier.align(Alignment.BottomStart).padding(8.dp),

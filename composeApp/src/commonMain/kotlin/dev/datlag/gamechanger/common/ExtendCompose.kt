@@ -116,3 +116,14 @@ fun <T : Any> DominantColorState<T>.update(input: T, scope: CoroutineScope) {
         this@update.updateFrom(input)
     }
 }
+
+fun Modifier.bottomShadowBrush(color: Color) = this.background(
+    brush = Brush.verticalGradient(
+        0.0f to Color.Transparent,
+        0.1f to color.copy(alpha = 0.35f),
+        0.3f to color.copy(alpha = 0.55f),
+        0.5f to color.copy(alpha = 0.75f),
+        0.7f to color.copy(alpha = 0.95f),
+        0.9f to color
+    )
+)
