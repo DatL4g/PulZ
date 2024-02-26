@@ -119,6 +119,7 @@ kotlin {
             implementation(libs.appcompat)
             implementation(libs.multidex)
             implementation(libs.splashscreen)
+            implementation(libs.ump)
 
             implementation(libs.ktor.jvm)
         }

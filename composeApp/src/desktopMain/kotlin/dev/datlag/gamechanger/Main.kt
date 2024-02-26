@@ -22,6 +22,8 @@ import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleOwner
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import dev.datlag.gamechanger.module.NetworkModule
+import dev.datlag.gamechanger.other.ConsentInfo
+import dev.datlag.gamechanger.other.LocalConsentInfo
 import dev.datlag.gamechanger.other.StateSaver
 import dev.datlag.gamechanger.ui.navigation.RootComponent
 import dev.datlag.sekret.NativeLoader
@@ -62,6 +64,7 @@ private fun runWindow(di: DI) {
         ),
         di = di
     )
+    val consentInfo = ConsentInfo()
 
     Tooling.applicationTitle(appTitle)
 
@@ -73,7 +76,8 @@ private fun runWindow(di: DI) {
         LifecycleController(lifecycle, windowState)
 
         CompositionLocalProvider(
-            LocalLifecycleOwner provides lifecycleOwner
+            LocalLifecycleOwner provides lifecycleOwner,
+            LocalConsentInfo provides consentInfo
         ) {
             App(
                 di = di
