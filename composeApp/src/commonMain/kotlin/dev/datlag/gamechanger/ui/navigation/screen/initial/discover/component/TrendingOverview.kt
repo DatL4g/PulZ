@@ -1,5 +1,6 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
@@ -9,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.datlag.gamechanger.common.shimmer
 import dev.datlag.gamechanger.rawg.model.Game
@@ -31,18 +33,15 @@ fun TrendingOverview(
         }
         is GamesState.Error -> {
             Box(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
+                Loading(false)
                 Button(
-                    onClick = retry
+                    onClick = {
+                        retry()
+                    }
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Repeat,
-                        contentDescription = null,
-                        modifier = Modifier.size(ButtonDefaults.IconSize)
-                    )
-                    Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
                     Text(text = "Retry")
                 }
             }
@@ -54,10 +53,11 @@ fun TrendingOverview(
 }
 
 @Composable
-private fun Loading() {
+private fun Loading(scrollEnabled: Boolean = true) {
     LazyRow(
         modifier = Modifier.fillMaxSize(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        userScrollEnabled = scrollEnabled
     ) {
         repeat(5) {
             item {

@@ -27,7 +27,7 @@ fun Overview(
     searchbar: @Composable LazyItemScope.() -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val listState =rememberLazyListState(
+    val listState = rememberLazyListState(
         initialFirstVisibleItemIndex = StateSaver.List.discoverOverview,
         initialFirstVisibleItemScrollOffset = StateSaver.List.discoverOverviewOffset
     )

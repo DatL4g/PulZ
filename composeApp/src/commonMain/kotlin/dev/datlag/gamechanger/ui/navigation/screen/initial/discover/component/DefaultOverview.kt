@@ -32,18 +32,15 @@ fun DefaultOverview(
         }
         is GamesState.Error -> {
             Box(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
+                Loading(false)
                 Button(
-                    onClick = retry
+                    onClick = {
+                        retry()
+                    }
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Repeat,
-                        contentDescription = null,
-                        modifier = Modifier.size(ButtonDefaults.IconSize)
-                    )
-                    Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
                     Text(text = "Retry")
                 }
             }
@@ -55,10 +52,11 @@ fun DefaultOverview(
 }
 
 @Composable
-private fun Loading() {
+private fun Loading(scrollEnabled: Boolean = true) {
     LazyRow(
         modifier = Modifier.fillMaxSize(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        userScrollEnabled = scrollEnabled
     ) {
         repeat(5) {
             item {
