@@ -43,10 +43,10 @@ data class Game(
     val genres = _genres ?: emptyList()
 
     @Transient
-    val platforms = _platforms ?: emptyList()
+    val platforms = _platforms?.sortedBy { it.platform?.name } ?: emptyList()
 
     @Transient
-    val parentPlatforms = _parentPlatforms ?: emptyList()
+    val parentPlatforms = _parentPlatforms?.sortedBy { it.platform?.name } ?: emptyList()
 
     @Transient
     val screenshots = _screenshots?.filterNot {
@@ -59,7 +59,7 @@ data class Game(
         parentPlatforms
     ).mapNotNull {
         it.platform
-    }.toSet()
+    }.sortedBy { it.name }.toSet()
 
     @Transient
     val redditTitle: String? = redditName?.ifBlank { null } ?: redditUrl?.let {

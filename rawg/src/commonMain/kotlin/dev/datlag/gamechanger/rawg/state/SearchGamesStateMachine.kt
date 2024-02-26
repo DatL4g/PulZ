@@ -12,7 +12,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class SearchGamesStateMachine(
     private val rawg: RAWG,
     private val key: String?
-) : FlowReduxStateMachine<SearchGamesStateMachine.State, SearchGamesStateMachine.Action>(initialState = StateSaver.search) {
+) : FlowReduxStateMachine<SearchGamesStateMachine.State, SearchGamesStateMachine.Action>(initialState = currentState) {
 
     init {
         spec {
