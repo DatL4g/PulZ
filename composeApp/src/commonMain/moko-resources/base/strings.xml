@@ -19,7 +19,7 @@
     <string name="placeholder_seconds">%d Seconds</string>
     <string name="discover">Discover</string>
     <string name="top_rated">Top Rated</string>
-    <string name="esport">E-Sports</string>
+    <string name="esports">E-Sports</string>
     <string name="online_coop">Online Co-Op</string>
     <string name="screenshots">Screenshots</string>
     <string name="about">About</string>
@@ -39,4 +39,19 @@
     <string name="back">Back</string>
     <string name="free">Free</string>
     <string name="multiplayer">Multiplayer</string>
+    <string name="welcome">Welcome</string>
+    <string name="welcome_title">Welcome to</string>
+    <string name="welcome_text_part1">Get ready, rally your squad, and gear up for epic battles.\nLet\'s jump into the</string>
+    <string name="welcome_text_part2">and</string>
+    <string name="welcome_text_part3">scene together, where every match is a moment to shine.</string>
+    <string name="gaming">Gaming</string>
+    <string name="esport">E-Sport</string>
+    <string name="start">Start</string>
+    <string name="login">Login</string>
+    <string name="account">Account</string>
+    <string name="email">E-Mail</string>
+    <string name="password">Password</string>
+    <string name="enter_your_email">Enter your E-Mail</string>
+    <string name="enter_your_password">Enter your Password</string>
+    <string name="skip">Skip</string>
 </resources>

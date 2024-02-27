@@ -10,4 +10,7 @@ sealed class ScreenConfig {
 
     @Serializable
     data object Welcome : ScreenConfig()
+
+    @Serializable
+    data object Login : ScreenConfig()
 }

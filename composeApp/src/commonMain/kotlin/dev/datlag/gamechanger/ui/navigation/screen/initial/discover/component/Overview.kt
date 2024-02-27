@@ -71,7 +71,7 @@ fun Overview(
         item {
             Text(
                 modifier = Modifier.padding(top = 16.dp),
-                text = stringResource(SharedRes.strings.esport),
+                text = stringResource(SharedRes.strings.esports),
                 style = MaterialTheme.typography.headlineLarge
             )
         }

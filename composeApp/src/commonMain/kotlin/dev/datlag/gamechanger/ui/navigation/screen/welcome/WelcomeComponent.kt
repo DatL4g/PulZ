@@ -5,4 +5,5 @@ import dev.datlag.gamechanger.ui.navigation.Component
 interface WelcomeComponent : Component {
 
     fun finish()
+    fun login()
 }

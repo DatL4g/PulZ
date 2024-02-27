@@ -12,16 +12,9 @@ import org.kodein.di.instance
 class WelcomeScreenComponent(
     componentContext: ComponentContext,
     override val di: DI,
-    private val onFinish: () -> Unit
+    private val onFinish: () -> Unit,
+    private val onLogin: () -> Unit
 ) : WelcomeComponent, ComponentContext by componentContext {
-
-    private val appSettings: Settings.PlatformAppSettings by di.instance()
-
-    init {
-        ioScope().launchIO {
-            appSettings.setWelcomeCompleted(true)
-        }
-    }
 
     @Composable
     override fun render() {
@@ -32,5 +25,9 @@ class WelcomeScreenComponent(
 
     override fun finish() {
         onFinish()
+    }
+
+    override fun login() {
+        onLogin()
     }
 }

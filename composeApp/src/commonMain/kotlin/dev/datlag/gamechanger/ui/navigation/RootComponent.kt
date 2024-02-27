@@ -12,6 +12,7 @@ import dev.datlag.gamechanger.common.getValueBlocking
 import dev.datlag.gamechanger.common.onRender
 import dev.datlag.gamechanger.settings.Settings
 import dev.datlag.gamechanger.ui.navigation.screen.initial.InitialScreenComponent
+import dev.datlag.gamechanger.ui.navigation.screen.login.LoginScreenComponent
 import dev.datlag.gamechanger.ui.navigation.screen.welcome.WelcomeScreenComponent
 import dev.datlag.tooling.compose.launchIO
 import dev.datlag.tooling.decompose.ioScope
@@ -31,7 +32,7 @@ class RootComponent(
         serializer = ScreenConfig.serializer(),
         initialConfiguration = run {
             val showWelcome = appSettings.showWelcome.getValueBlocking(false)
-            if (showWelcome) {
+            if (true) {
                 ScreenConfig.Welcome
             } else {
                 ScreenConfig.Home
@@ -54,11 +55,25 @@ class RootComponent(
                             appSettings.setWelcomeCompleted(true)
                         }
                     }
+                },
+                onLogin = {
+                    goToLogin (replace = true){
+                        launchIO {
+                            appSettings.setWelcomeCompleted(true)
+                        }
+                    }
                 }
             )
             is ScreenConfig.Home -> InitialScreenComponent(
                 componentContext = componentContext,
                 di = di
+            )
+            is ScreenConfig.Login -> LoginScreenComponent(
+                componentContext = componentContext,
+                di = di,
+                onFinish = {
+                    goToHome(replace = true)
+                }
             )
         }
     }
@@ -86,6 +101,14 @@ class RootComponent(
             navigation.replaceCurrent(ScreenConfig.Home, done)
         } else {
             navigation.push(ScreenConfig.Home, done)
+        }
+    }
+
+    private fun goToLogin(replace: Boolean, done: () -> Unit = { }) {
+        if (replace) {
+            navigation.replaceCurrent(ScreenConfig.Login, done)
+        } else {
+            navigation.push(ScreenConfig.Login, done)
         }
     }
 }
