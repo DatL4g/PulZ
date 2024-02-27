@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import dev.datlag.gamechanger.LocalDarkMode
 import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.autofill
+import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -119,13 +120,14 @@ fun LoginScreen(component: LoginComponent) {
             val passValid = remember(pass) {
                 pass.isNotBlank() && pass.trim().length >= 8
             }
+            val loggingIn by component.loggingIn.collectAsStateWithLifecycle()
 
             Button(
                 modifier = Modifier.fillParentMaxWidth(0.75F),
                 onClick = {
                     component.login(email, pass.trim())
                 },
-                enabled = emailValid && passValid
+                enabled = emailValid && passValid && !loggingIn
             ) {
                 Text(
                     text = stringResource(SharedRes.strings.login),
@@ -134,8 +136,10 @@ fun LoginScreen(component: LoginComponent) {
             }
         }
         item {
+            val passwordReset by component.passwordReset.collectAsStateWithLifecycle()
+
             AnimatedVisibility(
-                visible = emailValid && pass.isBlank(),
+                visible = emailValid && pass.isBlank() && !passwordReset,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
@@ -144,7 +148,7 @@ fun LoginScreen(component: LoginComponent) {
                     onClick = {
                         component.resetPassword(email)
                     },
-                    enabled = emailValid && pass.isBlank()
+                    enabled = emailValid && pass.isBlank() && !passwordReset
                 ) {
                     Text(text = stringResource(SharedRes.strings.reset_password))
                 }

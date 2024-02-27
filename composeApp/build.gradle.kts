@@ -111,27 +111,31 @@ kotlin {
 
         nativeMain.dependencies {
             implementation(libs.ktor.darwin)
-        }
 
-        androidMain.dependencies {
-            implementation(libs.android)
-            implementation(libs.activity)
-            implementation(libs.activity.compose)
-            implementation(libs.ads)
-            implementation(libs.appcompat)
-            implementation(libs.multidex)
-            implementation(libs.splashscreen)
-            implementation(libs.ump)
-
-            implementation(libs.ktor.jvm)
-
-            implementation(libs.firebase.android)
-            implementation(libs.firebase.android.auth)
             implementation(libs.firebase.crashlytics)
-            implementation(libs.firebase.android.crashlytics)
         }
-        androidMain.configure {
+
+        val androidMain by getting {
             apply(plugin = "kotlin-parcelize")
+            apply(plugin = libs.plugins.crashlytics.get().pluginId)
+
+            dependencies {
+                implementation(libs.android)
+                implementation(libs.activity)
+                implementation(libs.activity.compose)
+                implementation(libs.ads)
+                implementation(libs.appcompat)
+                implementation(libs.multidex)
+                implementation(libs.splashscreen)
+                implementation(libs.ump)
+
+                implementation(libs.ktor.jvm)
+
+                implementation(libs.firebase.android)
+                implementation(libs.firebase.android.auth)
+                implementation(libs.firebase.crashlytics)
+                implementation(libs.firebase.android.crashlytics)
+            }
         }
 
         val desktopMain by getting {

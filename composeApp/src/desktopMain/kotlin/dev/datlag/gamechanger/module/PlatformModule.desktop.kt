@@ -1,5 +1,6 @@
 package dev.datlag.gamechanger.module
 
+import android.app.Application
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.okio.OkioStorage
 import coil3.ImageLoader
@@ -12,6 +13,7 @@ import coil3.svg.SvgDecoder
 import dev.datlag.gamechanger.Sekret
 import dev.datlag.gamechanger.common.CONFIG_APP_NAME
 import dev.datlag.gamechanger.getPackageName
+import dev.datlag.gamechanger.other.FirebaseFactory
 import dev.datlag.gamechanger.other.StateSaver
 import dev.datlag.gamechanger.settings.ApplicationSettingsSerializer
 import dev.datlag.gamechanger.settings.DataStoreAppSettings
@@ -19,6 +21,9 @@ import dev.datlag.gamechanger.settings.Settings
 import dev.datlag.tooling.Tooling
 import dev.datlag.tooling.getRWUserDataFile
 import dev.datlag.tooling.systemProperty
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.FirebaseOptions
+import dev.gitlive.firebase.initialize
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -84,6 +89,22 @@ actual object PlatformModule {
                 Sekret.rawg(getPackageName()) ?: ""
             } else {
                 ""
+            }
+        }
+        bindSingleton<FirebaseFactory> {
+            if (StateSaver.sekretLibraryLoaded) {
+                FirebaseFactory.Initialized(
+                    Firebase.initialize(
+                        context = Application(),
+                        options = FirebaseOptions(
+                            projectId = Sekret.firebaseProject(getPackageName()),
+                            applicationId = Sekret.firebaseAndroidApplication(getPackageName())!!,
+                            apiKey = Sekret.firebaseAndroidApiKey(getPackageName())!!
+                        )
+                    )
+                )
+            } else {
+                FirebaseFactory.Empty
             }
         }
     }

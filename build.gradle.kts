@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.cocoapods) apply false
     alias(libs.plugins.compose) apply false
+    alias(libs.plugins.crashlytics) apply false
     alias(libs.plugins.multiplatform) apply false
     alias(libs.plugins.moko.resources) apply false
     alias(libs.plugins.osdetector) apply false

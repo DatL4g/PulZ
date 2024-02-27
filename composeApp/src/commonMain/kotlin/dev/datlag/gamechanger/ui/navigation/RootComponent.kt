@@ -9,6 +9,7 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 import com.arkivanov.decompose.router.stack.*
 import dev.datlag.gamechanger.LocalDI
 import dev.datlag.gamechanger.common.getValueBlocking
+import dev.datlag.gamechanger.common.nullableFirebaseInstance
 import dev.datlag.gamechanger.common.onRender
 import dev.datlag.gamechanger.settings.Settings
 import dev.datlag.gamechanger.ui.navigation.screen.initial.InitialScreenComponent
@@ -105,6 +106,10 @@ class RootComponent(
     }
 
     private fun goToLogin(replace: Boolean, done: () -> Unit = { }) {
+        if (di.nullableFirebaseInstance() == null) {
+            return goToHome(replace = replace, done = done)
+        }
+
         if (replace) {
             navigation.replaceCurrent(ScreenConfig.Login, done)
         } else {
