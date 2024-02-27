@@ -62,10 +62,6 @@ class MainActivity : AppCompatActivity() {
                 App(
                     di = di
                 ) {
-                    LaunchedEffect(consentInfo) {
-                        consentInfo.initialize()
-                    }
-
                     root.render()
                 }
             }

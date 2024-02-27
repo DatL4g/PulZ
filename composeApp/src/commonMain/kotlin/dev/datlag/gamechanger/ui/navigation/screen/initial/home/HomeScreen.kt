@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdsClick
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +26,7 @@ import dev.datlag.gamechanger.LocalPaddingValues
 import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.plus
 import dev.datlag.gamechanger.game.Game
+import dev.datlag.gamechanger.other.LocalConsentInfo
 import dev.datlag.gamechanger.ui.custom.BannerAd
 import dev.datlag.gamechanger.ui.navigation.screen.initial.home.component.GameCover
 import dev.datlag.gamechanger.ui.theme.SchemeTheme
@@ -34,9 +36,13 @@ import dev.icerock.moko.resources.compose.stringResource
 @Composable
 fun HomeScreen(component: HomeComponent) {
     val childState by component.child.subscribeAsState()
+    val consentInfo = LocalConsentInfo.current
 
     childState.child?.instance?.render() ?: Overview(component)
 
+    LaunchedEffect(consentInfo) {
+        consentInfo.initialize()
+    }
 }
 
 @Composable

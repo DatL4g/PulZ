@@ -6,4 +6,5 @@ interface LoginComponent : Component {
     val emailRegex: Regex
     fun login(email: String, pass: String)
     fun skip()
+    fun resetPassword(email: String)
 }

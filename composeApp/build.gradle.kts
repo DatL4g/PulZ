@@ -101,6 +101,8 @@ kotlin {
             implementation(libs.ktor.content.negotiation)
             implementation(libs.ktor.serialization.json)
 
+            implementation(libs.firebase.auth)
+
             implementation(project(":settings"))
             implementation(project(":hltv"))
             implementation(project(":game"))
@@ -122,6 +124,11 @@ kotlin {
             implementation(libs.ump)
 
             implementation(libs.ktor.jvm)
+
+            implementation(libs.firebase.android)
+            implementation(libs.firebase.android.auth)
+            implementation(libs.firebase.crashlytics)
+            implementation(libs.firebase.android.crashlytics)
         }
         androidMain.configure {
             apply(plugin = "kotlin-parcelize")

@@ -36,4 +36,8 @@ class LoginScreenComponent(
     override fun skip() {
         onFinish()
     }
+
+    override fun resetPassword(email: String) {
+
+    }
 }

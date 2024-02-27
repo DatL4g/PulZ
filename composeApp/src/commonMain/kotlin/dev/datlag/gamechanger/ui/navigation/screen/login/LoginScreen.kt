@@ -1,5 +1,8 @@
 package dev.datlag.gamechanger.ui.navigation.screen.login
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,6 +30,9 @@ import dev.icerock.moko.resources.compose.stringResource
 fun LoginScreen(component: LoginComponent) {
     var email by remember { mutableStateOf("") }
     var pass by remember { mutableStateOf("") }
+    val emailValid = remember(email) {
+        email.matches(component.emailRegex)
+    }
 
     LazyColumn(
         modifier = Modifier.safeDrawingPadding().fillMaxSize(),
@@ -110,9 +116,6 @@ fun LoginScreen(component: LoginComponent) {
             )
         }
         item {
-            val emailValid = remember(email) {
-                email.matches(component.emailRegex)
-            }
             val passValid = remember(pass) {
                 pass.isNotBlank() && pass.trim().length >= 8
             }
@@ -120,7 +123,7 @@ fun LoginScreen(component: LoginComponent) {
             Button(
                 modifier = Modifier.fillParentMaxWidth(0.75F),
                 onClick = {
-                    component.login(email, pass)
+                    component.login(email, pass.trim())
                 },
                 enabled = emailValid && passValid
             ) {
@@ -131,8 +134,25 @@ fun LoginScreen(component: LoginComponent) {
             }
         }
         item {
+            AnimatedVisibility(
+                visible = emailValid && pass.isBlank(),
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                TextButton(
+                    modifier = Modifier.fillParentMaxWidth(0.75F),
+                    onClick = {
+                        component.resetPassword(email)
+                    },
+                    enabled = emailValid && pass.isBlank()
+                ) {
+                    Text(text = stringResource(SharedRes.strings.reset_password))
+                }
+            }
+        }
+        item {
             TextButton(
-                modifier = Modifier.fillParentMaxWidth(0.75F).padding(vertical = 16.dp),
+                modifier = Modifier.padding(vertical = 16.dp),
                 onClick = {
                     component.skip()
                 }

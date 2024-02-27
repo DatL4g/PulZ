@@ -54,4 +54,5 @@
     <string name="enter_your_email">Enter your E-Mail</string>
     <string name="enter_your_password">Enter your Password</string>
     <string name="skip">Skip</string>
+    <string name="reset_password">Reset Password</string>
 </resources>
