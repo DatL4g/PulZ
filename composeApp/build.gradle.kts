@@ -130,6 +130,7 @@ kotlin {
                 implementation(libs.ump)
 
                 implementation(libs.ktor.jvm)
+                implementation(libs.coroutines.swing)
 
                 implementation(libs.firebase.android)
                 implementation(libs.firebase.android.auth)
@@ -144,6 +145,7 @@ kotlin {
                 implementation(libs.context.menu)
 
                 implementation(libs.ktor.jvm)
+                implementation(libs.coroutines.android)
             }
         }
     }
