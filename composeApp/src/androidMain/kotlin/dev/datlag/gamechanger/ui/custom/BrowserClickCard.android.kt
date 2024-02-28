@@ -9,7 +9,7 @@ import androidx.core.net.toUri
 import dev.datlag.tooling.scopeCatching
 
 @Composable
-internal actual fun BrowserClickCardHelper(uri: String?, clicked: Boolean) {
+internal actual fun ComposeClickHelper(uri: String?, clicked: Boolean) {
     val context = LocalContext.current
 
     LaunchedEffect(clicked) {

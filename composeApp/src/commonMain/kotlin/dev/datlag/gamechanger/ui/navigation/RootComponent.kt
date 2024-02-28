@@ -67,7 +67,10 @@ class RootComponent(
             )
             is ScreenConfig.Home -> InitialScreenComponent(
                 componentContext = componentContext,
-                di = di
+                di = di,
+                onLogin = {
+                    goToLogin(replace = false)
+                }
             )
             is ScreenConfig.Login -> LoginScreenComponent(
                 componentContext = componentContext,
@@ -107,7 +110,7 @@ class RootComponent(
 
     private fun goToLogin(replace: Boolean, done: () -> Unit = { }) {
         if (di.nullableFirebaseInstance() == null) {
-            return goToHome(replace = replace, done = done)
+            return goToHome(replace = true, done = done)
         }
 
         if (replace) {

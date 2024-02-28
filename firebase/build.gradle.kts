@@ -23,10 +23,11 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.firebase.android)
+            implementation(libs.firebase.android.analytics)
             implementation(libs.firebase.android.auth)
+            implementation(libs.firebase.android.crashlytics)
 
             implementation(libs.firebase.crashlytics)
-            implementation(libs.firebase.android.crashlytics)
         }
 
         nativeMain.dependencies {

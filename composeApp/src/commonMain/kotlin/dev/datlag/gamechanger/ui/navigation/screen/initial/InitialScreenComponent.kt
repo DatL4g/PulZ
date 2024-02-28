@@ -24,7 +24,8 @@ import org.kodein.di.DI
 
 class InitialScreenComponent(
     componentContext: ComponentContext,
-    override val di: DI
+    override val di: DI,
+    private val onLogin: () -> Unit
 ) : InitialComponent, ComponentContext by componentContext {
 
     override val pagerItems: List<InitialComponent.PagerItem> = listOf(
@@ -114,7 +115,8 @@ class InitialScreenComponent(
             )
             is View.User -> UserScreenComponent(
                 componentContext = context,
-                di = di
+                di = di,
+                onLogin = onLogin
             )
         }
     }

@@ -21,6 +21,7 @@ datetime = "0.5.0"
 decompose = "3.0.0-alpha06"
 firebase = "1.11.1"
 firebase-android = "20.4.2"
+firebase-android-analytics = "21.5.1"
 firebase-android-auth = "22.3.1"
 firebase-android-crashlytics = "18.6.2"
 flowredux = "1.2.1"
@@ -75,6 +76,7 @@ decompose-compose = { group = "com.arkivanov.decompose", name = "extensions-comp
 firebase-auth = { group = "dev.gitlive", name = "firebase-auth", version.ref = "firebase" }
 firebase-crashlytics = { group = "dev.gitlive", name = "firebase-crashlytics", version.ref = "firebase" }
 firebase-android = { group = "com.google.firebase", name = "firebase-common", version.ref = "firebase-android" }
+firebase-android-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebase-android-analytics" }
 firebase-android-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebase-android-auth" }
 firebase-android-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx", version.ref = "firebase-android-crashlytics" }
 flowredux = { group = "com.freeletics.flowredux", name = "flowredux", version.ref = "flowredux" }

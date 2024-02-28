@@ -33,6 +33,9 @@ sealed interface FirebaseFactory {
         suspend fun resetPassword(email: String) {
             Firebase.auth(app).sendPasswordResetEmail(email)
         }
+
+        val isSignedIn: Boolean
+            get() = Firebase.auth(app).currentUser != null
     }
     data object Empty : FirebaseFactory
 

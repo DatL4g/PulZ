@@ -55,4 +55,9 @@
     <string name="enter_your_password">Enter your Password</string>
     <string name="skip">Skip</string>
     <string name="reset_password">Reset Password</string>
+    <string name="privacy">Privacy</string>
+    <string name="edit_consent">Edit Consent</string>
+    <string name="policy">Policy</string>
+    <string name="connecting_steam_requires_desktop">Connecting your Steam Account(s) requires the desktop app installation.</string>
+    <string name="steam_accounts_synced">Your Steam Account(s) are synced.</string>
 </resources>

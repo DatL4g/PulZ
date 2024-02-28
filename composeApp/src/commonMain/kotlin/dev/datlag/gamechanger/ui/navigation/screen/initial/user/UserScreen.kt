@@ -22,27 +22,84 @@ import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.fullRow
 import dev.datlag.gamechanger.game.SteamLauncher
 import dev.datlag.gamechanger.other.LocalConsentInfo
+import dev.datlag.gamechanger.ui.custom.BrowserClickTextButton
 import dev.datlag.gamechanger.ui.navigation.screen.initial.user.component.SteamContent
 import dev.datlag.gamechanger.ui.theme.SchemeTheme
+import dev.datlag.tooling.Platform
 import dev.icerock.moko.resources.compose.stringResource
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun UserScreen(component: UserComponent) {
     val consentInfo = LocalConsentInfo.current
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize().safeDrawingPadding(),
+        modifier = Modifier.safeDrawingPadding().fillMaxSize(),
         contentPadding = PaddingValues(all = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        if (consentInfo.privacy) {
+        item {
+            Text(
+                modifier = Modifier.padding(vertical = 16.dp),
+                text = stringResource(SharedRes.strings.settings),
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineLarge
+            )
+        }
+        item {
+            Text(
+                text = stringResource(SharedRes.strings.account),
+                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.titleLarge
+            )
+        }
+        if (!component.isSignedIn) {
             item {
-                Button(
+                TextButton(
                     onClick = {
-                        consentInfo.showPrivacyForm()
+                        component.login()
                     }
                 ) {
-                    Text(text = "Privacy")
+                    Text(text = stringResource(SharedRes.strings.login))
+                }
+            }
+        } else {
+            item {
+                val infoText = if (Platform.isDesktop) {
+                    SharedRes.strings.steam_accounts_synced
+                } else {
+                    SharedRes.strings.connecting_steam_requires_desktop
+                }
+
+                Text(text = stringResource(infoText))
+            }
+        }
+        item {
+            Text(
+                text = stringResource(SharedRes.strings.privacy),
+                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.titleLarge
+            )
+        }
+        item {
+            FlowRow(
+                modifier = Modifier.fillParentMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
+                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally)
+            ) {
+                if (consentInfo.privacy) {
+                    TextButton(
+                        onClick = {
+                            consentInfo.showPrivacyForm()
+                        }
+                    ) {
+                        Text(text = stringResource(SharedRes.strings.edit_consent))
+                    }
+                }
+                BrowserClickTextButton(
+                    uri = "https://github.com/DatL4g/Gamechanger/blob/master/Privacy_Policy.md"
+                ) {
+                    Text(text = stringResource(SharedRes.strings.policy))
                 }
             }
         }

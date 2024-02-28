@@ -11,6 +11,8 @@ import de.jensklingenberg.ktorfit.ktorfitBuilder
 import dev.datlag.gamechanger.hltv.state.HomeStateMachine
 import dev.datlag.gamechanger.rawg.RAWG
 import dev.datlag.gamechanger.rawg.state.*
+import dev.datlag.tooling.compose.ioDispatcher
+import dev.datlag.tooling.compose.mainDispatcher
 import io.ktor.client.*
 import okio.FileSystem
 import org.kodein.di.*
@@ -24,6 +26,8 @@ data object NetworkModule {
 
         bindSingleton<ImageLoader> {
             ImageLoader.Builder(instance())
+                .dispatcher(ioDispatcher())
+                .interceptorDispatcher(mainDispatcher())
                 .components {
                     add(KtorNetworkFetcherFactory(instance<HttpClient>()))
                     add(SvgDecoder.Factory())

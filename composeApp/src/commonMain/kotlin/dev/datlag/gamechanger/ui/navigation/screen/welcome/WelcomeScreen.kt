@@ -27,13 +27,39 @@ import dev.icerock.moko.resources.compose.stringResource
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun WelcomeScreen(component: WelcomeComponent) {
+    when (calculateWindowSizeClass().widthSizeClass) {
+        WindowWidthSizeClass.Compact -> CompactScreen(component)
+        else -> DefaultScreen(component)
+    }
+}
+
+@Composable
+private fun CompactScreen(component: WelcomeComponent) {
     Box(
         modifier = Modifier.safeDrawingPadding().fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        when (calculateWindowSizeClass().widthSizeClass) {
-            WindowWidthSizeClass.Compact -> CompactScreen()
-            else -> DefaultScreen()
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(48.dp, Alignment.CenterVertically),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(16.dp)
+        ) {
+            item {
+                val res = if (LocalDarkMode.current) {
+                    SharedRes.images.fans_dark
+                } else {
+                    SharedRes.images.fans_light
+                }
+
+                Image(
+                    modifier = Modifier.fillParentMaxWidth(0.5F),
+                    painter = painterResource(res),
+                    contentDescription = stringResource(SharedRes.strings.welcome),
+                    contentScale = ContentScale.FillWidth
+                )
+            }
+            Content()
         }
         Button(
             modifier = Modifier.padding(bottom = 32.dp).align(Alignment.BottomEnd),
@@ -48,33 +74,7 @@ fun WelcomeScreen(component: WelcomeComponent) {
 }
 
 @Composable
-private fun CompactScreen() {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(48.dp, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(16.dp)
-    ) {
-        item {
-            val res = if (LocalDarkMode.current) {
-                SharedRes.images.fans_dark
-            } else {
-                SharedRes.images.fans_light
-            }
-
-            Image(
-                modifier = Modifier.fillParentMaxWidth(0.5F),
-                painter = painterResource(res),
-                contentDescription = stringResource(SharedRes.strings.welcome),
-                contentScale = ContentScale.FillWidth
-            )
-        }
-        Content()
-    }
-}
-
-@Composable
-private fun DefaultScreen() {
+private fun DefaultScreen(component: WelcomeComponent) {
     Row(
         modifier = Modifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically,
@@ -100,10 +100,19 @@ private fun DefaultScreen() {
         }
         LazyColumn(
             modifier = Modifier.weight(1F),
-            verticalArrangement = Arrangement.spacedBy(48.dp, Alignment.CenterVertically),
+            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Content()
+            item {
+                Button(
+                    onClick = {
+                        component.login()
+                    }
+                ) {
+                    Text(stringResource(SharedRes.strings.start))
+                }
+            }
         }
     }
 }

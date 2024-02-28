@@ -2,42 +2,45 @@ package dev.datlag.gamechanger.ui.custom
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonElevation
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 
 @Composable
-fun BrowserClickCard(
+fun BrowserClickTextButton(
     uri: String?,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: Shape = CardDefaults.shape,
-    colors: CardColors = CardDefaults.cardColors(),
-    elevation: CardElevation = CardDefaults.cardElevation(),
+    shape: Shape = ButtonDefaults.textShape,
+    colors: ButtonColors = ButtonDefaults.textButtonColors(),
+    elevation: ButtonElevation? = null,
     border: BorderStroke? = null,
+    contentPadding: PaddingValues = ButtonDefaults.TextButtonContentPadding,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable RowScope.() -> Unit
 ) {
     var launchUri by remember(uri) { mutableStateOf(false) }
     ComposeClickHelper(uri, launchUri)
 
-    Card(
+    TextButton(
+        onClick = {
+            launchUri = true
+        },
         modifier = modifier,
+        enabled = enabled,
         shape = shape,
         colors = colors,
         elevation = elevation,
         border = border,
-        content = content,
-        onClick = {
-            launchUri = true
-        },
-        enabled = enabled,
-        interactionSource = interactionSource
+        contentPadding = contentPadding,
+        interactionSource = interactionSource,
+        content = content
     )
 
     DisposableEffect(uri) {
@@ -46,6 +49,3 @@ fun BrowserClickCard(
         }
     }
 }
-
-@Composable
-internal expect fun ComposeClickHelper(uri: String?, clicked: Boolean)
