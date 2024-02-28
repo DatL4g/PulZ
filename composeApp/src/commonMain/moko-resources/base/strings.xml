@@ -60,4 +60,5 @@
     <string name="policy">Policy</string>
     <string name="connecting_steam_requires_desktop">Connecting your Steam Account(s) requires the desktop app installation.</string>
     <string name="steam_accounts_synced">Your Steam Account(s) are synced.</string>
+    <string name="libraries">Libraries</string>
 </resources>

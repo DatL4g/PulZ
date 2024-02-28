@@ -1,6 +1,6 @@
 [versions]
 app = "1.0.0"
-aboutlibraries = "10.9.2"
+aboutlibraries = "10.10.0"
 activity = "1.8.2"
 ads = "22.6.0"
 android = "8.2.2"
@@ -52,6 +52,7 @@ versions = "0.51.0"
 windowsize = "0.5.0-beta01"
 
 [libraries]
+aboutlibraries = { group = "com.mikepenz", name = "aboutlibraries-core", version.ref = "aboutlibraries" }
 android = { group = "androidx.core", name = "core-ktx", version.ref = "android-core" }
 activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }

@@ -1,8 +1,11 @@
+import com.mikepenz.aboutlibraries.plugin.DuplicateMode
+import com.mikepenz.aboutlibraries.plugin.DuplicateRule
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
+    alias(libs.plugins.aboutlibraries)
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose)
@@ -31,6 +34,13 @@ sekret {
         androidJNIFolder.set(project.layout.projectDirectory.dir("src/androidMain/jniLibs"))
         desktopComposeResourcesFolder.set(project.layout.projectDirectory.dir("src/desktopMain/jniLibs"))
     }
+}
+
+aboutLibraries {
+    includePlatform = true
+    duplicationMode = DuplicateMode.MERGE
+    duplicationRule = DuplicateRule.GROUP
+    excludeFields = arrayOf("generated")
 }
 
 kotlin {
@@ -89,8 +99,6 @@ kotlin {
             implementation(libs.coil.svg)
             implementation(libs.coil.compose)
 
-            implementation(libs.compottie)
-
             implementation(libs.kmpalette)
             implementation(libs.kolor)
 
@@ -100,6 +108,8 @@ kotlin {
             implementation(libs.datetime)
             implementation(libs.ktor.content.negotiation)
             implementation(libs.ktor.serialization.json)
+
+            implementation(libs.aboutlibraries)
 
             implementation(project(":settings"))
             implementation(project(":hltv"))
