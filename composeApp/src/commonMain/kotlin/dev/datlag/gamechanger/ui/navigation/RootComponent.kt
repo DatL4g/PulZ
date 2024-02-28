@@ -33,7 +33,7 @@ class RootComponent(
         serializer = ScreenConfig.serializer(),
         initialConfiguration = run {
             val showWelcome = appSettings.showWelcome.getValueBlocking(false)
-            if (true) {
+            if (showWelcome) {
                 ScreenConfig.Welcome
             } else {
                 ScreenConfig.Home
