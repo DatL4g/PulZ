@@ -101,18 +101,15 @@ kotlin {
             implementation(libs.ktor.content.negotiation)
             implementation(libs.ktor.serialization.json)
 
-            implementation(libs.firebase.auth)
-
             implementation(project(":settings"))
             implementation(project(":hltv"))
             implementation(project(":game"))
             implementation(project(":rawg"))
+            implementation(project(":firebase"))
         }
 
         nativeMain.dependencies {
             implementation(libs.ktor.darwin)
-
-            implementation(libs.firebase.crashlytics)
         }
 
         val androidMain by getting {
@@ -130,12 +127,7 @@ kotlin {
                 implementation(libs.ump)
 
                 implementation(libs.ktor.jvm)
-                implementation(libs.coroutines.swing)
-
-                implementation(libs.firebase.android)
-                implementation(libs.firebase.android.auth)
-                implementation(libs.firebase.crashlytics)
-                implementation(libs.firebase.android.crashlytics)
+                implementation(libs.coroutines.android)
             }
         }
 
@@ -145,7 +137,7 @@ kotlin {
                 implementation(libs.context.menu)
 
                 implementation(libs.ktor.jvm)
-                implementation(libs.coroutines.android)
+                implementation(libs.coroutines.swing)
             }
         }
     }

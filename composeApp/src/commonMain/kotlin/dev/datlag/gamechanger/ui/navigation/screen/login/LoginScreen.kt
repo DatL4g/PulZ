@@ -29,6 +29,7 @@ import dev.datlag.gamechanger.common.autofill
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
+import io.github.aakira.napier.Napier
 
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -39,10 +40,25 @@ fun LoginScreen(component: LoginComponent) {
     val emailValid = remember(email.value) {
         email.value.matches(component.emailRegex)
     }
+    val passValid = remember(pass.value) {
+        pass.value.isNotBlank() && pass.value.trim().length >= 8
+    }
 
     when (calculateWindowSizeClass().widthSizeClass) {
-        WindowWidthSizeClass.Compact -> CompactScreen(email, emailValid, pass, component)
-        else -> DefaultScreen(email, emailValid, pass, component)
+        WindowWidthSizeClass.Compact -> CompactScreen(
+            email = email,
+            emailValid = emailValid,
+            pass = pass,
+            passValid = passValid,
+            component = component
+        )
+        else -> DefaultScreen(
+            email = email,
+            emailValid = emailValid,
+            pass = pass,
+            passValid = passValid,
+            component = component
+        )
     }
 }
 
@@ -51,6 +67,7 @@ private fun CompactScreen(
     email: MutableState<String>,
     emailValid: Boolean,
     pass: MutableState<String>,
+    passValid: Boolean,
     component: LoginComponent
 ) {
     LazyColumn(
@@ -72,7 +89,13 @@ private fun CompactScreen(
                 contentScale = ContentScale.FillWidth
             )
         }
-        Content(email, emailValid, pass, component)
+        Content(
+            email = email,
+            emailValid = emailValid,
+            pass = pass,
+            passValid = passValid,
+            component = component
+        )
     }
 }
 
@@ -81,6 +104,7 @@ private fun DefaultScreen(
     email: MutableState<String>,
     emailValid: Boolean,
     pass: MutableState<String>,
+    passValid: Boolean,
     component: LoginComponent
 ) {
     Row(
@@ -111,7 +135,13 @@ private fun DefaultScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Content(email, emailValid, pass, component)
+            Content(
+                email = email,
+                emailValid = emailValid,
+                pass = pass,
+                passValid = passValid,
+                component = component
+            )
         }
     }
 }
@@ -121,6 +151,7 @@ private fun LazyListScope.Content(
     email: MutableState<String>,
     emailValid: Boolean,
     pass: MutableState<String>,
+    passValid: Boolean,
     component: LoginComponent
 ) {
     item {
@@ -186,9 +217,7 @@ private fun LazyListScope.Content(
         )
     }
     item {
-        val passValid = remember(pass) {
-            pass.value.isNotBlank() && pass.value.trim().length >= 8
-        }
+
         val loggingIn by component.loggingIn.collectAsStateWithLifecycle()
 
         Button(
@@ -196,7 +225,12 @@ private fun LazyListScope.Content(
             onClick = {
                 component.login(email.value, pass.value.trim())
             },
-            enabled = emailValid && passValid && !loggingIn
+            enabled = (emailValid && passValid && !loggingIn) || run {
+                Napier.e("Email: $emailValid")
+                Napier.e("Pass: $passValid")
+                Napier.e("Login: $loggingIn")
+                false
+            }
         ) {
             Text(
                 text = stringResource(SharedRes.strings.login),

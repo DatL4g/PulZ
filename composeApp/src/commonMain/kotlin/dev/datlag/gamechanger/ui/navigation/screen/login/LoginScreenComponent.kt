@@ -5,14 +5,8 @@ import com.arkivanov.decompose.ComponentContext
 import dev.datlag.gamechanger.common.nullableFirebaseInstance
 import dev.datlag.gamechanger.common.onRender
 import dev.datlag.gamechanger.settings.Settings
-import dev.datlag.tooling.async.suspendCatching
 import dev.datlag.tooling.compose.withMainContext
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.AuthResult
-import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
 import org.kodein.di.DI
 import org.kodein.di.instance
 
@@ -53,20 +47,7 @@ class LoginScreenComponent(
             firebaseApp?.let {
                 loggingIn.emit(true)
 
-                val auth = Firebase.auth(it)
-                val result = suspendCatching {
-                    auth.signInWithEmailAndPassword(email, pass)
-                }.getOrNull()
-
-                if (result?.user == null) {
-                    suspendCatching {
-                        auth.createUserWithEmailAndPassword(email, pass)
-                    }.getOrNull()
-
-                    withMainContext {
-                        onFinish()
-                    }
-                } else {
+                it.loginOrCreateEmail(email, pass) {
                     withMainContext {
                         onFinish()
                     }
@@ -84,9 +65,7 @@ class LoginScreenComponent(
             firebaseApp?.let {
                 passwordReset.emit(true)
 
-                suspendCatching {
-                    Firebase.auth(it).sendPasswordResetEmail(email = email)
-                }.getOrNull()
+                it.resetPassword(email)
             }
         }
     }

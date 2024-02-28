@@ -4,16 +4,13 @@ import android.content.Context
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.okio.OkioStorage
 import dev.datlag.gamechanger.Sekret
+import dev.datlag.gamechanger.firebase.FirebaseFactory
+import dev.datlag.gamechanger.firebase.initialize
 import dev.datlag.gamechanger.getPackageName
-import dev.datlag.gamechanger.other.FirebaseFactory
 import dev.datlag.gamechanger.other.StateSaver
 import dev.datlag.gamechanger.settings.ApplicationSettingsSerializer
 import dev.datlag.gamechanger.settings.DataStoreAppSettings
 import dev.datlag.gamechanger.settings.Settings
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.FirebaseApp
-import dev.gitlive.firebase.FirebaseOptions
-import dev.gitlive.firebase.initialize
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -76,15 +73,11 @@ actual object PlatformModule {
 
         bindSingleton<FirebaseFactory> {
             if (StateSaver.sekretLibraryLoaded) {
-                FirebaseFactory.Initialized(
-                    Firebase.initialize(
-                        context = instance<Context>(),
-                        options = FirebaseOptions(
-                            projectId = Sekret.firebaseProject(getPackageName()),
-                            applicationId = Sekret.firebaseAndroidApplication(getPackageName())!!,
-                            apiKey = Sekret.firebaseAndroidApiKey(getPackageName())!!
-                        )
-                    )
+                FirebaseFactory.initialize(
+                    context = instance<Context>(),
+                    projectId = Sekret.firebaseProject(getPackageName()),
+                    applicationId = Sekret.firebaseAndroidApplication(getPackageName())!!,
+                    apiKey = Sekret.firebaseAndroidApiKey(getPackageName())!!
                 )
             } else {
                 FirebaseFactory.Empty

@@ -6,6 +6,7 @@ include(":hltv")
 include(":model")
 include(":game")
 include(":rawg")
+include(":firebase")
 
 pluginManagement {
     repositories {
