@@ -200,9 +200,7 @@ compose.desktop {
             packageName = "Gamechanger"
             packageVersion = appVersion
             outputBaseDir.set(rootProject.layout.buildDirectory.asFile.get().resolve("release"))
-            appResourcesRootDir.set(project.layout.projectDirectory.dir("src/desktopMain/jniLibs").also {
-                println(it.asFile.canonicalPath)
-            })
+            appResourcesRootDir.set(project.layout.projectDirectory.dir("src/desktopMain/jniLibs"))
 
             when (getHost()) {
                 Host.Linux -> targetFormats(
@@ -214,6 +212,20 @@ compose.desktop {
                 Host.Windows -> targetFormats(
                     TargetFormat.Exe, TargetFormat.Msi
                 )
+            }
+
+            linux {
+                iconFile.set(project.layout.projectDirectory.dir("src/commonMain/moko-resources/assets/png").file("png_launcher_128.png"))
+                rpmLicenseType = "AGPL-3.0"
+                debMaintainer = "Jeff Retz (DatLag)"
+                appCategory = "Utility"
+            }
+            windows {
+                iconFile.set(project.layout.projectDirectory.dir("src/commonMain/moko-resources/assets/ico").file("ico_launcher_128.ico"))
+                upgradeUuid = "409c7309-f13e-4215-a06d-f5c20df3f5a9"
+            }
+            macOS {
+                iconFile.set(project.layout.projectDirectory.dir("src/commonMain/moko-resources/assets/icns").file("launcher.icns"))
             }
 
             includeAllModules = true

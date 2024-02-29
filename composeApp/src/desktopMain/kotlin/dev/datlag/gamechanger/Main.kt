@@ -5,7 +5,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.*
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
 import coil3.ImageLoader
@@ -28,13 +30,24 @@ import dev.datlag.gamechanger.ui.navigation.RootComponent
 import dev.datlag.sekret.NativeLoader
 import dev.datlag.tooling.Tooling
 import dev.datlag.tooling.applicationTitle
+import dev.datlag.tooling.async.suspendCatching
+import dev.datlag.tooling.compose.getResourcesAsInputStream
+import dev.datlag.tooling.compose.launchIO
+import dev.datlag.tooling.compose.loadAppIcon
+import dev.datlag.tooling.compose.withMainContext
 import dev.datlag.tooling.decompose.lifecycle.LocalLifecycleOwner
 import dev.datlag.tooling.systemProperty
+import dev.icerock.moko.resources.AssetResource
 import dev.icerock.moko.resources.desc.Resource
 import dev.icerock.moko.resources.desc.StringDesc
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import org.kodein.di.DI
 import org.kodein.di.instance
+import java.awt.Image
 import java.io.File
+import javax.swing.ImageIcon
 
 fun main(vararg args: String) {
     StateSaver.sekretLibraryLoaded = NativeLoader.loadLibrary("sekret", systemProperty("compose.application.resources.dir")?.let { File(it) })
@@ -73,6 +86,26 @@ private fun runWindow(di: DI) {
         exitProcessOnExit = true
     ) {
         LifecycleController(lifecycle, windowState)
+        loadAppIcons(
+            this.window,
+            rememberCoroutineScope(),
+            SharedRes.assets.launcher,
+            SharedRes.assets.png_launcher_1024,
+            SharedRes.assets.png_launcher_512,
+            SharedRes.assets.png_launcher_256,
+            SharedRes.assets.png_launcher_128,
+            SharedRes.assets.png_launcher_96,
+            SharedRes.assets.png_launcher_64,
+            SharedRes.assets.png_launcher_48,
+            SharedRes.assets.png_launcher_32,
+            SharedRes.assets.png_launcher_16,
+            SharedRes.assets.ico_launcher_128,
+            SharedRes.assets.ico_launcher_96,
+            SharedRes.assets.ico_launcher_64,
+            SharedRes.assets.ico_launcher_48,
+            SharedRes.assets.ico_launcher_32,
+            SharedRes.assets.ico_launcher_16,
+        )
 
         CompositionLocalProvider(
             LocalLifecycleOwner provides lifecycleOwner,
@@ -99,3 +132,30 @@ private fun runWindow(di: DI) {
         }
     }
 }
+
+private fun loadAppIcons(
+    window: ComposeWindow,
+    scope: CoroutineScope,
+    vararg assets: AssetResource
+) = scope.launchIO {
+    val appIcons = assets.map { async {
+        getAppImage(it)
+    } }.awaitAll().filterNotNull()
+
+    withMainContext {
+        Tooling.loadAppIcon(window, *appIcons.toTypedArray())
+    }
+}
+
+private suspend fun getAppImage(asset: AssetResource): Image? = suspendCatching {
+    val stream = suspendCatching {
+        Tooling.getResourcesAsInputStream(PackageName::class, asset.filePath)
+    }.getOrNull() ?: suspendCatching {
+        Tooling.getResourcesAsInputStream(PackageName::class, asset.originalPath)
+    }.getOrNull() ?: suspendCatching {
+        asset.resourcesClassLoader.getResourceAsStream(asset.filePath)
+    }.getOrNull()
+    stream?.use {
+        ImageIcon(it.readBytes()).image
+    }
+}.getOrNull()
