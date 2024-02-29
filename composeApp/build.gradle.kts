@@ -188,18 +188,10 @@ compose.desktop {
     application {
         mainClass = "$artifact.MainKt"
 
-        jvmArgs("--add-opens", "java.base/java.lang=ALL-UNNAMED")
-        jvmArgs("--add-opens", "java.desktop/sun.awt=ALL-UNNAMED")
-        jvmArgs("--add-opens", "java.desktop/sun.java2d=ALL-UNNAMED")
-        jvmArgs("--add-opens", "java.desktop/java.awt.peer=ALL-UNNAMED")
         when (getHost()) {
             Host.Linux -> {
                 jvmArgs("--add-opens", "java.desktop/sun.awt.X11=ALL-UNNAMED")
                 jvmArgs("--add-opens", "java.desktop/sun.awt.wl=ALL-UNNAMED")
-            }
-            Host.MAC -> {
-                jvmArgs("--add-opens", "java.desktop/sun.lwawt=ALL-UNNAMED")
-                jvmArgs("--add-opens", "java.desktop/sun.lwawt.macosx=ALL-UNNAMED")
             }
             else -> { }
         }

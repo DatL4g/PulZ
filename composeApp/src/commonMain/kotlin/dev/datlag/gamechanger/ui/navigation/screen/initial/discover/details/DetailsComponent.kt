@@ -22,4 +22,8 @@ interface DetailsComponent : ContentHolderComponent {
     fun openCounterStrike()
     fun showPlatformRequirements(platform: Game.PlatformInfo)
 
+    override fun dismissContent() {
+        back()
+    }
+
 }

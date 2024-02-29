@@ -82,10 +82,6 @@ class DetailsScreenComponent(
         }
     }
 
-    override fun dismissContent() {
-        back()
-    }
-
     override fun currentState(): GameInfoStateMachine.State {
         return detailsStateMachine.currentState
     }

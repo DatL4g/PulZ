@@ -2,22 +2,26 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial.user
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.mikepenz.aboutlibraries.Libs
+import com.mikepenz.aboutlibraries.entity.Library
 import dev.chrisbanes.haze.haze
 import dev.datlag.gamechanger.LocalHaze
 import dev.datlag.gamechanger.LocalPaddingValues
 import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.plus
+import dev.datlag.gamechanger.other.Constants
 import dev.datlag.gamechanger.other.LocalConsentInfo
 import dev.datlag.gamechanger.ui.custom.BrowserClickTextButton
+import dev.datlag.gamechanger.ui.navigation.screen.initial.user.component.LibraryCard
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.safeSubList
 import dev.icerock.moko.resources.compose.readTextAsState
@@ -28,11 +32,30 @@ import dev.icerock.moko.resources.compose.stringResource
 fun UserScreen(component: UserComponent) {
     val consentInfo = LocalConsentInfo.current
     val padding = PaddingValues(16.dp)
+    val libsJson by SharedRes.assets.aboutlibraries.readTextAsState()
+    val libs = remember(libsJson) {
+        libsJson?.let { json ->
+            Libs.Builder().withJson(json).build()
+        }
+    }
+    val libsSize = remember(libs) {
+        libs?.libraries?.size
+    }
+    var libsShowing by remember {
+        mutableIntStateOf(5)
+    }
+    val canShowMore = remember(libsSize, libsShowing) {
+        (libsSize ?: 0) > libsShowing
+    }
+    val libsSubList = remember(libs, libsShowing) {
+        libs?.libraries?.safeSubList(0, libsShowing) ?: emptyList()
+    }
+    val dialogState by component.dialog.subscribeAsState()
 
     LazyColumn(
         modifier = Modifier.safeDrawingPadding().fillMaxSize().haze(state = LocalHaze.current),
         contentPadding = LocalPaddingValues.current?.plus(padding) ?: padding,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
             Text(
@@ -78,71 +101,28 @@ fun UserScreen(component: UserComponent) {
                 style = MaterialTheme.typography.titleLarge
             )
         }
-        item {
-            val libsJson by SharedRes.assets.aboutlibraries.readTextAsState()
-            val libs = libsJson?.let { json ->
-                Libs.Builder().withJson(json).build()
+        if (libsSize == null || libsSize <= 0) {
+            item {
+                Text(text = stringResource(SharedRes.strings.libraries_not_loaded))
             }
-            Column(
-                modifier = Modifier.fillParentMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                libs?.libraries?.safeSubList(0, 5)?.forEach { lib ->
-                    ElevatedCard(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Column(
-                            modifier = Modifier.fillMaxWidth().padding(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically)
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    modifier = Modifier.weight(1F),
-                                    text = lib.name,
-                                    softWrap = true,
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 2,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                lib.artifactVersion?.let {
-                                    Text(
-                                        text = it,
-                                        style = MaterialTheme.typography.bodySmall
-                                    )
-                                }
-                            }
-                            Text(
-                                text = lib.organization?.name?.ifBlank { null } ?: lib.developers.firstOrNull()?.name ?: "",
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                            FlowRow(
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
-                            ) {
-                                lib.licenses.forEach { lic ->
-                                    Badge {
-                                        Text(text = lic.name)
-                                    }
-                                }
-                            }
+        } else {
+            items(libsSubList) { lib ->
+                LibraryCard(
+                    library = lib,
+                    onLicenseClick = component::licenseDetails,
+                    onClick = component::libraryDetails
+                )
+            }
+            if (canShowMore) {
+                item {
+                    TextButton(
+                        modifier = Modifier.fillParentMaxWidth(),
+                        onClick = {
+                            libsShowing += 5
                         }
+                    ) {
+                        Text(text = stringResource(SharedRes.strings.more))
                     }
-                }
-                TextButton(
-                    modifier = Modifier.fillParentMaxWidth(),
-                    onClick = {
-
-                    }
-                ) {
-                    Text(
-                        text = "More"
-                    )
                 }
             }
         }
@@ -169,11 +149,19 @@ fun UserScreen(component: UserComponent) {
                     }
                 }
                 BrowserClickTextButton(
-                    uri = "https://github.com/DatL4g/Gamechanger/blob/master/Privacy_Policy.md"
+                    uri = Constants.PRIVACY_POLICY
                 ) {
                     Text(text = stringResource(SharedRes.strings.policy))
+                }
+                BrowserClickTextButton(
+                    uri = Constants.TERMS_CONDITIONS
+                ) {
+                    Text(text = stringResource(SharedRes.strings.terms_conditions))
                 }
             }
         }
     }
+
+    dialogState.child?.instance?.render()
 }
+

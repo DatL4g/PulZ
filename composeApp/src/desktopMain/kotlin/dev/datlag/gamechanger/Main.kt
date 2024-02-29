@@ -1,11 +1,7 @@
 package dev.datlag.gamechanger
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AdsClick
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.*
 import androidx.compose.runtime.CompositionLocalProvider
@@ -33,10 +29,7 @@ import dev.datlag.tooling.decompose.lifecycle.LocalLifecycleOwner
 import dev.datlag.tooling.systemProperty
 import dev.icerock.moko.resources.desc.Resource
 import dev.icerock.moko.resources.desc.StringDesc
-import io.github.aakira.napier.DebugAntilog
-import io.github.aakira.napier.Napier
 import org.kodein.di.DI
-import org.kodein.di.bindSingleton
 import java.io.File
 
 fun main(vararg args: String) {
