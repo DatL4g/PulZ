@@ -8,6 +8,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
+import coil3.ImageLoader
+import coil3.SingletonImageLoader
+import coil3.annotation.DelicateCoilApi
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.lifecycle.LifecycleController
@@ -30,6 +33,7 @@ import dev.datlag.tooling.systemProperty
 import dev.icerock.moko.resources.desc.Resource
 import dev.icerock.moko.resources.desc.StringDesc
 import org.kodein.di.DI
+import org.kodein.di.instance
 import java.io.File
 
 fun main(vararg args: String) {
@@ -41,7 +45,7 @@ fun main(vararg args: String) {
     runWindow(di)
 }
 
-@OptIn(ExperimentalDecomposeApi::class)
+@OptIn(ExperimentalDecomposeApi::class, DelicateCoilApi::class)
 private fun runWindow(di: DI) {
     val appTitle = StringDesc.Resource(SharedRes.strings.app_name).localized()
     val windowState = WindowState()
@@ -58,6 +62,8 @@ private fun runWindow(di: DI) {
         di = di
     )
     val consentInfo = ConsentInfo()
+    val imageLoader by di.instance<ImageLoader>()
+    SingletonImageLoader.setUnsafe(imageLoader)
 
     Tooling.applicationTitle(appTitle)
 

@@ -20,7 +20,6 @@ import org.kodein.di.instance
  * [https://github.com/JetBrains/compose-multiplatform/issues/3205](https://github.com/JetBrains/compose-multiplatform/issues/3205)
  * is fixed
  */
-@OptIn(DelicateCoilApi::class)
 @Composable
 fun Component.onRender(content: @Composable () -> Unit) {
     CompositionLocalProvider(
@@ -29,10 +28,6 @@ fun Component.onRender(content: @Composable () -> Unit) {
             override val lifecycle: Lifecycle = this@onRender.lifecycle
         }
     ) {
-        LaunchedEffect(di) {
-            val loader by di.instance<ImageLoader>()
-            SingletonImageLoader.setUnsafe(loader)
-        }
         content()
     }
 }

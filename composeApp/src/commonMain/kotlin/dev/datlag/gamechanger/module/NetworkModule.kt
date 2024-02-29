@@ -26,8 +26,6 @@ data object NetworkModule {
 
         bindSingleton<ImageLoader> {
             ImageLoader.Builder(instance())
-                .dispatcher(ioDispatcher())
-                .interceptorDispatcher(mainDispatcher())
                 .components {
                     add(KtorNetworkFetcherFactory(instance<HttpClient>()))
                     add(SvgDecoder.Factory())
