@@ -158,6 +158,11 @@ fun UserScreen(component: UserComponent) {
                 ) {
                     Text(text = stringResource(SharedRes.strings.terms_conditions))
                 }
+                BrowserClickTextButton(
+                    uri = Constants.LICENSE
+                ) {
+                    Text(text = stringResource(SharedRes.strings.license))
+                }
             }
         }
     }

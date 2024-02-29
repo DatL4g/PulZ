@@ -70,4 +70,5 @@
     <string name="version_colon">Version:</string>
     <string name="open_source_colon">Open-Source:</string>
     <string name="year_colon">Year:</string>
+    <string name="license">License</string>
 </resources>
