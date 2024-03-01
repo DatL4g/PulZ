@@ -84,4 +84,6 @@
     <string name="oct">Oct</string>
     <string name="nov">Nov</string>
     <string name="dec">Dec</string>
+    <string name="no_date">No Date</string>
+    <string name="no_prize">No Prize</string>
 </resources>

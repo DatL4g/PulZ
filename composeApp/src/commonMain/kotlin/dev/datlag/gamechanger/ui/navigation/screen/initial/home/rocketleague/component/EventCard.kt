@@ -1,28 +1,29 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Event
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.formatDayMon
 import dev.datlag.gamechanger.octane.model.Event
+import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.datetime.LocalDateTime
 
 @Composable
 fun EventCard(event: Event) {
     Card(
-        modifier = Modifier.width(200.dp)
+        modifier = Modifier.width(200.dp).fillMaxHeight()
     ) {
         Column(
             modifier = Modifier.padding(8.dp),
@@ -36,7 +37,13 @@ fun EventCard(event: Event) {
                 AsyncImage(
                     model = event.logo,
                     contentDescription = event.name,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier
+                        .size(24.dp)
+                        .background(
+                            color = LocalContentColor.current.copy(alpha = 0.5F),
+                            shape = MaterialTheme.shapes.extraSmall
+                        )
+                        .padding(2.dp)
                 )
                 Text(
                     text = event.name,
@@ -56,7 +63,9 @@ fun EventCard(event: Event) {
                     imageVector = Icons.Default.Event,
                     contentDescription = null
                 )
-                Text(text = (event.startDate to event.endDate).formatDayMon() ?: "Unknown")
+                Text(
+                    text = (event.startDate to event.endDate).formatDayMon() ?: stringResource(SharedRes.strings.no_date)
+                )
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -67,7 +76,9 @@ fun EventCard(event: Event) {
                     imageVector = Icons.Default.EmojiEvents,
                     contentDescription = null
                 )
-                Text(text = event.prize?.toString() ?: "No Prize")
+                Text(
+                    text = event.prize?.toString() ?: stringResource(SharedRes.strings.no_prize)
+                )
             }
         }
     }
