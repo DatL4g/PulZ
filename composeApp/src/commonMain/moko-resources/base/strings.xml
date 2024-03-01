@@ -72,4 +72,16 @@
     <string name="year_colon">Year:</string>
     <string name="license">License</string>
     <string name="happening_now">Happening Now</string>
+    <string name="jan">Jan</string>
+    <string name="feb">Feb</string>
+    <string name="mar">Mar</string>
+    <string name="apr">Apr</string>
+    <string name="may">May</string>
+    <string name="jun">Jun</string>
+    <string name="jul">Jul</string>
+    <string name="aug">Aug</string>
+    <string name="sep">Sep</string>
+    <string name="oct">Oct</string>
+    <string name="nov">Nov</string>
+    <string name="dec">Dec</string>
 </resources>

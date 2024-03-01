@@ -1,6 +1,10 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague.component
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.Event
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -11,7 +15,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import dev.datlag.gamechanger.common.formatDayMon
 import dev.datlag.gamechanger.octane.model.Event
+import kotlinx.datetime.LocalDateTime
 
 @Composable
 fun EventCard(event: Event) {
@@ -41,11 +47,27 @@ fun EventCard(event: Event) {
                     softWrap = true
                 )
             }
-            event.startDate?.let {
-                Text(text = "Start: " + it.date.toString())
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Event,
+                    contentDescription = null
+                )
+                Text(text = (event.startDate to event.endDate).formatDayMon() ?: "Unknown")
             }
-            event.endDate?.let {
-                Text(text = "End: " + it.date.toString())
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.EmojiEvents,
+                    contentDescription = null
+                )
+                Text(text = event.prize?.toString() ?: "No Prize")
             }
         }
     }

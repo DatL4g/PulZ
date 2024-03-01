@@ -30,7 +30,19 @@ data class Event(
     data class Prize(
         @SerialName("amount") val amount: Int? = null,
         @SerialName("currency") val currency: String? = null
-    )
+    ) {
+        override fun toString(): String {
+            return if (amount != null && !currency.isNullOrBlank()) {
+                "$amount $currency"
+            } else {
+                amount?.toString() ?: if (!currency.isNullOrBlank()) {
+                    currency
+                } else {
+                    super.toString()
+                }
+            }
+        }
+    }
 
     @Serializable
     data class Stage(
