@@ -9,6 +9,8 @@ import coil3.svg.SvgDecoder
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.ktorfitBuilder
 import dev.datlag.gamechanger.hltv.state.HomeStateMachine
+import dev.datlag.gamechanger.octane.Octane
+import dev.datlag.gamechanger.octane.state.EventsTodayStateMachine
 import dev.datlag.gamechanger.rawg.RAWG
 import dev.datlag.gamechanger.rawg.state.*
 import dev.datlag.tooling.compose.ioDispatcher
@@ -99,6 +101,17 @@ data object NetworkModule {
             MultiplayerGamesStateMachine(
                 rawg = instance(),
                 key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null }
+            )
+        }
+        bindSingleton<Octane> {
+            val builder = instance<Ktorfit.Builder>()
+            builder.build {
+                baseUrl("https://zsr.octane.gg//")
+            }.create<Octane>()
+        }
+        bindProvider<EventsTodayStateMachine> {
+            EventsTodayStateMachine(
+                octane = instance()
             )
         }
     }

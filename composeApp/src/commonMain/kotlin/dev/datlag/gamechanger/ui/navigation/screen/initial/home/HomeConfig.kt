@@ -6,4 +6,7 @@ import kotlinx.serialization.Serializable
 sealed class HomeConfig {
     @Serializable
     data object CounterStrike : HomeConfig()
+
+    @Serializable
+    data object RocketLeague : HomeConfig()
 }

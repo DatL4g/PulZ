@@ -10,6 +10,7 @@ import dev.datlag.gamechanger.settings.Settings
 import dev.datlag.gamechanger.ui.navigation.Component
 import dev.datlag.gamechanger.ui.navigation.ContentHolderComponent
 import dev.datlag.gamechanger.ui.navigation.screen.initial.home.counterstrike.CounterStrikeScreenComponent
+import dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague.RocketLeagueScreenComponent
 import dev.datlag.tooling.compose.launchIO
 import dev.datlag.tooling.decompose.ioScope
 import io.ktor.client.*
@@ -37,6 +38,11 @@ class HomeScreenComponent(
                 di = di,
                 onBack = navigation::dismiss
             )
+            is HomeConfig.RocketLeague -> RocketLeagueScreenComponent(
+                componentContext = context,
+                di = di,
+                onBack = navigation::dismiss
+            )
         }
     }
 
@@ -47,14 +53,12 @@ class HomeScreenComponent(
         }
     }
 
-    override fun setWelcome(value: Boolean) {
-        ioScope().launchIO {
-            appSettings.setWelcomeCompleted(value)
-        }
-    }
-
     override fun showCounterStrike() {
         navigation.activate(HomeConfig.CounterStrike)
+    }
+
+    override fun showRocketLeague() {
+        navigation.activate(HomeConfig.RocketLeague)
     }
 
     override fun dismissContent() {

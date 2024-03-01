@@ -11,8 +11,6 @@ interface HomeComponent : ContentHolderComponent {
     val showWelcome: Flow<Boolean>
     val child: Value<ChildSlot<HomeConfig, Component>>
 
-    fun setWelcome(value: Boolean)
-
     fun showCounterStrike()
-
+    fun showRocketLeague()
 }

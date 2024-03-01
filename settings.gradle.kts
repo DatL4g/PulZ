@@ -7,6 +7,7 @@ include(":model")
 include(":game")
 include(":rawg")
 include(":firebase")
+include(":octane")
 
 pluginManagement {
     repositories {

@@ -15,6 +15,9 @@ interface CounterStrikeComponent : ContentHolderComponent, SteamGameHolderCompon
     val dropsReset: StateFlow<DateTimePeriod>
 
     fun back()
-
     fun launch()
+
+    override fun dismissContent() {
+        back()
+    }
 }

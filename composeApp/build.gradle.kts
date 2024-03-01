@@ -116,6 +116,7 @@ kotlin {
             implementation(project(":game"))
             implementation(project(":rawg"))
             implementation(project(":firebase"))
+            implementation(project(":octane"))
         }
 
         nativeMain.dependencies {

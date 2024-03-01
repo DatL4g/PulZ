@@ -1,14 +1,8 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial.home
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AdsClick
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,8 +14,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import dev.chrisbanes.haze.haze
-import dev.datlag.gamechanger.LocalHaze
 import dev.datlag.gamechanger.LocalPaddingValues
 import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.plus
@@ -29,7 +21,6 @@ import dev.datlag.gamechanger.game.Game
 import dev.datlag.gamechanger.other.LocalConsentInfo
 import dev.datlag.gamechanger.ui.custom.BannerAd
 import dev.datlag.gamechanger.ui.navigation.screen.initial.home.component.GameCover
-import dev.datlag.gamechanger.ui.theme.SchemeTheme
 import dev.datlag.gamechanger.ui.theme.rememberSchemeThemeDominantColor
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -86,7 +77,9 @@ private fun Overview(component: HomeComponent) {
                     fallback = SharedRes.images.rl_banner,
                     color = rlColor,
                     modifier = Modifier.fillMaxWidth().clip(CardDefaults.shape)
-                )
+                ) {
+                    component.showRocketLeague()
+                }
             }
         }
         BannerAd(modifier = Modifier.fillMaxWidth())

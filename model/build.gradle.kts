@@ -29,6 +29,8 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.coroutines)
             implementation(libs.tooling)
+            implementation(libs.serialization)
+            implementation(libs.datetime)
         }
     }
 }

@@ -72,10 +72,6 @@ class CounterStrikeScreenComponent(
         onBack()
     }
 
-    override fun dismissContent() {
-        back()
-    }
-
     override fun launch() {
         Game.Steam.CounterStrike.launch()
     }

@@ -48,9 +48,19 @@ sealed interface Game {
         data object RocketLeague : EpicGames
     }
 
+    sealed interface Heroic : Game {
+
+        override fun launch() {
+            // ToDo("add launcher")
+        }
+
+        data object RocketLeague : Heroic
+    }
+
     sealed interface Multi : Game {
         val steam: Steam?
         val epicGames: EpicGames?
+        val heroic: Heroic?
 
         override fun launch() {
             // ToDo("check which launcher to use")
@@ -59,6 +69,7 @@ sealed interface Game {
         data object RocketLeague : Multi {
             override val steam: Steam = Steam.RocketLeague
             override val epicGames: EpicGames = EpicGames.RocketLeague
+            override val heroic: Heroic = Heroic.RocketLeague
         }
     }
 }
