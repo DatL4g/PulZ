@@ -14,12 +14,14 @@ interface DetailsComponent : ContentHolderComponent {
     val state: Flow<GameInfoStateMachine.State>
     val game: StateFlow<Game>
     val isCounterStrike: Flow<Boolean>
+    val isRocketLeague: Flow<Boolean>
 
     val dialog: Value<ChildSlot<DialogConfig, DialogComponent>>
 
     fun back()
     fun currentState(): GameInfoStateMachine.State
     fun openCounterStrike()
+    fun openRocketLeague()
     fun showPlatformRequirements(platform: Game.PlatformInfo)
 
     override fun dismissContent() {

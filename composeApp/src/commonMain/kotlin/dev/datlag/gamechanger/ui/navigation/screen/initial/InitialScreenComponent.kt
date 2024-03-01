@@ -80,7 +80,6 @@ class InitialScreenComponent(
         }
     }
 
-    @OptIn(ExperimentalDecomposeApi::class)
     private fun createChild(
         view: View,
         context: ComponentContext
@@ -90,23 +89,14 @@ class InitialScreenComponent(
                 componentContext = context,
                 di = di,
                 showCounterStrike = {
-                    var index = pages.value.items.indexOfFirst {
-                        it.instance is HomeComponent
+                    navigateHomeThen {
+                        it?.showCounterStrike()
                     }
-                    if (index == -1) {
-                        index = pages.value.items.indexOfFirst {
-                            it.configuration is View.Home
-                        }
+                },
+                showRocketLeague = {
+                    navigateHomeThen {
+                        it?.showRocketLeague()
                     }
-                    if (index == -1) {
-                        index = 1
-                    }
-                    pagesNavigation.select(
-                        index = index,
-                        onComplete = { _, _ ->
-                            (pages.value.items[pages.value.selectedIndex].instance as? HomeComponent)?.showCounterStrike()
-                        }
-                    )
                 }
             )
             is View.Home -> HomeScreenComponent(
@@ -128,5 +118,26 @@ class InitialScreenComponent(
                 (pages.value.items[pages.value.selectedIndex].instance as? ContentHolderComponent)?.dismissContent()
             }
         }
+    }
+
+    @OptIn(ExperimentalDecomposeApi::class)
+    private fun navigateHomeThen(done: (HomeComponent?) -> Unit) {
+        var index = pages.value.items.indexOfFirst {
+            it.instance is HomeComponent
+        }
+        if (index == -1) {
+            index = pages.value.items.indexOfFirst {
+                it.configuration is View.Home
+            }
+        }
+        if (index == -1) {
+            index = 1
+        }
+        pagesNavigation.select(
+            index = index,
+            onComplete = { _, _ ->
+                done((pages.value.items[pages.value.selectedIndex].instance as? HomeComponent))
+            }
+        )
     }
 }

@@ -20,7 +20,8 @@ import org.kodein.di.instance
 class DiscoverScreenComponent(
     componentContext: ComponentContext,
     override val di: DI,
-    private val showCounterStrike: () -> Unit
+    private val showCounterStrike: () -> Unit,
+    private val showRocketLeague: () -> Unit
 ) : DiscoverComponent, ComponentContext by componentContext {
 
     private val trendingGamesStateMachine by di.instance<TrendingGamesStateMachine>()
@@ -99,7 +100,8 @@ class DiscoverScreenComponent(
                 di = di,
                 initialGame = config.game,
                 onBack = navigation::dismiss,
-                showCounterStrike = showCounterStrike
+                showCounterStrike = showCounterStrike,
+                showRocketLeague = showRocketLeague
             )
         }
     }

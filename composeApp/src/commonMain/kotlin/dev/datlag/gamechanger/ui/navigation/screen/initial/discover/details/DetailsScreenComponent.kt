@@ -25,7 +25,8 @@ class DetailsScreenComponent(
     override val di: DI,
     private val initialGame: Game,
     private val onBack: () -> Unit,
-    private val showCounterStrike: () -> Unit
+    private val showCounterStrike: () -> Unit,
+    private val showRocketLeague: () -> Unit,
 ) : DetailsComponent, ComponentContext by componentContext {
 
     private val rawg by di.instance<RAWG>()
@@ -44,6 +45,14 @@ class DetailsScreenComponent(
         if (it.slug.equals("counter-strike-2-2", ignoreCase = true) || it.id == 965470) {
             return@transform emit(true)
         } else if (it.slug.equals("counter-strike-global-offensive", ignoreCase = true) || it.id == 4291) {
+            return@transform emit(true)
+        } else {
+            return@transform emit(false)
+        }
+    }.flowOn(ioDispatcher())
+
+    override val isRocketLeague: Flow<Boolean> = game.transform {
+        if (it.slug.equals("rocket-league", ignoreCase = true) || it.id == 3272) {
             return@transform emit(true)
         } else {
             return@transform emit(false)
@@ -92,6 +101,10 @@ class DetailsScreenComponent(
 
     override fun openCounterStrike() {
         showCounterStrike()
+    }
+
+    override fun openRocketLeague() {
+        showRocketLeague()
     }
 
     override fun showPlatformRequirements(platform: Game.PlatformInfo) {

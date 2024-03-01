@@ -58,6 +58,7 @@ fun DetailsScreen(game: Game, component: DetailsComponent) {
     ) {
         val padding = PaddingValues(16.dp)
         val isCounterStrike by component.isCounterStrike.collectAsStateWithLifecycle(false)
+        val isRocketLeague by component.isRocketLeague.collectAsStateWithLifecycle(false)
 
         LazyColumn(
             modifier = Modifier.fillMaxSize().haze(
@@ -291,9 +292,15 @@ fun DetailsScreen(game: Game, component: DetailsComponent) {
             }
         }
 
-        if (isCounterStrike) {
+        if (isCounterStrike || isRocketLeague) {
             FloatingActionButton(
-                onClick = component::openCounterStrike,
+                onClick = {
+                    if (isCounterStrike) {
+                        component.openCounterStrike()
+                    } else if (isRocketLeague) {
+                        component.openRocketLeague()
+                    }
+                },
                 modifier = Modifier.align(Alignment.BottomEnd).padding(LocalPaddingValues.current?.plus(padding) ?: padding)
             ) {
                 Icon(
