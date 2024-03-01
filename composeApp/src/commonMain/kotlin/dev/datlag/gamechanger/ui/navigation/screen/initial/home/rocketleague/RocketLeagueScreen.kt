@@ -63,7 +63,7 @@ fun RocketLeagueScreen(component: RocketLeagueComponent) {
                 }
                 item {
                     Text(
-                        text = stringResource(SharedRes.strings.happening_now),
+                        text = stringResource(SharedRes.strings.events),
                         style = MaterialTheme.typography.headlineLarge
                     )
                 }
