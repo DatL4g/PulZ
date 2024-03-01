@@ -53,7 +53,7 @@ fun UserScreen(component: UserComponent) {
     val dialogState by component.dialog.subscribeAsState()
 
     LazyColumn(
-        modifier = Modifier.safeDrawingPadding().fillMaxSize().haze(state = LocalHaze.current),
+        modifier = Modifier.fillMaxSize().haze(state = LocalHaze.current),
         contentPadding = LocalPaddingValues.current?.plus(padding) ?: padding,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {

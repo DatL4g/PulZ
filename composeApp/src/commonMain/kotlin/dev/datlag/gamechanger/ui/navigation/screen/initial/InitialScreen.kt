@@ -66,7 +66,7 @@ private fun CompactScreen(component: InitialComponent) {
             NavigationBar(
                 modifier = Modifier.hazeChild(
                     state = LocalHaze.current,
-                    style = HazeMaterials.regular(NavigationBarDefaults.containerColor)
+                    style = HazeMaterials.thin(NavigationBarDefaults.containerColor)
                 ).fillMaxWidth(),
                 containerColor = Color.Transparent,
                 contentColor = MaterialTheme.colorScheme.contentColorFor(NavigationBarDefaults.containerColor)
