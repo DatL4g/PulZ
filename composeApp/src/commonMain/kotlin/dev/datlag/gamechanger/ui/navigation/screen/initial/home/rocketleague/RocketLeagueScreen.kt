@@ -25,49 +25,85 @@ import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.plus
 import dev.datlag.gamechanger.octane.model.Event
 import dev.datlag.gamechanger.octane.state.EventsState
+import dev.datlag.gamechanger.octane.state.MatchesState
 import dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague.component.EventCard
+import dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague.component.MatchCard
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import dev.icerock.moko.resources.compose.stringResource
 import io.github.aakira.napier.Napier
 
 @Composable
 fun RocketLeagueScreen(component: RocketLeagueComponent) {
-    val eventsToday by component.eventsToday.collectAsStateWithLifecycle()
+    val padding = PaddingValues(16.dp)
 
-    when (val state = eventsToday) {
-        is EventsState.Loading -> {
-            Text(text = "Loading")
-        }
-        is EventsState.Error -> {
-            Text(text = "Error")
-        }
-        is EventsState.Success -> {
-            val padding = PaddingValues(16.dp)
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize().haze(LocalHaze.current),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = LocalPaddingValues.current?.plus(padding) ?: padding
+    LazyColumn(
+        modifier = Modifier.fillMaxSize().haze(LocalHaze.current),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = LocalPaddingValues.current?.plus(padding) ?: padding
+    ) {
+        item {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
             ) {
-                item {
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
+                AsyncImage(
+                    modifier = Modifier.fillMaxWidth(),
+                    model = component.game.heroUrl,
+                    contentDescription = stringResource(SharedRes.strings.rocket_league),
+                    contentScale = ContentScale.FillWidth
+                )
+            }
+        }
+        item {
+            Text(
+                text = stringResource(SharedRes.strings.recent_matches),
+                style = MaterialTheme.typography.headlineLarge
+            )
+        }
+        item {
+            val matches by component.matchesToday.collectAsStateWithLifecycle()
+
+            when (val state = matches) {
+                is MatchesState.Loading -> {
+                    Text(text = "Loading")
+                }
+                is MatchesState.Error -> {
+                    Text(text = "Error")
+                }
+                is MatchesState.Success -> {
+                    SideEffect {
+                        state.matches.forEach {
+                            Napier.e(it.toString())
+                        }
+                    }
+                    LazyRow(
+                        modifier = Modifier.fillParentMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        AsyncImage(
-                            modifier = Modifier.fillMaxWidth(),
-                            model = component.game.heroUrl,
-                            contentDescription = stringResource(SharedRes.strings.rocket_league),
-                            contentScale = ContentScale.FillWidth
-                        )
+                        items(state.matches.sortedWith(compareBy { it.date })) { match ->
+                            MatchCard(match)
+                        }
                     }
                 }
-                item {
-                    Text(
-                        text = stringResource(SharedRes.strings.events),
-                        style = MaterialTheme.typography.headlineLarge
-                    )
+            }
+        }
+        item {
+            Text(
+                text = stringResource(SharedRes.strings.events),
+                style = MaterialTheme.typography.headlineLarge
+            )
+        }
+        item {
+            val events by component.eventsToday.collectAsStateWithLifecycle()
+
+            when (val state = events) {
+                is EventsState.Loading -> {
+                    Text(text = "Loading")
                 }
-                item {
+                is EventsState.Error -> {
+                    Text(text = "Error")
+                }
+                is EventsState.Success -> {
                     LazyRow(
                         modifier = Modifier.fillParentMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,

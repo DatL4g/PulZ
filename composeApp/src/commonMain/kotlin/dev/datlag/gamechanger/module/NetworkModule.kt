@@ -11,6 +11,7 @@ import de.jensklingenberg.ktorfit.ktorfitBuilder
 import dev.datlag.gamechanger.hltv.state.HomeStateMachine
 import dev.datlag.gamechanger.octane.Octane
 import dev.datlag.gamechanger.octane.state.EventsTodayStateMachine
+import dev.datlag.gamechanger.octane.state.MatchesTodayStateMachine
 import dev.datlag.gamechanger.rawg.RAWG
 import dev.datlag.gamechanger.rawg.state.*
 import dev.datlag.tooling.compose.ioDispatcher
@@ -111,6 +112,11 @@ data object NetworkModule {
         }
         bindProvider<EventsTodayStateMachine> {
             EventsTodayStateMachine(
+                octane = instance()
+            )
+        }
+        bindProvider<MatchesTodayStateMachine> {
+            MatchesTodayStateMachine(
                 octane = instance()
             )
         }

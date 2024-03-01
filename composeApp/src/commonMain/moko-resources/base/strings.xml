@@ -86,4 +86,8 @@
     <string name="dec">Dec</string>
     <string name="no_date">No Date</string>
     <string name="no_prize">No Prize</string>
+    <string name="recent_matches">Recent Matches</string>
+    <string name="match">Match</string>
+    <string name="blue">Blue</string>
+    <string name="orange">Orange</string>
 </resources>

@@ -8,6 +8,8 @@ import dev.datlag.gamechanger.game.Game
 import dev.datlag.gamechanger.game.SteamLauncher
 import dev.datlag.gamechanger.octane.state.EventsState
 import dev.datlag.gamechanger.octane.state.EventsTodayStateMachine
+import dev.datlag.gamechanger.octane.state.MatchesState
+import dev.datlag.gamechanger.octane.state.MatchesTodayStateMachine
 import dev.datlag.tooling.compose.ioDispatcher
 import dev.datlag.tooling.decompose.ioScope
 import kotlinx.coroutines.flow.*
@@ -30,6 +32,15 @@ class RocketLeagueScreenComponent(
         scope = ioScope(),
         started = SharingStarted.WhileSubscribed(),
         initialValue = EventsTodayStateMachine.currentState
+    )
+
+    private val matchesTodayStateMachine by di.instance<MatchesTodayStateMachine>()
+    override val matchesToday: StateFlow<MatchesState> = matchesTodayStateMachine.state.flowOn(
+        context = ioDispatcher()
+    ).stateIn(
+        scope = ioScope(),
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = MatchesTodayStateMachine.currentState
     )
 
     private val backCallback = BackCallback {
