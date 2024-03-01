@@ -22,7 +22,7 @@ class TrendingGamesStateMachine(
                     currentState = it
                 }
                 onEnter { state ->
-                    StateSaver.Cache.trending?.let {
+                    StateSaver.Cache.trending.getAlive()?.let {
                         return@onEnter state.override { GamesState.Success(it) }
                     }
                     if (key == null) {
@@ -42,12 +42,18 @@ class TrendingGamesStateMachine(
                                 metacritic = "85,100",
                                 ordering = "-released"
                             ).also {
-                                StateSaver.Cache.trending = it
+                                StateSaver.Cache.trending.cache(it)
                             }
                         )
                     }
 
-                    state.override { result.asSuccess { GamesState.Error(canRetry = true) } }
+                    state.override {
+                        result.asSuccess {
+                            StateSaver.Cache.trending.getEvenUnAlive()?.let {
+                                GamesState.Success(it)
+                            } ?: GamesState.Error(canRetry = true)
+                        }
+                    }
                 }
             }
             inState<GamesState.Success> {

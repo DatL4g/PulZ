@@ -21,7 +21,7 @@ class EventsTodayStateMachine(
                     currentState = it
                 }
                 onEnter { state ->
-                    StateSaver.Cache.eventsToday?.let {
+                    StateSaver.Cache.eventsToday.getAlive()?.let {
                         return@onEnter state.override { EventsState.Success(it) }
                     }
 
@@ -30,12 +30,18 @@ class EventsTodayStateMachine(
                             octane.events(
                                 date = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
                             ).also {
-                                StateSaver.Cache.eventsToday = it
+                                StateSaver.Cache.eventsToday.cache(it)
                             }
                         )
                     }
 
-                    state.override { result.asSuccess { EventsState.Error } }
+                    state.override {
+                        result.asSuccess {
+                            StateSaver.Cache.eventsToday.getEvenUnAlive()?.let {
+                                EventsState.Success(it)
+                            } ?: EventsState.Error
+                        }
+                    }
                 }
             }
             inState<EventsState.Success> {

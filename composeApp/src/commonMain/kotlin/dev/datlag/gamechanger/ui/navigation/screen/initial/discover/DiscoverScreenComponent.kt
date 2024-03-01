@@ -6,6 +6,7 @@ import com.arkivanov.decompose.router.slot.*
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import dev.datlag.gamechanger.common.onRender
+import dev.datlag.gamechanger.other.StateSaver
 import dev.datlag.gamechanger.rawg.model.Game
 import dev.datlag.gamechanger.rawg.state.*
 import dev.datlag.gamechanger.ui.navigation.Component

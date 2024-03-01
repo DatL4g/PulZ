@@ -19,7 +19,7 @@ class ESportGamesStateMachine(
                     currentState = it
                 }
                 onEnter { state ->
-                    StateSaver.Cache.eSports?.let {
+                    StateSaver.Cache.eSports.getAlive()?.let {
                         return@onEnter state.override { GamesState.Success(it) }
                     }
                     if (key == null) {
@@ -32,12 +32,18 @@ class ESportGamesStateMachine(
                                 key = key,
                                 tags = "73"
                             ).also {
-                                StateSaver.Cache.eSports = it
+                                StateSaver.Cache.eSports.cache(it)
                             }
                         )
                     }
 
-                    state.override { result.asSuccess { GamesState.Error(canRetry = true) } }
+                    state.override {
+                        result.asSuccess {
+                            StateSaver.Cache.eSports.getEvenUnAlive()?.let {
+                                GamesState.Success(it)
+                            } ?: GamesState.Error(canRetry = true)
+                        }
+                    }
                 }
             }
             inState<GamesState.Success> {

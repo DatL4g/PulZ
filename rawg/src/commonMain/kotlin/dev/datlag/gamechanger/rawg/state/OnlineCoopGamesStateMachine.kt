@@ -19,7 +19,7 @@ class OnlineCoopGamesStateMachine(
                     currentState = it
                 }
                 onEnter { state ->
-                    StateSaver.Cache.coop?.let {
+                    StateSaver.Cache.coop.getAlive()?.let {
                         return@onEnter state.override { GamesState.Success(it) }
                     }
                     if (key == null) {
@@ -32,12 +32,18 @@ class OnlineCoopGamesStateMachine(
                                 key = key,
                                 tags = "9"
                             ).also {
-                                StateSaver.Cache.coop = it
+                                StateSaver.Cache.coop.cache(it)
                             }
                         )
                     }
 
-                    state.override { result.asSuccess { GamesState.Error(canRetry = true) } }
+                    state.override {
+                        result.asSuccess {
+                            StateSaver.Cache.coop.getEvenUnAlive()?.let {
+                                GamesState.Success(it)
+                            } ?: GamesState.Error(canRetry = true)
+                        }
+                    }
                 }
             }
             inState<GamesState.Success> {

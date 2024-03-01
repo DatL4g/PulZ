@@ -19,7 +19,7 @@ class TopRatedGamesStateMachine(
                     currentState = it
                 }
                 onEnter { state ->
-                    StateSaver.Cache.topRated?.let {
+                    StateSaver.Cache.topRated.getAlive()?.let {
                         return@onEnter state.override { GamesState.Success(it) }
                     }
                     if (key == null) {
@@ -32,12 +32,18 @@ class TopRatedGamesStateMachine(
                                 key = key,
                                 metacritic = "95,100"
                             ).also {
-                                StateSaver.Cache.topRated = it
+                                StateSaver.Cache.topRated.cache(it)
                             }
                         )
                     }
 
-                    state.override { result.asSuccess { GamesState.Error(canRetry = true) } }
+                    state.override {
+                        result.asSuccess {
+                            StateSaver.Cache.topRated.getEvenUnAlive()?.let {
+                                GamesState.Success(it)
+                            } ?: GamesState.Error(canRetry = true)
+                        }
+                    }
                 }
             }
             inState<GamesState.Success> {

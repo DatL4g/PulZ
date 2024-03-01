@@ -18,7 +18,7 @@ class FreeGamesStateMachine(
                     currentState = it
                 }
                 onEnter { state ->
-                    StateSaver.Cache.free?.let {
+                    StateSaver.Cache.free.getAlive()?.let {
                         return@onEnter state.override { GamesState.Success(it) }
                     }
                     if (key == null) {
@@ -31,12 +31,18 @@ class FreeGamesStateMachine(
                                 key = key,
                                 tags = "79"
                             ).also {
-                                StateSaver.Cache.free = it
+                                StateSaver.Cache.free.cache(it)
                             }
                         )
                     }
 
-                    state.override { result.asSuccess { GamesState.Error(canRetry = true) } }
+                    state.override {
+                        result.asSuccess {
+                            StateSaver.Cache.free.getEvenUnAlive()?.let {
+                                GamesState.Success(it)
+                            } ?: GamesState.Error(canRetry = true)
+                        }
+                    }
                 }
             }
             inState<GamesState.Success> {

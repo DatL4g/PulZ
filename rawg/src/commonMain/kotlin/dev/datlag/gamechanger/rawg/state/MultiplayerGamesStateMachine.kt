@@ -19,7 +19,7 @@ class MultiplayerGamesStateMachine(
                     ESportGamesStateMachine.currentState = it
                 }
                 onEnter { state ->
-                    StateSaver.Cache.multiplayer?.let {
+                    StateSaver.Cache.multiplayer.getAlive()?.let {
                         return@onEnter state.override { GamesState.Success(it) }
                     }
                     if (key == null) {
@@ -32,12 +32,18 @@ class MultiplayerGamesStateMachine(
                                 key = key,
                                 tags = "59"
                             ).also {
-                                StateSaver.Cache.multiplayer = it
+                                StateSaver.Cache.multiplayer.cache(it)
                             }
                         )
                     }
 
-                    state.override { result.asSuccess { GamesState.Error(canRetry = true) } }
+                    state.override {
+                        result.asSuccess {
+                            StateSaver.Cache.multiplayer.getEvenUnAlive()?.let {
+                                GamesState.Success(it)
+                            } ?: GamesState.Error(canRetry = true)
+                        }
+                    }
                 }
             }
             inState<GamesState.Success> {
