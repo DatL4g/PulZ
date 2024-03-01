@@ -16,6 +16,7 @@ import dev.datlag.gamechanger.rawg.RAWG
 import dev.datlag.gamechanger.rawg.state.*
 import dev.datlag.tooling.compose.ioDispatcher
 import dev.datlag.tooling.compose.mainDispatcher
+import io.github.aakira.napier.Napier
 import io.ktor.client.*
 import okio.FileSystem
 import org.kodein.di.*
@@ -118,7 +119,9 @@ data object NetworkModule {
         bindProvider<MatchesTodayStateMachine> {
             MatchesTodayStateMachine(
                 octane = instance()
-            )
+            ) {
+                Napier.e("Match error", it)
+            }
         }
     }
 }

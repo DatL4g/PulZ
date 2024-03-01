@@ -13,14 +13,14 @@ data class Match(
     @SerialName("event") val event: Event? = null,
     @SerialName("stage") val stage: Stage? = null,
     @Serializable(DateTimeSerializer::class) @SerialName("date") val date: LocalDateTime? = null,
-    @SerialName("blue") val blue: Site,
-    @SerialName("orange") val orange: Site,
+    @SerialName("blue") val blue: Site? = null,
+    @SerialName("orange") val orange: Site? = null,
 ) {
 
     @Transient
     val title: String? = event?.name?.ifBlank { null } ?: run {
-        val blueTitle = blue.title
-        val orangeTitle = orange.title
+        val blueTitle = blue?.title
+        val orangeTitle = orange?.title
 
         if (!blueTitle.isNullOrBlank() && !orangeTitle.isNullOrBlank()) {
             "$blueTitle vs $orangeTitle"

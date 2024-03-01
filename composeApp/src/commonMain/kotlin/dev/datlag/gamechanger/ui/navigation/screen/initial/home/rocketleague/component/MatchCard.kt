@@ -20,7 +20,7 @@ import dev.icerock.moko.resources.compose.stringResource
 @Composable
 fun MatchCard(match: Match) {
     Card(
-        modifier = Modifier.width(200.dp).fillMaxHeight()
+        modifier = Modifier.width(200.dp)
     ) {
         Column(
             modifier = Modifier.padding(8.dp),
@@ -57,11 +57,11 @@ fun MatchCard(match: Match) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = match.blue.score.toString(),
+                    text = (match.blue?.score ?: 0).toString(),
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = match.blue.title ?: stringResource(SharedRes.strings.blue),
+                    text = match.blue?.title ?: stringResource(SharedRes.strings.blue),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     softWrap = true
@@ -73,11 +73,11 @@ fun MatchCard(match: Match) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = match.orange.score.toString(),
+                    text = (match.orange?.score ?: 0).toString(),
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = match.orange.title ?: stringResource(SharedRes.strings.orange),
+                    text = match.orange?.title ?: stringResource(SharedRes.strings.orange),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     softWrap = true

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.backhandler.BackCallback
 import dev.datlag.gamechanger.common.onRender
+import dev.datlag.gamechanger.common.onRenderApplyCommonScheme
 import dev.datlag.gamechanger.game.Game
 import dev.datlag.gamechanger.game.SteamLauncher
 import dev.datlag.gamechanger.octane.state.EventsState
@@ -53,7 +54,7 @@ class RocketLeagueScreenComponent(
 
     @Composable
     override fun render() {
-        onRender {
+        onRenderApplyCommonScheme(game) {
             RocketLeagueScreen(this)
         }
     }
