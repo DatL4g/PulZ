@@ -34,16 +34,20 @@ data class Event(
         @SerialName("amount") val amount: Int? = null,
         @SerialName("currency") val currency: String? = null
     ) {
-        override fun toString(): String {
-            return if (amount != null && !currency.isNullOrBlank()) {
-                "$amount $currency"
+
+        @Transient
+        val asString: String? = if (amount != null && !currency.isNullOrBlank()) {
+            "$amount $currency"
+        } else {
+            amount?.toString() ?: if (!currency.isNullOrBlank()) {
+                currency
             } else {
-                amount?.toString() ?: if (!currency.isNullOrBlank()) {
-                    currency
-                } else {
-                    super.toString()
-                }
+                null
             }
+        }
+
+        override fun toString(): String {
+            return asString ?: super.toString()
         }
     }
 }

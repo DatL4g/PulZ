@@ -23,7 +23,11 @@ import io.github.aakira.napier.Napier
 import kotlinx.datetime.LocalDateTime
 
 @Composable
-fun EventCard(event: Event, modifier: Modifier = Modifier) {
+fun EventCard(
+    event: Event,
+    modifier: Modifier = Modifier,
+    onClick: (Event) -> Unit
+) {
     Card(
         modifier = modifier,
         colors = if (event.isLan) {
@@ -32,10 +36,10 @@ fun EventCard(event: Event, modifier: Modifier = Modifier) {
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer
             )
         } else {
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-            )
+            CardDefaults.cardColors()
+        },
+        onClick = {
+            onClick(event)
         }
     ) {
         Column(
@@ -90,7 +94,7 @@ fun EventCard(event: Event, modifier: Modifier = Modifier) {
                     contentDescription = null
                 )
                 Text(
-                    text = event.prize?.toString() ?: stringResource(SharedRes.strings.no_prize)
+                    text = event.prize?.asString ?: stringResource(SharedRes.strings.no_prize)
                 )
             }
         }

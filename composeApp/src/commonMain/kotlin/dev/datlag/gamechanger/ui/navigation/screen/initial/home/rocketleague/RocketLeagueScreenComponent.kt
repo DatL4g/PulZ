@@ -2,12 +2,18 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague
 
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.slot.*
+import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
 import dev.datlag.gamechanger.common.onRender
 import dev.datlag.gamechanger.common.onRenderApplyCommonScheme
 import dev.datlag.gamechanger.game.Game
 import dev.datlag.gamechanger.game.SteamLauncher
+import dev.datlag.gamechanger.octane.model.Event
 import dev.datlag.gamechanger.octane.state.*
+import dev.datlag.gamechanger.ui.navigation.Component
+import dev.datlag.gamechanger.ui.navigation.ContentHolderComponent
+import dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague.details.event.EventDetailsScreenComponent
 import dev.datlag.tooling.compose.ioDispatcher
 import dev.datlag.tooling.decompose.ioScope
 import kotlinx.coroutines.flow.*
@@ -50,6 +56,21 @@ class RocketLeagueScreenComponent(
         initialValue = EventsUpcomingStateMachine.currentState
     )
 
+    private val navigation = SlotNavigation<RocketLeagueConfig>()
+    override val child: Value<ChildSlot<RocketLeagueConfig, Component>> = childSlot(
+        source = navigation,
+        serializer = RocketLeagueConfig.serializer()
+    ) { config, context ->
+        when (config) {
+            is RocketLeagueConfig.EventDetails -> EventDetailsScreenComponent(
+                componentContext = context,
+                di = di,
+                event = config.event,
+                onBack = navigation::dismiss
+            )
+        }
+    }
+
     private val backCallback = BackCallback {
         back()
     }
@@ -67,6 +88,14 @@ class RocketLeagueScreenComponent(
 
     override fun back() {
         onBack()
+    }
+
+    override fun dismissContent() {
+        (child.value.child?.instance as? ContentHolderComponent)?.dismissContent() ?: navigation.dismiss { active ->
+            if (!active) {
+                back()
+            }
+        }
     }
 
     override fun launch() {
@@ -89,5 +118,9 @@ class RocketLeagueScreenComponent(
         launchIO {
             eventsUpcomingStateMachine.dispatch(EventsAction.Retry)
         }
+    }
+
+    override fun showEventDetails(event: Event) {
+        navigation.activate(RocketLeagueConfig.EventDetails(event))
     }
 }

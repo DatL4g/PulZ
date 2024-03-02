@@ -24,10 +24,7 @@ fun MatchCard(match: Match) {
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer
             )
         } else {
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-            )
+            CardDefaults.cardColors()
         }
     ) {
         Column(

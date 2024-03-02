@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import dev.chrisbanes.haze.haze
 import dev.datlag.gamechanger.LocalHaze
 import dev.datlag.gamechanger.LocalPaddingValues
@@ -31,6 +32,13 @@ import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun RocketLeagueScreen(component: RocketLeagueComponent) {
+    val childState by component.child.subscribeAsState()
+
+    childState.child?.instance?.render() ?: MainView(component)
+}
+
+@Composable
+private fun MainView(component: RocketLeagueComponent) {
     val padding = PaddingValues(16.dp)
     val events by component.eventsToday.collectAsStateWithLifecycle()
 
@@ -117,7 +125,13 @@ fun RocketLeagueScreen(component: RocketLeagueComponent) {
                 items(
                     state.events.sortedWith(compareBy<Event> { it.startDate }.thenBy { it.endDate })
                 ) { event ->
-                    EventCard(event, Modifier.fillParentMaxWidth())
+                    EventCard(
+                        event = event,
+                        modifier = Modifier.fillParentMaxWidth(),
+                        onClick = {
+                            component.showEventDetails(it)
+                        }
+                    )
                 }
             }
         }
@@ -133,6 +147,9 @@ fun RocketLeagueScreen(component: RocketLeagueComponent) {
                 modifier = Modifier.fillParentMaxWidth(),
                 retry = {
                     component.retryLoadingEventsUpcoming()
+                },
+                onEventClick = {
+                    component.showEventDetails(it)
                 }
             )
         }

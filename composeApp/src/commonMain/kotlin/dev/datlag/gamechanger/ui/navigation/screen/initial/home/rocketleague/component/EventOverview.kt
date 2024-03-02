@@ -21,7 +21,8 @@ import kotlinx.coroutines.flow.StateFlow
 fun EventOverview(
     eventsState: StateFlow<EventsState>,
     modifier: Modifier = Modifier,
-    retry: () -> Unit
+    retry: () -> Unit,
+    onEventClick: (Event) -> Unit
 ) {
     val matches by eventsState.collectAsStateWithLifecycle()
 
@@ -59,7 +60,8 @@ fun EventOverview(
                 ) { event ->
                     EventCard(
                         event = event,
-                        modifier = Modifier.width(200.dp).fillParentMaxHeight()
+                        modifier = Modifier.width(200.dp).fillParentMaxHeight(),
+                        onClick = onEventClick
                     )
                 }
             }

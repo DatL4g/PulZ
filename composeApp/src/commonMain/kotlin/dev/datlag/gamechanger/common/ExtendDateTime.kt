@@ -12,7 +12,7 @@ fun LocalDate.nextDateWithWeekDay(newDayOfWeek: DayOfWeek): LocalDate {
 }
 
 @Composable
-fun LocalDateTime.formatDayMon(): String? {
+fun LocalDateTime.formatDayMon(addYear: Boolean): String? {
     var dayString = this.dayOfMonth.toString()
     if (dayString.length == 1) {
         dayString = "0$dayString"
@@ -48,7 +48,18 @@ fun LocalDateTime.formatDayMon(): String? {
         }
     }
 
-    return "$dayString $monthString"
+    val yearSuffix = if (addYear) {
+        val currentYear = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year
+        if (this.year != currentYear) {
+            this.year.toString()
+        } else {
+            ""
+        }
+    } else {
+        ""
+    }
+
+    return "$dayString. $monthString $yearSuffix"
 }
 
 @Composable
@@ -57,8 +68,8 @@ fun Pair<LocalDateTime?, LocalDateTime?>.formatDayMon(): String? {
     val end = this.second
 
     return if (start != null && end != null) {
-        "${start.formatDayMon()} - ${end.formatDayMon()}"
+        "${start.formatDayMon(false)} - ${end.formatDayMon(true)}"
     } else {
-        start?.formatDayMon() ?: end?.formatDayMon()
+        start?.formatDayMon(true) ?: end?.formatDayMon(true)
     }
 }

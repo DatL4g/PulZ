@@ -101,4 +101,10 @@
     <string name="games_free_error">Could not load Free games.</string>
     <string name="games_multiplayer_error">Could not load Multiplayer games.</string>
     <string name="try_again">Try again</string>
+    <string name="prize_colon">Price:</string>
+    <string name="region_colon">Region:</string>
+    <string name="unknown_region">Unknown Region</string>
+    <string name="start_date_colon">Start Date:</string>
+    <string name="end_date_colon">End Date:</string>
+    <string name="lan_colon">LAN:</string>
 </resources>
