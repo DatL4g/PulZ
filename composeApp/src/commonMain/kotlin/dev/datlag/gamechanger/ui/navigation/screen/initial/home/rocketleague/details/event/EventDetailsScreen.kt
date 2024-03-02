@@ -1,15 +1,19 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague.details.event
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -34,14 +38,31 @@ fun EventDetailsScreen(component: EventDetailsComponent) {
         contentPadding = LocalPaddingValues.current?.plus(padding) ?: padding
     ) {
         item {
-            AsyncImage(
-                model = component.event.logo,
-                contentDescription = component.event.name,
-                modifier = Modifier.fillParentMaxWidth().heightIn(max = 200.dp),
-                placeholder = shimmerPainter(),
-                alignment = Alignment.Center,
-                contentScale = ContentScale.Inside
-            )
+            Box {
+                AsyncImage(
+                    model = component.event.logo,
+                    contentDescription = component.event.name,
+                    modifier = Modifier.fillParentMaxWidth().heightIn(max = 200.dp),
+                    placeholder = shimmerPainter(),
+                    alignment = Alignment.Center,
+                    contentScale = ContentScale.Inside
+                )
+                IconButton(
+                    onClick = {
+                        component.back()
+                    },
+                    modifier = Modifier.background(
+                        color = Color.Black.copy(alpha = 0.5F),
+                        shape = CircleShape
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBackIosNew,
+                        contentDescription = stringResource(SharedRes.strings.back),
+                        tint = Color.White
+                    )
+                }
+            }
         }
         item {
             Text(
