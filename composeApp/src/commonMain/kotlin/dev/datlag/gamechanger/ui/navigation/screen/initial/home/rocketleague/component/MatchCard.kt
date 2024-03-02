@@ -2,10 +2,7 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague.co
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Card
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,7 +17,18 @@ import dev.icerock.moko.resources.compose.stringResource
 @Composable
 fun MatchCard(match: Match) {
     Card(
-        modifier = Modifier.width(200.dp)
+        modifier = Modifier.width(200.dp),
+        colors = if (match.event?.isLan == true) {
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        } else {
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+            )
+        }
     ) {
         Column(
             modifier = Modifier.padding(8.dp),

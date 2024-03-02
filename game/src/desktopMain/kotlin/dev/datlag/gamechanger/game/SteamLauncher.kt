@@ -65,8 +65,14 @@ actual data object SteamLauncher : Launcher {
     override val launchSupported: Boolean = true
 
     override fun launch(game: Game) {
-        if (game is Game.Steam) {
-            open(game.getRunGameUri())
+        when (game) {
+            is Game.Steam -> {
+                open(game.getRunGameUri())
+            }
+            is Game.Multi -> {
+                game.steam?.let(::launch)
+            }
+            else -> { }
         }
     }
 

@@ -29,6 +29,10 @@ actual object SteamLauncher : Launcher {
             is Game.Steam -> {
                 window.location.href = "steam://rungameid/${game.id}"
             }
+            is Game.Multi -> {
+                game.steam?.let(::launch)
+            }
+            else -> { }
         }
     }
 }

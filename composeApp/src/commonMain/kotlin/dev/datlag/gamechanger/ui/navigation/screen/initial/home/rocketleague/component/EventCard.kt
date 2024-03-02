@@ -32,7 +32,10 @@ fun EventCard(event: Event, modifier: Modifier = Modifier) {
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer
             )
         } else {
-            CardDefaults.cardColors()
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+            )
         }
     ) {
         Column(

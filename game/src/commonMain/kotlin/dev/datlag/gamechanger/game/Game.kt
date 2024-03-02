@@ -34,8 +34,8 @@ sealed interface Game {
         }
 
         companion object {
-            private const val RUN_GAME: String = "steam://rungameid/"
-            private const val RUN: String = "steam://run/"
+            internal const val RUN_GAME: String = "steam://rungameid/"
+            internal const val RUN: String = "steam://run/"
         }
     }
 
@@ -51,10 +51,18 @@ sealed interface Game {
     sealed interface Heroic : Game {
 
         override fun launch() {
-            // ToDo("add launcher")
+            HeroicLauncher.launch(this)
+        }
+
+        fun getLaunchUri(id: String): String {
+            return "$LAUNCH$id"
         }
 
         data object RocketLeague : Heroic
+
+        companion object {
+            internal const val LAUNCH: String = "heroic://launch/"
+        }
     }
 
     sealed class Multi : Game {
