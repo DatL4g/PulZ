@@ -4,4 +4,16 @@
         <item name="isLightTheme">false</item>
         <item name="android:isLightTheme" tools:targetApi="q">false</item>
     </style>
+
+    <style name="SplashScreenTheme" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#101418</item>
+        <item name="android:windowSplashScreenBackground" tools:targetApi="s">#101418</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@drawable/ic_launcher_foreground</item>
+        <item name="windowSplashScreenIconBackgroundColor">#3A4857</item>
+        <item name="android:windowSplashScreenIconBackgroundColor" tools:targetApi="s">#3A4857</item>
+        <item name="windowSplashScreenAnimationDuration">500</item>
+        <item name="android:windowSplashScreenAnimationDuration" tools:targetApi="s">500</item>
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
+    </style>
 </resources>
