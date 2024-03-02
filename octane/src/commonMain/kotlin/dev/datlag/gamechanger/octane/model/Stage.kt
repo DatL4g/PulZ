@@ -14,6 +14,7 @@ data class Stage(
     @Serializable(DateTimeSerializer::class) @SerialName("startDate") val startDate: LocalDateTime? = null,
     @Serializable(DateTimeSerializer::class) @SerialName("endDate") val endDate: LocalDateTime? = null,
     @SerialName("prize") val prize: Event.Prize? = null,
+    @SerialName("lan") val isLan: Boolean = false,
     @SerialName("liquipedia") val liquipedia: String? = null,
     @SerialName("location") val location: Location? = null
 ) {

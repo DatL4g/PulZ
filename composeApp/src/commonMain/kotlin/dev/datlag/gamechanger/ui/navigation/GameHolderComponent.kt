@@ -13,3 +13,11 @@ interface SteamGameHolderComponent : GameHolderComponent {
     override val game: Game.Steam
         get() = steamGame
 }
+
+interface MultiGameHolderComponent : GameHolderComponent {
+
+    val multiGame: Game.Multi
+
+    override val game: Game
+        get() = multiGame
+}

@@ -90,4 +90,15 @@
     <string name="match">Match</string>
     <string name="blue">Blue</string>
     <string name="orange">Orange</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="matches_error">Could not load matches.</string>
+    <string name="events_error">Could not load events.</string>
+    <string name="games_search_error">Could not search for games.</string>
+    <string name="games_trending_error">Could not load Trending games.</string>
+    <string name="games_top_rated_error">Could not load Top-Rated games.</string>
+    <string name="games_esport_error">Could not load E-Sports games.</string>
+    <string name="games_online_coop_error">Could not load Online Co-op games.</string>
+    <string name="games_free_error">Could not load Free games.</string>
+    <string name="games_multiplayer_error">Could not load Multiplayer games.</string>
+    <string name="try_again">Try again</string>
 </resources>

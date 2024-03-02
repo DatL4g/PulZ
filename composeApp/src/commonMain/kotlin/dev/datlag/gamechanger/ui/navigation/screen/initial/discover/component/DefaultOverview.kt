@@ -17,11 +17,14 @@ import dev.datlag.gamechanger.rawg.state.GamesState
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.model.GameSectionType
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.StateFlow
+import dev.datlag.gamechanger.SharedRes
+import dev.datlag.gamechanger.ui.navigation.screen.initial.component.ErrorContent
 
 @Composable
 fun DefaultOverview(
     state: StateFlow<GamesState>,
     onClick: (Game) -> Unit,
+    type: GameSectionType.Default,
     retry: () -> Unit
 ) {
     val loadingState by state.collectAsStateWithLifecycle()
@@ -31,22 +34,21 @@ fun DefaultOverview(
             Loading()
         }
         is GamesState.Error -> {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                Loading(false)
-                Button(
-                    onClick = {
-                        retry()
-                    }
-                ) {
-                    Text(text = "Retry")
-                }
+            val text = when (type) {
+                is GameSectionType.Default.TopRated -> SharedRes.strings.games_top_rated_error
+                is GameSectionType.Default.ESports -> SharedRes.strings.games_esport_error
+                is GameSectionType.Default.OnlineCoop -> SharedRes.strings.games_online_coop_error
+                is GameSectionType.Default.Free -> SharedRes.strings.games_free_error
+                is GameSectionType.Default.Multiplayer -> SharedRes.strings.games_multiplayer_error
             }
+            ErrorContent(
+                text = text,
+                modifier = Modifier.fillMaxWidth(),
+                retry = retry
+            )
         }
         is GamesState.Success -> {
-            GameSection(reachedState.games, GameSectionType.Default, onClick)
+            GameSection(reachedState.games, type, onClick)
         }
     }
 }

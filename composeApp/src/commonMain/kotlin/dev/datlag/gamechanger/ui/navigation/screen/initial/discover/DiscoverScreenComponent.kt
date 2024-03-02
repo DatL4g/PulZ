@@ -165,4 +165,10 @@ class DiscoverScreenComponent(
             }
         }
     }
+
+    override fun retrySearch() {
+        launchIO {
+            searchGamesStateMachine.dispatch(SearchGamesStateMachine.Action.Retry)
+        }
+    }
 }

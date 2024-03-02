@@ -8,16 +8,23 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.painter.Painter
 import com.kmpalette.DominantColorState
+import com.kmpalette.palette.graphics.Palette
 import com.kmpalette.rememberDominantColorState
 import com.kmpalette.rememberPainterDominantColorState
 import com.materialkolor.AnimatedDynamicMaterialTheme
+import com.materialkolor.DynamicMaterialTheme
+import com.materialkolor.ktx.isDisliked
 import dev.datlag.gamechanger.LocalDarkMode
+import dev.datlag.tooling.compose.ioDispatcher
 import dev.datlag.tooling.compose.launchIO
 import dev.datlag.tooling.compose.toLegacyColors
 import dev.datlag.tooling.compose.withIOContext
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlin.coroutines.CoroutineContext
 
 data object SchemeTheme {
 
@@ -73,7 +80,9 @@ fun rememberSchemeThemeDominantColor(
     key: Any?
 ): Color? {
     if (SchemeTheme._state == null) {
-        SchemeTheme._state = rememberPainterDominantColorState()
+        SchemeTheme._state = rememberPainterDominantColorState(
+            coroutineContext = ioDispatcher()
+        )
     }
 
     val color by remember(key) {
@@ -88,9 +97,9 @@ fun rememberSchemeThemeDominantColorState(
     key: Any?,
     defaultColor: Color = MaterialTheme.colorScheme.primary,
     defaultOnColor: Color = MaterialTheme.colorScheme.onPrimary,
-    clearFilter: Boolean = false,
-    applyMinContrast: Boolean = false,
-    minContrastBackgroundColor: Color = Color.Transparent
+    coroutineContext: CoroutineContext = ioDispatcher(),
+    isSwatchValid: (Palette.Swatch) -> Boolean = { true },
+    builder: Palette.Builder.() -> Unit = {},
 ): DominantColorState<Painter> {
     val state by remember(key) {
         SchemeTheme.colorState.map { it[key] }
@@ -99,18 +108,9 @@ fun rememberSchemeThemeDominantColorState(
     return state ?: rememberPainterDominantColorState(
         defaultColor = defaultColor,
         defaultOnColor = defaultOnColor,
-        builder = {
-            if (clearFilter) {
-                clearFilters()
-            }
-        },
-        isSwatchValid = { swatch ->
-            if (applyMinContrast) {
-                Color(swatch.bodyTextColor).contrastAgainst(minContrastBackgroundColor) >= MinContrastRatio
-            } else {
-                true
-            }
-        }
+        coroutineContext = coroutineContext,
+        builder = builder,
+        isSwatchValid = isSwatchValid
     ).also {
         if (key != null) {
             SchemeTheme.colorState.update { map ->
@@ -122,11 +122,44 @@ fun rememberSchemeThemeDominantColorState(
     }
 }
 
+    @Composable
+fun rememberSchemeThemeDominantColorState(
+    key: Any?,
+    defaultColor: Color = MaterialTheme.colorScheme.primary,
+    defaultOnColor: Color = MaterialTheme.colorScheme.onPrimary,
+    clearFilter: Boolean = false,
+    applyMinContrast: Boolean = false,
+    minContrastBackgroundColor: Color = Color.Transparent,
+    coroutineContext: CoroutineContext = ioDispatcher()
+): DominantColorState<Painter> {
+    return rememberSchemeThemeDominantColorState(
+        key = key,
+        defaultColor = defaultColor,
+        defaultOnColor = defaultOnColor,
+        coroutineContext = coroutineContext,
+        builder = {
+            if (clearFilter) {
+                clearFilters()
+            } else {
+                addFilter(Palette.DEFAULT_FILTER)
+            }
+        },
+        isSwatchValid = { swatch ->
+            if (applyMinContrast) {
+                Color(swatch.bodyTextColor).contrastAgainst(minContrastBackgroundColor) >= MinContrastRatio
+            } else {
+                true
+            }
+        }
+    )
+}
+
 @Composable
 fun SchemeTheme(key: Any?, content: @Composable () -> Unit) {
-    AnimatedDynamicMaterialTheme(
+    DynamicMaterialTheme(
         seedColor = rememberSchemeThemeDominantColor(key) ?: MaterialTheme.colorScheme.primary,
-        useDarkTheme = LocalDarkMode.current
+        useDarkTheme = LocalDarkMode.current,
+        animate = true
     ) {
         androidx.compose.material.MaterialTheme(
             colors = MaterialTheme.colorScheme.toLegacyColors(LocalDarkMode.current)

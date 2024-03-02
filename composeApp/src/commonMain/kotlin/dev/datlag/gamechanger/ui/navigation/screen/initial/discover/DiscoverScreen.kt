@@ -23,6 +23,7 @@ import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.plus
 import dev.datlag.gamechanger.common.shimmer
 import dev.datlag.gamechanger.rawg.state.SearchGamesStateMachine
+import dev.datlag.gamechanger.ui.navigation.screen.initial.component.ErrorContent
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.Overview
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.component.SearchOverview
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
@@ -98,18 +99,13 @@ private fun MainView(component: DiscoverComponent, modifier: Modifier = Modifier
             )
         }
         is SearchGamesStateMachine.State.Error -> {
-            Box(
-                modifier = Modifier.fillMaxSize().padding(localPadding),
-                contentAlignment = Alignment.Center
-            ) {
-                Button(
-                    onClick = {
-
-                    }
-                ) {
-                    Text(text = "Retry")
+            ErrorContent(
+                text = SharedRes.strings.games_search_error,
+                modifier = Modifier.fillMaxWidth(),
+                retry = {
+                    component.retrySearch()
                 }
-            }
+            )
         }
     }
 }

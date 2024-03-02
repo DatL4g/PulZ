@@ -9,9 +9,11 @@ import dev.datlag.gamechanger.octane.state.MatchesState
 internal data object StateSaver {
     var eventsToday: EventsState = EventsState.Loading
     var matchesToday: MatchesState = MatchesState.Loading
+    var eventsUpcoming: EventsState = EventsState.Loading
 
     internal data object Cache {
         val eventsToday: Cacheable<Events> = Cacheable()
         val matchesToday: Cacheable<Matches> = Cacheable()
+        val eventsUpcoming: Cacheable<Events> = Cacheable()
     }
 }

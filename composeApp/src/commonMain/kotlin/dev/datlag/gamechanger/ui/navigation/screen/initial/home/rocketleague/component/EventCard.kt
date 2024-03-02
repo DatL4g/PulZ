@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -18,12 +19,21 @@ import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.formatDayMon
 import dev.datlag.gamechanger.octane.model.Event
 import dev.icerock.moko.resources.compose.stringResource
+import io.github.aakira.napier.Napier
 import kotlinx.datetime.LocalDateTime
 
 @Composable
-fun EventCard(event: Event) {
+fun EventCard(event: Event, modifier: Modifier = Modifier) {
     Card(
-        modifier = Modifier.width(200.dp).fillMaxHeight()
+        modifier = modifier,
+        colors = if (event.isLan) {
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        } else {
+            CardDefaults.cardColors()
+        }
     ) {
         Column(
             modifier = Modifier.padding(8.dp),

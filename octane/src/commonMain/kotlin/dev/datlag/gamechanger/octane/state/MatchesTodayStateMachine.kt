@@ -11,8 +11,7 @@ import kotlinx.datetime.toLocalDateTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MatchesTodayStateMachine(
-    private val octane: Octane,
-    private val log: (Throwable?) -> Unit
+    private val octane: Octane
 ) : FlowReduxStateMachine<MatchesState, MatchesAction>(initialState = currentState) {
 
     init {
@@ -35,9 +34,6 @@ class MatchesTodayStateMachine(
                                 StateSaver.Cache.matchesToday.cache(it)
                             }
                         )
-                    }
-                    result.onError {
-                        log(it)
                     }
 
                     state.override {

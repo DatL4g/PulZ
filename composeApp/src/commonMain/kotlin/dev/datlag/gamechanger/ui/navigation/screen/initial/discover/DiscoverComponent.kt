@@ -34,5 +34,6 @@ interface DiscoverComponent : ContentHolderComponent {
 
     fun updateSearchQuery(value: String)
     fun search(value: String)
+    fun retrySearch()
 
 }

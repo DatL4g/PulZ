@@ -7,10 +7,7 @@ import dev.datlag.gamechanger.common.onRender
 import dev.datlag.gamechanger.common.onRenderApplyCommonScheme
 import dev.datlag.gamechanger.game.Game
 import dev.datlag.gamechanger.game.SteamLauncher
-import dev.datlag.gamechanger.octane.state.EventsState
-import dev.datlag.gamechanger.octane.state.EventsTodayStateMachine
-import dev.datlag.gamechanger.octane.state.MatchesState
-import dev.datlag.gamechanger.octane.state.MatchesTodayStateMachine
+import dev.datlag.gamechanger.octane.state.*
 import dev.datlag.tooling.compose.ioDispatcher
 import dev.datlag.tooling.decompose.ioScope
 import kotlinx.coroutines.flow.*
@@ -24,7 +21,7 @@ class RocketLeagueScreenComponent(
 ) : RocketLeagueComponent, ComponentContext by componentContext {
 
     override val canLaunch: Boolean = SteamLauncher.launchSupported
-    override val steamGame: Game.Steam = Game.Steam.RocketLeague
+    override val multiGame: Game.Multi = Game.Multi.RocketLeague
 
     private val eventsTodayStateMachine by di.instance<EventsTodayStateMachine>()
     override val eventsToday: StateFlow<EventsState> = eventsTodayStateMachine.state.flowOn(
@@ -42,6 +39,15 @@ class RocketLeagueScreenComponent(
         scope = ioScope(),
         started = SharingStarted.WhileSubscribed(),
         initialValue = MatchesTodayStateMachine.currentState
+    )
+
+    private val eventsUpcomingStateMachine by di.instance<EventsUpcomingStateMachine>()
+    override val eventsUpcoming: StateFlow<EventsState> = eventsUpcomingStateMachine.state.flowOn(
+        context = ioDispatcher()
+    ).stateIn(
+        scope = ioScope(),
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = EventsUpcomingStateMachine.currentState
     )
 
     private val backCallback = BackCallback {
@@ -65,5 +71,23 @@ class RocketLeagueScreenComponent(
 
     override fun launch() {
         // ToDo("choose launcher")
+    }
+
+    override fun retryLoadingMatchesToday() {
+        launchIO {
+            matchesTodayStateMachine.dispatch(MatchesAction.Retry)
+        }
+    }
+
+    override fun retryLoadingEventsToday() {
+        launchIO {
+            eventsTodayStateMachine.dispatch(EventsAction.Retry)
+        }
+    }
+
+    override fun retryLoadingEventsUpcoming() {
+        launchIO {
+            eventsUpcomingStateMachine.dispatch(EventsAction.Retry)
+        }
     }
 }

@@ -18,6 +18,7 @@ import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.other.StateSaver
 import dev.datlag.gamechanger.ui.custom.NativeAdView
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.DiscoverComponent
+import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.model.GameSectionType
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
@@ -65,6 +66,7 @@ fun Overview(
             DefaultOverview(
                 state = component.topRatedGamesState,
                 onClick = component::details,
+                type = GameSectionType.Default.TopRated,
                 retry = component::retryTopRated
             )
         }
@@ -79,6 +81,7 @@ fun Overview(
             DefaultOverview(
                 state = component.eSportGamesState,
                 onClick = component::details,
+                type = GameSectionType.Default.ESports,
                 retry = component::retryESports
             )
         }
@@ -94,6 +97,7 @@ fun Overview(
             DefaultOverview(
                 state = component.coopGamesState,
                 onClick = component::details,
+                type = GameSectionType.Default.OnlineCoop,
                 retry = component::retryCoop
             )
         }
@@ -108,6 +112,7 @@ fun Overview(
             DefaultOverview(
                 state = component.freeGamesState,
                 onClick = component::details,
+                type = GameSectionType.Default.Free,
                 retry = component::retryCoop
             )
         }
@@ -122,6 +127,7 @@ fun Overview(
             DefaultOverview(
                 state = component.multiplayerGamesState,
                 onClick = component::details,
+                type = GameSectionType.Default.Multiplayer,
                 retry = component::retryCoop
             )
         }

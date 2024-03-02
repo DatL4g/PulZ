@@ -1,63 +1,44 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial.home.component
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
-import dev.datlag.gamechanger.common.bottomShadowBrush
+import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.game.Game
 import dev.datlag.gamechanger.ui.theme.SchemeTheme
-import dev.datlag.gamechanger.ui.theme.rememberSchemeThemeDominantColor
-import dev.datlag.tooling.compose.onClick
 import dev.icerock.moko.resources.ImageResource
 import dev.icerock.moko.resources.compose.painterResource
+import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun GameCover(
-    title: String,
-    game: Game?,
+    game: Game,
     fallback: ImageResource,
-    color: Color = rememberSchemeThemeDominantColor(game) ?: Color.Black,
-    modifier: Modifier = Modifier,
-    contentDescription: String = title,
-    onClick: () -> Unit = { }
+    onClick: (Game) -> Unit = { }
 ) {
-    Box(
-        modifier = modifier.onClick {
-            onClick()
+    ElevatedCard(
+        onClick = {
+            onClick(game)
         },
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxWidth()
     ) {
-        val painter = painterResource(fallback)
+        val errorPainter = painterResource(fallback)
         val scope = rememberCoroutineScope()
-        val model = if (game is Game.Steam) {
-            game.headerUrl
-        } else {
-            null
-        }
-        val fallbackPainter = if (game is Game.Steam) {
+
+        val headerUrl = (game as? Game.Steam)?.headerUrl ?: (game as? Game.Multi)?.headerUrl
+        val heroUrl = (game as? Game.Steam)?.heroUrl ?: (game as? Game.Multi)?.heroUrl
+        val fallbackPainter = if (heroUrl != null) {
             rememberAsyncImagePainter(
-                model = game.heroUrl,
-                placeholder = painter,
-                error = painter,
+                model = heroUrl,
+                placeholder = errorPainter,
+                error = errorPainter,
                 onSuccess = { state ->
                     SchemeTheme.update(
                         key = game,
@@ -67,20 +48,17 @@ fun GameCover(
                 }
             )
         } else {
-            painter
+            errorPainter
         }
-        val animatedColor by animateColorAsState(
-            targetValue = color
-        )
 
         AsyncImage(
-            modifier = Modifier.fillMaxSize(),
-            model = model,
-            contentDescription = contentDescription,
+            modifier = Modifier.fillMaxWidth(),
+            model = headerUrl,
+            contentDescription = stringResource(SharedRes.strings.rocket_league),
             alignment = Alignment.Center,
             contentScale = ContentScale.FillWidth,
             error = fallbackPainter,
-            placeholder = painter,
+            placeholder = errorPainter,
             onSuccess = { state ->
                 SchemeTheme.update(
                     key = game,
@@ -88,21 +66,6 @@ fun GameCover(
                     scope = scope
                 )
             }
-        )
-        Box(
-            modifier = Modifier.matchParentSize().bottomShadowBrush(animatedColor)
-        )
-        Text(
-            modifier = Modifier.align(Alignment.BottomStart).padding(8.dp),
-            text = title,
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.headlineMedium.copy(
-                shadow = Shadow(
-                    color = Color.Black,
-                    offset = Offset(3F, 3F),
-                    blurRadius = 2F
-                )
-            )
         )
     }
 }

@@ -26,6 +26,9 @@ data class Event(
     @Transient
     val stages: Set<Stage> = _stages?.toSet() ?: emptySet()
 
+    @Transient
+    val isLan = stages.any { it.isLan }
+
     @Serializable
     data class Prize(
         @SerialName("amount") val amount: Int? = null,

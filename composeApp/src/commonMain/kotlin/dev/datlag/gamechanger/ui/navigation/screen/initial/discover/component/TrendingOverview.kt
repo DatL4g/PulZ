@@ -12,9 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.shimmer
 import dev.datlag.gamechanger.rawg.model.Game
 import dev.datlag.gamechanger.rawg.state.GamesState
+import dev.datlag.gamechanger.ui.navigation.screen.initial.component.ErrorContent
 import dev.datlag.gamechanger.ui.navigation.screen.initial.discover.model.GameSectionType
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.StateFlow
@@ -32,19 +34,11 @@ fun TrendingOverview(
             Loading()
         }
         is GamesState.Error -> {
-            Box(
+            ErrorContent(
+                text = SharedRes.strings.games_trending_error,
                 modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                Loading(false)
-                Button(
-                    onClick = {
-                        retry()
-                    }
-                ) {
-                    Text(text = "Retry")
-                }
-            }
+                retry = retry
+            )
         }
         is GamesState.Success -> {
             GameSection(reachedState.games, GameSectionType.Trending, onClick)
