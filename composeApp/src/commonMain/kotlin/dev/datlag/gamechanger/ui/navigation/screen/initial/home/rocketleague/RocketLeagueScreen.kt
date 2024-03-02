@@ -1,14 +1,16 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -18,10 +20,12 @@ import dev.datlag.gamechanger.LocalPaddingValues
 import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.plus
 import dev.datlag.gamechanger.common.shimmer
+import dev.datlag.gamechanger.common.shimmerPainter
 import dev.datlag.gamechanger.octane.model.Event
 import dev.datlag.gamechanger.octane.state.EventsState
 import dev.datlag.gamechanger.ui.navigation.screen.initial.component.ErrorContent
 import dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague.component.*
+import dev.datlag.tooling.compose.TopStartBottomEndCornerShape
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -39,12 +43,32 @@ fun RocketLeagueScreen(component: RocketLeagueComponent) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                AsyncImage(
-                    modifier = Modifier.fillMaxWidth(),
-                    model = component.multiGame.heroUrl,
-                    contentDescription = stringResource(SharedRes.strings.rocket_league),
-                    contentScale = ContentScale.FillWidth
-                )
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    AsyncImage(
+                        modifier = Modifier.fillMaxWidth(),
+                        model = component.multiGame.heroUrl,
+                        contentDescription = stringResource(SharedRes.strings.rocket_league),
+                        contentScale = ContentScale.FillWidth,
+                        placeholder = shimmerPainter()
+                    )
+                    IconButton(
+                        onClick = {
+                            component.back()
+                        },
+                        modifier = Modifier.background(
+                            color = Color.Black.copy(alpha = 0.5F),
+                            shape = TopStartBottomEndCornerShape(RoundedCornerShape(12.dp))
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBackIosNew,
+                            contentDescription = stringResource(SharedRes.strings.back),
+                            tint = Color.White
+                        )
+                    }
+                }
             }
         }
         item {
