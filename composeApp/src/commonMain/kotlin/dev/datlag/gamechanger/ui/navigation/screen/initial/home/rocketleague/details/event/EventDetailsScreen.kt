@@ -233,7 +233,9 @@ fun EventDetailsScreen(component: EventDetailsComponent) {
                         }
                     }
                     items(grouped[stage]?.sortedBy { it.date } ?: emptyList()) { match ->
-                        MatchCard(match, Modifier.fillParentMaxWidth())
+                        MatchCard(match, Modifier.fillParentMaxWidth()) {
+                            component.showMatch(it)
+                        }
                     }
                 }
             }

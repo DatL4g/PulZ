@@ -107,4 +107,10 @@
     <string name="start_date_colon">Start Date:</string>
     <string name="end_date_colon">End Date:</string>
     <string name="lan_colon">LAN:</string>
+    <string name="statistics">Statistics</string>
+    <string name="shots">Shots</string>
+    <string name="goals">Goals</string>
+    <string name="saves">Saves</string>
+    <string name="assists">Assists</string>
+    <string name="score">Score</string>
 </resources>

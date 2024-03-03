@@ -10,10 +10,12 @@ import dev.datlag.gamechanger.common.onRenderApplyCommonScheme
 import dev.datlag.gamechanger.game.Game
 import dev.datlag.gamechanger.game.SteamLauncher
 import dev.datlag.gamechanger.octane.model.Event
+import dev.datlag.gamechanger.octane.model.Match
 import dev.datlag.gamechanger.octane.state.*
 import dev.datlag.gamechanger.ui.navigation.Component
 import dev.datlag.gamechanger.ui.navigation.ContentHolderComponent
 import dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague.details.event.EventDetailsScreenComponent
+import dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague.details.match.MatchDetailsScreenComponent
 import dev.datlag.tooling.compose.ioDispatcher
 import dev.datlag.tooling.decompose.ioScope
 import kotlinx.coroutines.flow.*
@@ -66,6 +68,15 @@ class RocketLeagueScreenComponent(
                 componentContext = context,
                 di = di,
                 event = config.event,
+                onBack = navigation::dismiss,
+                onMatch = {
+                    showMatchDetails(it)
+                }
+            )
+            is RocketLeagueConfig.MatchDetails -> MatchDetailsScreenComponent(
+                componentContext = context,
+                di = di,
+                match = config.match,
                 onBack = navigation::dismiss
             )
         }
@@ -122,5 +133,9 @@ class RocketLeagueScreenComponent(
 
     override fun showEventDetails(event: Event) {
         navigation.activate(RocketLeagueConfig.EventDetails(event))
+    }
+
+    override fun showMatchDetails(match: Match) {
+        navigation.activate(RocketLeagueConfig.MatchDetails(match))
     }
 }

@@ -91,6 +91,9 @@ private fun MainView(component: RocketLeagueComponent) {
                 modifier = Modifier.fillParentMaxWidth(),
                 retry = {
                     component.retryLoadingMatchesToday()
+                },
+                onClick = {
+                    component.showMatchDetails(it)
                 }
             )
         }

@@ -6,6 +6,7 @@ import com.arkivanov.essenty.backhandler.BackCallback
 import dev.datlag.gamechanger.common.onRender
 import dev.datlag.gamechanger.octane.Octane
 import dev.datlag.gamechanger.octane.model.Event
+import dev.datlag.gamechanger.octane.model.Match
 import dev.datlag.gamechanger.octane.state.MatchesEventStateMachine
 import dev.datlag.tooling.compose.ioDispatcher
 import dev.datlag.tooling.decompose.ioScope
@@ -21,7 +22,8 @@ class EventDetailsScreenComponent(
     componentContext: ComponentContext,
     override val di: DI,
     override val event: Event,
-    private val onBack: () -> Unit
+    private val onBack: () -> Unit,
+    private val onMatch: (Match) -> Unit
 ) : EventDetailsComponent, ComponentContext by componentContext {
 
     private val octane by di.instance<Octane>()
@@ -60,5 +62,9 @@ class EventDetailsScreenComponent(
         launchIO {
             matchesEventStateMachine.dispatch(MatchesEventStateMachine.Action.Retry)
         }
+    }
+
+    override fun showMatch(match: Match) {
+        onMatch(match)
     }
 }

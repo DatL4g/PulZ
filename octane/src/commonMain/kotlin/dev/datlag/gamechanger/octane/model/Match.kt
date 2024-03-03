@@ -46,7 +46,8 @@ data class Match(
 
     @Serializable
     data class TeamContainer(
-        @SerialName("team") val team: Team? = null
+        @SerialName("team") val team: Team? = null,
+        @SerialName("stats") val stats: StatsContainer? = null
     ) {
         @Serializable
         data class Team(
@@ -56,6 +57,22 @@ data class Match(
             @SerialName("region") val region: String? = null,
             @SerialName("image") val image: String? = null,
             @SerialName("relevant") val relevant: Boolean = false,
+        )
+    }
+
+    @Serializable
+    data class StatsContainer(
+        @SerialName("core") val core: Core? = null
+    ) {
+
+        @Serializable
+        data class Core(
+            @SerialName("shots") val shots: Int? = null,
+            @SerialName("goals") val goals: Int? = null,
+            @SerialName("saves") val saves: Int? = null,
+            @SerialName("assists") val assists: Int? = null,
+            @SerialName("score") val score: Int? = null,
+            @SerialName("shootingPercentage") val shootingPercentage: Float? = null,
         )
     }
 }

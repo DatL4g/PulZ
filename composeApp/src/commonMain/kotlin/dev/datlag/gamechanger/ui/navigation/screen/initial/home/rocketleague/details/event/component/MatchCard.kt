@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -24,9 +25,16 @@ import dev.datlag.gamechanger.octane.model.Match
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun MatchCard(match: Match, modifier: Modifier = Modifier) {
+fun MatchCard(
+    match: Match,
+    modifier: Modifier = Modifier,
+    onClick: (Match) -> Unit
+) {
     Card(
-        modifier = modifier
+        modifier = modifier,
+        onClick = {
+            onClick(match)
+        }
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -57,7 +65,8 @@ fun MatchCard(match: Match, modifier: Modifier = Modifier) {
                     null
                 },
                 softWrap = true,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center
             )
             Text(
                 text = "${match.blue?.score ?: 0} - ${match.orange?.score ?: 0}"
@@ -77,7 +86,8 @@ fun MatchCard(match: Match, modifier: Modifier = Modifier) {
                     null
                 },
                 softWrap = true,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center
             )
             AsyncImage(
                 model = match.orange?.teamContainer?.team?.image,

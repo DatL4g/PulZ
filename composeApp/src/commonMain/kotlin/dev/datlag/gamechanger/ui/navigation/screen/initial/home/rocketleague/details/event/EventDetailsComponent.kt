@@ -1,6 +1,7 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague.details.event
 
 import dev.datlag.gamechanger.octane.model.Event
+import dev.datlag.gamechanger.octane.model.Match
 import dev.datlag.gamechanger.octane.state.MatchesEventStateMachine
 import dev.datlag.gamechanger.ui.navigation.ContentHolderComponent
 import kotlinx.coroutines.flow.StateFlow
@@ -16,4 +17,5 @@ interface EventDetailsComponent : ContentHolderComponent {
     }
 
     fun retryLoadingMatches()
+    fun showMatch(match: Match)
 }

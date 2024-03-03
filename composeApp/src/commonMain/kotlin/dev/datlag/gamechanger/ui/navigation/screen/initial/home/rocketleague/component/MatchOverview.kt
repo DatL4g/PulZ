@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.shimmer
+import dev.datlag.gamechanger.octane.model.Match
 import dev.datlag.gamechanger.octane.state.MatchesState
 import dev.datlag.gamechanger.ui.navigation.screen.initial.component.ErrorContent
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
@@ -20,7 +21,8 @@ import kotlinx.coroutines.flow.StateFlow
 fun MatchOverview(
     matchesState: StateFlow<MatchesState>,
     modifier: Modifier = Modifier,
-    retry: () -> Unit
+    retry: () -> Unit,
+    onClick: (Match) -> Unit
 ) {
     val matches by matchesState.collectAsStateWithLifecycle()
 
@@ -56,7 +58,9 @@ fun MatchOverview(
                 items(
                     state.matches.sortedWith(compareBy { it.date })
                 ) { match ->
-                    MatchCard(match)
+                    MatchCard(match) {
+                        onClick(it)
+                    }
                 }
             }
         }

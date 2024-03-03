@@ -32,11 +32,11 @@ class MatchesEventStateMachine(
                     }
 
                     val result = CatchResult.result {
-                        octane.eventMatches(state.snapshot.eventId)
-                    }.validateSuccess { it.matches.isNotEmpty() }.resultOnError {
                         octane.matches(
                             event = state.snapshot.eventId
                         )
+                    }.validateSuccess { it.matches.isNotEmpty() }.resultOnError {
+                        octane.eventMatches(state.snapshot.eventId)
                     }.mapSuccess<State> {
                         State.Success(
                             matches = it,

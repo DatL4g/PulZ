@@ -15,7 +15,10 @@ import dev.datlag.gamechanger.octane.model.Match
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun MatchCard(match: Match) {
+fun MatchCard(
+    match: Match,
+    onClick: (Match) -> Unit
+) {
     Card(
         modifier = Modifier.width(200.dp),
         colors = if (match.event?.isLan == true) {
@@ -25,6 +28,9 @@ fun MatchCard(match: Match) {
             )
         } else {
             CardDefaults.cardColors()
+        },
+        onClick = {
+            onClick(match)
         }
     ) {
         Column(

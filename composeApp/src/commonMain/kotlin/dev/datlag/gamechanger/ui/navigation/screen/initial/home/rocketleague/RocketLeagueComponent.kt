@@ -3,6 +3,7 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.value.Value
 import dev.datlag.gamechanger.octane.model.Event
+import dev.datlag.gamechanger.octane.model.Match
 import dev.datlag.gamechanger.octane.state.EventsState
 import dev.datlag.gamechanger.octane.state.MatchesState
 import dev.datlag.gamechanger.ui.navigation.Component
@@ -31,4 +32,5 @@ interface RocketLeagueComponent : ContentHolderComponent, MultiGameHolderCompone
     fun retryLoadingEventsUpcoming()
 
     fun showEventDetails(event: Event)
+    fun showMatchDetails(match: Match)
 }
