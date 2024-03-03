@@ -4,11 +4,13 @@ import dev.datlag.gamechanger.model.serializer.DateTimeSerializer
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 data class Stage(
     @SerialName("_id") val id: Int,
     @SerialName("name") val name: String? = null,
+    @SerialName("qualifier") val qualifier: Boolean = false,
     @SerialName("format") val format: String? = null,
     @SerialName("region") val region: String? = null,
     @Serializable(DateTimeSerializer::class) @SerialName("startDate") val startDate: LocalDateTime? = null,
@@ -19,25 +21,34 @@ data class Stage(
     @SerialName("location") val location: Location? = null
 ) {
 
+    @Transient
+    val title: String? = name?.ifBlank { null } ?: location?.asString?.ifBlank { null }
+
     @Serializable
     data class Location(
         @SerialName("venue") val venue: String? = null,
         @SerialName("city") val city: String? = null,
         @SerialName("country") val country: String? = null
     ) {
-        override fun toString(): String {
+
+        @Transient
+        val asString: String? = run {
             val v = venue?.ifBlank { null }
             val c = city?.ifBlank { null } ?: country?.ifBlank { null }?.uppercase()
 
-            return if (!v.isNullOrBlank() && !c.isNullOrBlank()) {
+            if (!v.isNullOrBlank() && !c.isNullOrBlank()) {
                 "$v - $c"
             } else if (!v.isNullOrBlank()) {
                 v
             } else if (!c.isNullOrBlank()) {
                 c
             } else {
-                super.toString()
+                null
             }
+        }
+
+        override fun toString(): String {
+            return asString ?: super.toString()
         }
     }
 }

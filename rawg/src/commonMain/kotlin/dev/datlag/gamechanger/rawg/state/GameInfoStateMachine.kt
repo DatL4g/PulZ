@@ -1,6 +1,7 @@
 package dev.datlag.gamechanger.rawg.state
 
 import com.freeletics.flowredux.dsl.FlowReduxStateMachine
+import dev.datlag.gamechanger.model.Cacheable
 import dev.datlag.gamechanger.model.CatchResult
 import dev.datlag.gamechanger.rawg.RAWG
 import dev.datlag.gamechanger.rawg.model.Game
@@ -17,7 +18,7 @@ class GameInfoStateMachine(
     val currentState: State
         get() = _currentState
 
-    private var cache: Game? = null
+    private val cache = Cacheable<Game>()
 
     init {
         spec {
@@ -26,7 +27,7 @@ class GameInfoStateMachine(
                     _currentState = it
                 }
                 onEnter { state ->
-                    cache?.let {
+                    cache.getAlive()?.let {
                         return@onEnter state.override { State.Success(it, state.snapshot.slug) }
                     }
                     if (key == null) {
@@ -44,7 +45,7 @@ class GameInfoStateMachine(
                                 slug = state.snapshot.slug,
                                 key = key
                             ).also {
-                                cache = it
+                                cache.cache(it)
                             },
                             slug = state.snapshot.slug
                         )
@@ -52,7 +53,12 @@ class GameInfoStateMachine(
 
                     state.override {
                         result.asSuccess {
-                            State.Error(
+                            cache.getEvenUnAlive()?.let {
+                                State.Success(
+                                    game = it,
+                                    slug = state.snapshot.slug
+                                )
+                            } ?: State.Error(
                                 canRetry = true,
                                 slug = state.snapshot.slug
                             )

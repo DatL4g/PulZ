@@ -68,7 +68,7 @@ fun Pair<LocalDateTime?, LocalDateTime?>.formatDayMon(): String? {
     val end = this.second
 
     return if (start != null && end != null) {
-        "${start.formatDayMon(false)} - ${end.formatDayMon(true)}"
+        "${start.formatDayMon(start.year != end.year)} - ${end.formatDayMon(true)}"
     } else {
         start?.formatDayMon(true) ?: end?.formatDayMon(true)
     }

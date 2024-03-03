@@ -1,6 +1,7 @@
 package dev.datlag.gamechanger.octane
 
 import de.jensklingenberg.ktorfit.http.GET
+import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
 import dev.datlag.gamechanger.octane.model.Events
 import dev.datlag.gamechanger.octane.model.Matches
@@ -44,4 +45,7 @@ interface Octane {
         @Query("page") page: Int? = null,
         @Query("perPage") perPage: Int? = null,
     ) : Matches
+
+    @GET("events/{id}/matches")
+    suspend fun eventMatches(@Path("id") id: String) : Matches
 }

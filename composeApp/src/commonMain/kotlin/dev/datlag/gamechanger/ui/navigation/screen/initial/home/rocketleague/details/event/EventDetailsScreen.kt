@@ -3,14 +3,13 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague.de
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,12 +24,19 @@ import dev.datlag.gamechanger.LocalPaddingValues
 import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.formatDayMon
 import dev.datlag.gamechanger.common.plus
+import dev.datlag.gamechanger.common.shimmer
 import dev.datlag.gamechanger.common.shimmerPainter
+import dev.datlag.gamechanger.octane.state.MatchesEventStateMachine
+import dev.datlag.gamechanger.ui.navigation.screen.initial.component.ErrorContent
+import dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague.details.event.component.MatchCard
+import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import dev.icerock.moko.resources.compose.stringResource
+import io.github.aakira.napier.Napier
 
 @Composable
 fun EventDetailsScreen(component: EventDetailsComponent) {
     val padding = PaddingValues(16.dp)
+    val matchesState by component.matchesState.collectAsStateWithLifecycle()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize().haze(LocalHaze.current),
@@ -191,6 +197,44 @@ fun EventDetailsScreen(component: EventDetailsComponent) {
                             SharedRes.strings.no
                         })
                     )
+                }
+            }
+        }
+        when (val state = matchesState) {
+            is MatchesEventStateMachine.State.Loading -> {
+                repeat(5) {
+                    item {
+                        Box(modifier = Modifier.fillParentMaxWidth().height(100.dp).shimmer(CardDefaults.shape))
+                    }
+                }
+            }
+            is MatchesEventStateMachine.State.Error -> {
+                item {
+                    ErrorContent(
+                        text = SharedRes.strings.matches_error,
+                        modifier = Modifier.fillParentMaxWidth(),
+                        retry = {
+                            component.retryLoadingMatches()
+                        }
+                    )
+                }
+            }
+            is MatchesEventStateMachine.State.Success -> {
+                val grouped = state.matches.groupBy { it.stage }
+
+                grouped.keys.forEach { stage ->
+                    stage?.title?.let {
+                        item {
+                            Text(
+                                modifier = Modifier.padding(top = 16.dp),
+                                text = it,
+                                style = MaterialTheme.typography.headlineSmall
+                            )
+                        }
+                    }
+                    items(grouped[stage]?.sortedBy { it.date } ?: emptyList()) { match ->
+                        MatchCard(match, Modifier.fillParentMaxWidth())
+                    }
                 }
             }
         }

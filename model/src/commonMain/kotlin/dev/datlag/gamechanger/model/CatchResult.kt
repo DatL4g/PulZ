@@ -56,6 +56,41 @@ sealed interface CatchResult<T> {
         }
     }
 
+    fun validate(predicate: (CatchResult<T>) -> Boolean): CatchResult<T> {
+        return if (predicate(this)) {
+            this
+        } else {
+            Error(null)
+        }
+    }
+
+    fun validateSuccess(predicate: (T & Any) -> Boolean): CatchResult<T> {
+        return when (this) {
+            is Success -> {
+                if (predicate(this.data)) {
+                    this
+                } else {
+                    Error(null)
+                }
+            }
+            else -> this
+        }
+    }
+
+    suspend fun resultOnError(block: suspend CoroutineScope.() -> T): CatchResult<out T> {
+        return when (this) {
+            is Error -> result(block)
+            else -> this
+        }
+    }
+
+    fun <M : Any> mapSuccess(block: (T & Any) -> M): CatchResult<M> {
+        return when (this) {
+            is Success -> Success(block(this.data))
+            else -> Error(null)
+        }
+    }
+
     data class Success<T>(
         val data: T & Any
     ) : CatchResult<T & Any>
