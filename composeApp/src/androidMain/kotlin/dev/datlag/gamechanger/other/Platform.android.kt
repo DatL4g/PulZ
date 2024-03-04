@@ -21,12 +21,8 @@ actual class Platform(private val context: Context) {
             val activityContext = LocalContext.current
 
             SideEffect {
-                val postInstall = Intent(Intent.ACTION_MAIN)
-                    .addCategory(Intent.CATEGORY_DEFAULT)
-                    .setPackage(getPackageName())
-
                 activityContext.findActivity()?.let {
-                    InstantApps.showInstallPrompt(it, postInstall, 1337, null)
+                    InstantApps.showInstallPrompt(it, null, 1337, null)
                 }
             }
         }
