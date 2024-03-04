@@ -11,6 +11,7 @@ import dev.datlag.gamechanger.LocalDI
 import dev.datlag.gamechanger.common.getValueBlocking
 import dev.datlag.gamechanger.common.nullableFirebaseInstance
 import dev.datlag.gamechanger.common.onRender
+import dev.datlag.gamechanger.other.Platform
 import dev.datlag.gamechanger.settings.Settings
 import dev.datlag.gamechanger.ui.navigation.screen.initial.InitialScreenComponent
 import dev.datlag.gamechanger.ui.navigation.screen.login.LoginScreenComponent
@@ -25,6 +26,7 @@ class RootComponent(
     override val di: DI
 ) : Component, ComponentContext by componentContext {
 
+    private val platform by di.instance<Platform>()
     private val appSettings: Settings.PlatformAppSettings by di.instance()
 
     private val navigation = StackNavigation<ScreenConfig>()
@@ -58,9 +60,17 @@ class RootComponent(
                     }
                 },
                 onLogin = {
-                    goToLogin (replace = true){
-                        launchIO {
-                            appSettings.setWelcomeCompleted(true)
+                    if (platform.isInstantApp()) {
+                        goToHome(replace = true) {
+                            launchIO {
+                                appSettings.setWelcomeCompleted(true)
+                            }
+                        }
+                    } else {
+                        goToLogin (replace = true){
+                            launchIO {
+                                appSettings.setWelcomeCompleted(true)
+                            }
                         }
                     }
                 }

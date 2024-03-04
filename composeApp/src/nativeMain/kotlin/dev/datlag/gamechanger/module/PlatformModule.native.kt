@@ -2,6 +2,7 @@ package dev.datlag.gamechanger.module
 
 import coil3.PlatformContext
 import dev.datlag.gamechanger.getPackageName
+import dev.datlag.gamechanger.other.Platform
 import dev.datlag.gamechanger.other.StateSaver
 import dev.datlag.gamechanger.rawg
 import io.ktor.client.*
@@ -47,6 +48,10 @@ actual object PlatformModule {
             } else {
                 ""
             }
+        }
+
+        bindSingleton<Platform> {
+            Platform()
         }
     }
 }

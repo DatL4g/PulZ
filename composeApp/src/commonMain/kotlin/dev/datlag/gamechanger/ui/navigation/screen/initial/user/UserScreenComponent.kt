@@ -8,10 +8,12 @@ import com.mikepenz.aboutlibraries.entity.Library
 import com.mikepenz.aboutlibraries.entity.License
 import dev.datlag.gamechanger.common.nullableFirebaseInstance
 import dev.datlag.gamechanger.common.onRender
+import dev.datlag.gamechanger.other.Platform
 import dev.datlag.gamechanger.ui.navigation.DialogComponent
 import dev.datlag.gamechanger.ui.navigation.screen.initial.user.dialog.library.LibraryDialogComponent
 import dev.datlag.gamechanger.ui.navigation.screen.initial.user.dialog.license.LicenseDialogComponent
 import org.kodein.di.DI
+import org.kodein.di.instance
 
 class UserScreenComponent(
     componentContext: ComponentContext,
@@ -24,6 +26,9 @@ class UserScreenComponent(
     }
     override val isSignedIn: Boolean
         get() = firebaseApp?.isSignedIn ?: false
+
+    private val platform by di.instance<Platform>()
+    override val isInstantApp: Boolean = platform.isInstantApp()
 
     private val dialogNavigation = SlotNavigation<DialogConfig>()
     override val dialog: Value<ChildSlot<DialogConfig, DialogComponent>> = childSlot(

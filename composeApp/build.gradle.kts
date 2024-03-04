@@ -143,6 +143,8 @@ kotlin {
                 implementation(libs.coroutines.android)
 
                 implementation(libs.webview.multiplatform)
+
+                implementation(libs.instantapps)
             }
         }
 

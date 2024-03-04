@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface HomeComponent : ContentHolderComponent {
 
-    val showWelcome: Flow<Boolean>
     val child: Value<ChildSlot<HomeConfig, Component>>
+    val isInstantApp: Boolean
 
     fun showCounterStrike()
     fun showRocketLeague()

@@ -5,16 +5,11 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.*
 import com.arkivanov.decompose.value.Value
 import dev.datlag.gamechanger.common.onRender
-import dev.datlag.gamechanger.hltv.HLTV
-import dev.datlag.gamechanger.settings.Settings
+import dev.datlag.gamechanger.other.Platform
 import dev.datlag.gamechanger.ui.navigation.Component
 import dev.datlag.gamechanger.ui.navigation.ContentHolderComponent
 import dev.datlag.gamechanger.ui.navigation.screen.initial.home.counterstrike.CounterStrikeScreenComponent
 import dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague.RocketLeagueScreenComponent
-import dev.datlag.tooling.compose.launchIO
-import dev.datlag.tooling.decompose.ioScope
-import io.ktor.client.*
-import kotlinx.coroutines.flow.Flow
 import org.kodein.di.DI
 import org.kodein.di.instance
 
@@ -22,10 +17,6 @@ class HomeScreenComponent(
     componentContext: ComponentContext,
     override val di: DI
 ) : HomeComponent, ComponentContext by componentContext {
-
-    val appSettings: Settings.PlatformAppSettings by di.instance()
-
-    override val showWelcome: Flow<Boolean> = appSettings.showWelcome
 
     private val navigation = SlotNavigation<HomeConfig>()
     override val child: Value<ChildSlot<HomeConfig, Component>> = childSlot(
@@ -45,6 +36,9 @@ class HomeScreenComponent(
             )
         }
     }
+
+    private val platform by di.instance<Platform>()
+    override val isInstantApp: Boolean = platform.isInstantApp()
 
     @Composable
     override fun render() {

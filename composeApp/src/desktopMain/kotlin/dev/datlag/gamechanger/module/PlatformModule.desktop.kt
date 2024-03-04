@@ -8,6 +8,7 @@ import dev.datlag.gamechanger.common.CONFIG_APP_NAME
 import dev.datlag.gamechanger.firebase.FirebaseFactory
 import dev.datlag.gamechanger.firebase.initialize
 import dev.datlag.gamechanger.getPackageName
+import dev.datlag.gamechanger.other.Platform
 import dev.datlag.gamechanger.other.StateSaver
 import dev.datlag.gamechanger.settings.ApplicationSettingsSerializer
 import dev.datlag.gamechanger.settings.DataStoreAppSettings
@@ -92,6 +93,10 @@ actual object PlatformModule {
             } else {
                 FirebaseFactory.Empty
             }
+        }
+
+        bindSingleton<Platform> {
+            Platform()
         }
     }
 

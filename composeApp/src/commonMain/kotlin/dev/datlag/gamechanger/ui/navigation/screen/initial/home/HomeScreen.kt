@@ -3,10 +3,10 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial.home
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,6 +22,7 @@ import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.plus
 import dev.datlag.gamechanger.game.Game
 import dev.datlag.gamechanger.other.LocalConsentInfo
+import dev.datlag.gamechanger.other.Platform
 import dev.datlag.gamechanger.ui.custom.BannerAd
 import dev.datlag.gamechanger.ui.navigation.screen.initial.home.component.GameCover
 import dev.datlag.gamechanger.ui.theme.rememberSchemeThemeDominantColor
@@ -46,33 +47,57 @@ fun HomeScreen(component: HomeComponent) {
 private fun Overview(component: HomeComponent) {
     val padding = PaddingValues(all = 16.dp)
 
-    Column(
+    Box(
         modifier = Modifier.fillMaxSize().padding(LocalPaddingValues.current?.plus(padding) ?: padding),
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LazyVerticalGrid(
-            modifier = Modifier.fillMaxWidth().weight(1F), //.haze(state = LocalHaze.current),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-            columns = GridCells.Adaptive(512.dp)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            item {
-                GameCover(
-                    game = Game.Steam.CounterStrike,
-                    fallback = SharedRes.images.cs_banner,
-                ) {
-                    component.showCounterStrike()
+            LazyVerticalGrid(
+                modifier = Modifier.fillMaxWidth().weight(1F), //.haze(state = LocalHaze.current),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                columns = GridCells.Adaptive(512.dp)
+            ) {
+                item {
+                    GameCover(
+                        game = Game.Steam.CounterStrike,
+                        fallback = SharedRes.images.cs_banner,
+                    ) {
+                        component.showCounterStrike()
+                    }
+                }
+                item {
+                    GameCover(
+                        game = Game.Multi.RocketLeague,
+                        fallback = SharedRes.images.rl_banner,
+                    ) {
+                        component.showRocketLeague()
+                    }
                 }
             }
-            item {
-                GameCover(
-                    game = Game.Multi.RocketLeague,
-                    fallback = SharedRes.images.rl_banner,
-                ) {
-                    component.showRocketLeague()
+            BannerAd(modifier = Modifier.fillMaxWidth())
+        }
+
+        if (component.isInstantApp) {
+            var requestInstall by remember { mutableStateOf(false) }
+
+            if (requestInstall) {
+                Platform.requestInstantAppInstall()
+                requestInstall = false
+            }
+
+            FloatingActionButton(
+                modifier = Modifier.align(Alignment.BottomEnd),
+                onClick = {
+                    requestInstall = true
                 }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.FileDownload,
+                    contentDescription = null
+                )
             }
         }
-        BannerAd(modifier = Modifier.fillMaxWidth())
     }
 }

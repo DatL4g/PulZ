@@ -7,6 +7,7 @@ import dev.datlag.gamechanger.Sekret
 import dev.datlag.gamechanger.firebase.FirebaseFactory
 import dev.datlag.gamechanger.firebase.initialize
 import dev.datlag.gamechanger.getPackageName
+import dev.datlag.gamechanger.other.Platform
 import dev.datlag.gamechanger.other.StateSaver
 import dev.datlag.gamechanger.settings.ApplicationSettingsSerializer
 import dev.datlag.gamechanger.settings.DataStoreAppSettings
@@ -19,10 +20,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import okio.FileSystem
 import okio.Path.Companion.toOkioPath
-import org.kodein.di.DI
-import org.kodein.di.DirectDI
-import org.kodein.di.bindSingleton
-import org.kodein.di.instance
+import org.kodein.di.*
 
 actual object PlatformModule {
 
@@ -82,6 +80,10 @@ actual object PlatformModule {
             } else {
                 FirebaseFactory.Empty
             }
+        }
+
+        bindSingleton<Platform> {
+            Platform(instance())
         }
     }
 

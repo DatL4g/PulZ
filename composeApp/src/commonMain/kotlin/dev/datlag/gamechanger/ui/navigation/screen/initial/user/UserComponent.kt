@@ -10,6 +10,7 @@ import dev.datlag.gamechanger.ui.navigation.DialogComponent
 interface UserComponent : Component {
     val isSignedIn: Boolean
     val dialog: Value<ChildSlot<DialogConfig, DialogComponent>>
+    val isInstantApp: Boolean
 
     fun login()
     fun libraryDetails(library: Library)

@@ -65,32 +65,34 @@ fun UserScreen(component: UserComponent) {
                 style = MaterialTheme.typography.headlineLarge
             )
         }
-        item {
-            Text(
-                text = stringResource(SharedRes.strings.account),
-                fontWeight = FontWeight.SemiBold,
-                style = MaterialTheme.typography.titleLarge
-            )
-        }
-        if (!component.isSignedIn) {
+        if (!component.isInstantApp) {
             item {
-                TextButton(
-                    onClick = {
-                        component.login()
-                    }
-                ) {
-                    Text(text = stringResource(SharedRes.strings.login))
-                }
+                Text(
+                    text = stringResource(SharedRes.strings.account),
+                    fontWeight = FontWeight.SemiBold,
+                    style = MaterialTheme.typography.titleLarge
+                )
             }
-        } else {
-            item {
-                val infoText = if (Platform.isDesktop) {
-                    SharedRes.strings.steam_accounts_synced
-                } else {
-                    SharedRes.strings.connecting_steam_requires_desktop
+            if (!component.isSignedIn) {
+                item {
+                    TextButton(
+                        onClick = {
+                            component.login()
+                        }
+                    ) {
+                        Text(text = stringResource(SharedRes.strings.login))
+                    }
                 }
+            } else {
+                item {
+                    val infoText = if (Platform.isDesktop) {
+                        SharedRes.strings.steam_accounts_synced
+                    } else {
+                        SharedRes.strings.connecting_steam_requires_desktop
+                    }
 
-                Text(text = stringResource(infoText))
+                    Text(text = stringResource(infoText))
+                }
             }
         }
         item {
