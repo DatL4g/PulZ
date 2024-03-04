@@ -39,20 +39,14 @@ fun App(
             colorScheme = if (systemDarkTheme) Colors.getDarkScheme() else Colors.getLightScheme(),
             typography = ManropeFontFamily().toTypography()
         ) {
-            androidx.compose.material.MaterialTheme(
-                colors = MaterialTheme.colorScheme.toLegacyColors(systemDarkTheme),
-                shapes = MaterialTheme.shapes.toLegacyShapes(),
-                typography = ManropeFontFamily().toLegacyTypography()
-            ) {
-                SystemProvider {
-                    CommonSchemeTheme {
-                        Surface(
-                            modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colorScheme.background,
-                            contentColor = MaterialTheme.colorScheme.onBackground
-                        ) {
-                            content()
-                        }
+            SystemProvider {
+                CommonSchemeTheme {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background,
+                        contentColor = MaterialTheme.colorScheme.onBackground
+                    ) {
+                        content()
                     }
                 }
             }

@@ -161,11 +161,7 @@ fun SchemeTheme(key: Any?, content: @Composable () -> Unit) {
         useDarkTheme = LocalDarkMode.current,
         animate = true
     ) {
-        androidx.compose.material.MaterialTheme(
-            colors = MaterialTheme.colorScheme.toLegacyColors(LocalDarkMode.current)
-        ) {
-            content()
-        }
+        content()
     }
 }
 

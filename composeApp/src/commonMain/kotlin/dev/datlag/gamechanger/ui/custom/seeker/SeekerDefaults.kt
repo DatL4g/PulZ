@@ -15,7 +15,6 @@
  */
 package dev.datlag.gamechanger.ui.custom.seeker
 
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -52,7 +51,7 @@ object SeekerDefaults {
             .compositeOver(MaterialTheme.colorScheme.onSurface),
         thumbColor: Color = MaterialTheme.colorScheme.primary,
         disabledThumbColor: Color = MaterialTheme.colorScheme.onSurface
-            .copy(alpha = ContentAlpha.disabled)
+            .copy(alpha = 0.2F)
             .compositeOver(MaterialTheme.colorScheme.surface),
         readAheadColor: Color = ReadAheadColor
     ): SeekerColors = DefaultSeekerColor(
