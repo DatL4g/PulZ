@@ -121,6 +121,8 @@ kotlin {
 
         nativeMain.dependencies {
             implementation(libs.ktor.darwin)
+
+            implementation(libs.webview.multiplatform)
         }
 
         val androidMain by getting {
@@ -139,6 +141,8 @@ kotlin {
 
                 implementation(libs.ktor.jvm)
                 implementation(libs.coroutines.android)
+
+                implementation(libs.webview.multiplatform)
             }
         }
 
@@ -149,6 +153,8 @@ kotlin {
 
                 implementation(libs.ktor.jvm)
                 implementation(libs.coroutines.swing)
+
+                implementation(libs.webview.ko)
             }
         }
     }

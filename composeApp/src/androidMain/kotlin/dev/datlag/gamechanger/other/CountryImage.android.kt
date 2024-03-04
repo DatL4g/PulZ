@@ -1,0 +1,13 @@
+package dev.datlag.gamechanger.other
+
+import dev.datlag.tooling.async.scopeCatching
+import java.util.*
+
+actual fun codeLocalized(code: String): String {
+    val best = code.split("[-_]".toRegex()).firstOrNull()?.ifBlank { null } ?: code
+    return scopeCatching {
+        Locale.Builder().setLanguage(best).build()
+    }.getOrNull()?.country?.ifBlank { null } ?: scopeCatching {
+        Locale.forLanguageTag(best)
+    }.getOrNull()?.country?.ifBlank { null } ?: code
+}

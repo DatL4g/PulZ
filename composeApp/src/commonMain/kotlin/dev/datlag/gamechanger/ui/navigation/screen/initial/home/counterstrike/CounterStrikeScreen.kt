@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import dev.chrisbanes.haze.haze
 import dev.datlag.gamechanger.LocalHaze
 import dev.datlag.gamechanger.LocalPaddingValues
@@ -33,6 +34,13 @@ import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun CounterStrikeScreen(component: CounterStrikeComponent) {
+    val childState by component.child.subscribeAsState()
+
+    childState.child?.instance?.render() ?: MainView(component)
+}
+
+@Composable
+private fun MainView(component: CounterStrikeComponent) {
     val padding = PaddingValues(16.dp)
     val hltvHome by component.hltvHomeState.collectAsStateWithLifecycle(initialValue = HomeStateMachine.currentState)
 
@@ -80,6 +88,9 @@ fun CounterStrikeScreen(component: CounterStrikeComponent) {
             homeState = hltvHome,
             retry = {
                 component.retryLoadingHLTV()
+            },
+            articleClick = {
+                component.showArticle(it)
             }
         )
     }

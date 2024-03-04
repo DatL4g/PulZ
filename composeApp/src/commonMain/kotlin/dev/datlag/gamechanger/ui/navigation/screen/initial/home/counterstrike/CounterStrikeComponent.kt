@@ -1,6 +1,9 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial.home.counterstrike
 
+import com.arkivanov.decompose.router.slot.ChildSlot
+import com.arkivanov.decompose.value.Value
 import dev.datlag.gamechanger.hltv.state.HomeStateMachine
+import dev.datlag.gamechanger.ui.navigation.Component
 import dev.datlag.gamechanger.ui.navigation.ContentHolderComponent
 import dev.datlag.gamechanger.ui.navigation.GameHolderComponent
 import dev.datlag.gamechanger.ui.navigation.SteamGameHolderComponent
@@ -14,6 +17,8 @@ interface CounterStrikeComponent : ContentHolderComponent, SteamGameHolderCompon
     val hltvHomeState: Flow<HomeStateMachine.State>
     val dropsReset: StateFlow<DateTimePeriod>
 
+    val child: Value<ChildSlot<CounterStrikeConfig, Component>>
+
     fun back()
     fun launch()
 
@@ -22,4 +27,5 @@ interface CounterStrikeComponent : ContentHolderComponent, SteamGameHolderCompon
     }
 
     fun retryLoadingHLTV()
+    fun showArticle(link: String)
 }

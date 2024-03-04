@@ -27,7 +27,7 @@ data object HLTV {
                     live = live,
                     title = title,
                     image = image,
-                    href = eventHref
+                    href = linkWithBase(eventHref)
                 )
             } else {
                 null
@@ -42,7 +42,7 @@ data object HLTV {
             if (!href.isNullOrBlank() && !image.isNullOrBlank()) {
                 Home.Hero(
                     image = image,
-                    href = href
+                    href = linkWithBase(href)
                 )
             } else {
                 null
@@ -77,7 +77,7 @@ data object HLTV {
                     country = country,
                     title = title,
                     text = text,
-                    link = href
+                    link = linkWithBase(href)
                 )
             } else {
                 null
@@ -91,61 +91,17 @@ data object HLTV {
         )
     }
 
-    suspend fun news(client: HttpClient): List<NewsPreview> {
-        KtSoupParser.setClient(client)
-        val doc = KtSoupParser.parseRemote(urlString = "https://www.hltv.org/news/archive")
-
-        return doc.getElementsByClass("article").mapNotNull { element ->
-            val link = element.attr("href")
-            val title = element.querySelector(".newstext")?.textContent()
-
-            if (link.isNullOrBlank() || title.isNullOrBlank()) {
-                return@mapNotNull null
-            }
-
-            val tc = element.querySelector(".newstc")
-            val commentElement = tc?.children()?.mapNotNull {
-                it as? KtSoupElement
-            }?.mapNotNull {
-                if (it.className().isNullOrBlank()) {
-                    it
+    private fun linkWithBase(link: String): String {
+        return if (link.startsWith("http://") || link.startsWith("https://")) {
+            link
+        } else {
+            "https://hltv.org${
+                if (link.startsWith("/")) {
+                    link
                 } else {
-                    null
+                    "/$link"
                 }
-            }?.lastOrNull() ?: tc?.children()?.lastOrNull()
-
-
-            val commentsText = commentElement
-                ?.textContent()
-                ?.trim()
-                ?.getDigitsOrNull()
-
-            val comments = commentsText?.toIntOrNull() ?: 0
-
-            val date = suspendCatching {
-                element.querySelector(".newsrecent")?.textContent()?.toLocalDate()
-            }.getOrNull()
-
-            val countryFlag = element.querySelector(".newsflag")
-            val countryName = countryFlag?.attr("alt")
-            val countryCode = countryFlag?.attr("src")?.split('/')?.lastOrNull()?.substringBeforeLast('.')
-
-            val country = if (countryName.isNullOrBlank() || countryCode.isNullOrBlank()) {
-                null
-            } else {
-                Country(
-                    name = countryName,
-                    code = countryCode
-                )
-            }
-
-            NewsPreview(
-                title = title,
-                link = link,
-                comments = comments,
-                country = country,
-                date = date
-            )
+            }"
         }
     }
 }

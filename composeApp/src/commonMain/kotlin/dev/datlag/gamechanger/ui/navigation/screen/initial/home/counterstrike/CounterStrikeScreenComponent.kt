@@ -2,6 +2,8 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial.home.counterstrike
 
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.slot.*
+import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
 import dev.datlag.gamechanger.common.nextDateWithWeekDay
 import dev.datlag.gamechanger.common.onRender
@@ -10,6 +12,8 @@ import dev.datlag.gamechanger.common.onRenderWithScheme
 import dev.datlag.gamechanger.game.Game
 import dev.datlag.gamechanger.game.SteamLauncher
 import dev.datlag.gamechanger.hltv.state.HomeStateMachine
+import dev.datlag.gamechanger.ui.navigation.Component
+import dev.datlag.gamechanger.ui.navigation.screen.initial.home.counterstrike.article.ArticleScreenComponent
 import dev.datlag.tooling.compose.ioDispatcher
 import dev.datlag.tooling.decompose.ioScope
 import kotlinx.coroutines.currentCoroutineContext
@@ -34,10 +38,6 @@ class CounterStrikeScreenComponent(
     private val hltvHomeStateMachine by di.instance<HomeStateMachine>()
     override val hltvHomeState: Flow<HomeStateMachine.State> = hltvHomeStateMachine.state.flowOn(ioDispatcher())
 
-    private val backCallback = BackCallback {
-        back()
-    }
-
     override val dropsReset = flow<DateTimePeriod> {
         while (currentCoroutineContext().isActive) {
             emit(calculateDateTimePeriod())
@@ -55,6 +55,25 @@ class CounterStrikeScreenComponent(
         ).toInstant(TimeZone.of("GMT+1"))
 
         return instant.periodUntil(wednesday, TimeZone.currentSystemDefault())
+    }
+
+    private val navigation = SlotNavigation<CounterStrikeConfig>()
+    override val child: Value<ChildSlot<CounterStrikeConfig, Component>> = childSlot(
+        source = navigation,
+        serializer = CounterStrikeConfig.serializer()
+    ) { config, context ->
+        when (config) {
+            is CounterStrikeConfig.Article -> ArticleScreenComponent(
+                componentContext = context,
+                di = di,
+                link = config.link,
+                onBack = navigation::dismiss
+            )
+        }
+    }
+
+    private val backCallback = BackCallback {
+        back()
     }
 
     init {
@@ -80,5 +99,9 @@ class CounterStrikeScreenComponent(
         launchIO {
             hltvHomeStateMachine.dispatch(HomeStateMachine.Action.Retry)
         }
+    }
+
+    override fun showArticle(link: String) {
+        navigation.activate(CounterStrikeConfig.Article(link))
     }
 }

@@ -22,7 +22,8 @@ import dev.icerock.moko.resources.compose.stringResource
 
 fun LazyListScope.HLTVContent(
     homeState: HomeStateMachine.State,
-    retry: () -> Unit
+    retry: () -> Unit,
+    articleClick: (String) -> Unit
 ) {
     when (homeState) {
         is HomeStateMachine.State.Loading -> {
@@ -53,7 +54,7 @@ fun LazyListScope.HLTVContent(
                             style = MaterialTheme.typography.titleLarge
                         )
                         EventCover(it) {
-                            println("Load event")
+                            articleClick(it.href)
                         }
                     }
                 }
@@ -71,7 +72,7 @@ fun LazyListScope.HLTVContent(
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
-
+                                articleClick(it.href)
                             }
                         ) {
                             AsyncImage(
@@ -92,7 +93,13 @@ fun LazyListScope.HLTVContent(
                     )
                 }
                 items(homeState.home.news) { news ->
-                    NewsCard(news, Modifier.fillMaxWidth())
+                    NewsCard(
+                        news = news,
+                        modifier = Modifier.fillParentMaxWidth(),
+                        onClick = {
+                            articleClick(it.link)
+                        }
+                    )
                 }
             }
         }
