@@ -58,8 +58,6 @@
     <string name="privacy">Privacy</string>
     <string name="edit_consent">Edit Consent</string>
     <string name="policy">Policy</string>
-    <string name="connecting_steam_requires_desktop">Connecting your Steam Account(s) requires the desktop app installation.</string>
-    <string name="steam_accounts_synced">Your Steam Account(s) are synced.</string>
     <string name="libraries">Libraries</string>
     <string name="libraries_not_loaded">Used libraries could not be loaded, take a look at GitHub instead.</string>
     <string name="more">More</string>
@@ -122,4 +120,7 @@
     <string name="games_error">Could not load games.</string>
     <string name="hltv_error">Could not load HLTV info.</string>
     <string name="news">News</string>
+    <string name="open_source_info">Our open-source project is constantly evolving, with new games and features in the works.\nWe encourage user engagement and feedback through our GitHub repository, where you can request your favorite games and suggest exciting new features.</string>
+    <string name="accounts_advantage">Connect your accounts now to unlock future features, including personalized game statistics.</string>
+    <string name="requires_desktop">This requires the desktop application.</string>
 </resources>

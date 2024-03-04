@@ -85,13 +85,12 @@ fun UserScreen(component: UserComponent) {
                 }
             } else {
                 item {
-                    val infoText = if (Platform.isDesktop) {
-                        SharedRes.strings.steam_accounts_synced
-                    } else {
-                        SharedRes.strings.connecting_steam_requires_desktop
+                    Column(
+                        modifier = Modifier.fillParentMaxWidth()
+                    ) {
+                        Text(text = stringResource(SharedRes.strings.accounts_advantage))
+                        Text(text = stringResource(SharedRes.strings.requires_desktop))
                     }
-
-                    Text(text = stringResource(infoText))
                 }
             }
         }

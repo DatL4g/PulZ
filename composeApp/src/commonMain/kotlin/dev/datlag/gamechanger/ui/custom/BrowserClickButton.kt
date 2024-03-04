@@ -46,3 +46,79 @@ fun BrowserClickButton(
         }
     }
 }
+
+@Composable
+fun BrowserClickFilledTonalButton(
+    uri: String?,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    shape: Shape = ButtonDefaults.filledTonalShape,
+    colors: ButtonColors = ButtonDefaults.filledTonalButtonColors(),
+    elevation: ButtonElevation? = ButtonDefaults.filledTonalButtonElevation(),
+    border: BorderStroke? = null,
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    content: @Composable RowScope.() -> Unit
+) {
+    var launchUri by remember(uri) { mutableStateOf(false) }
+    ComposeClickHelper(uri, launchUri)
+
+    FilledTonalButton(
+        onClick = {
+            launchUri = true
+        },
+        modifier = modifier,
+        enabled = enabled,
+        shape = shape,
+        colors = colors,
+        elevation = elevation,
+        border = border,
+        contentPadding = contentPadding,
+        interactionSource = interactionSource,
+        content = content
+    )
+
+    DisposableEffect(uri) {
+        onDispose {
+            launchUri = false
+        }
+    }
+}
+
+@Composable
+fun BrowserClickTextButton(
+    uri: String?,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    shape: Shape = ButtonDefaults.textShape,
+    colors: ButtonColors = ButtonDefaults.textButtonColors(),
+    elevation: ButtonElevation? = null,
+    border: BorderStroke? = null,
+    contentPadding: PaddingValues = ButtonDefaults.TextButtonContentPadding,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    content: @Composable RowScope.() -> Unit
+) {
+    var launchUri by remember(uri) { mutableStateOf(false) }
+    ComposeClickHelper(uri, launchUri)
+
+    TextButton(
+        onClick = {
+            launchUri = true
+        },
+        modifier = modifier,
+        enabled = enabled,
+        shape = shape,
+        colors = colors,
+        elevation = elevation,
+        border = border,
+        contentPadding = contentPadding,
+        interactionSource = interactionSource,
+        content = content
+    )
+
+    DisposableEffect(uri) {
+        onDispose {
+            launchUri = false
+        }
+    }
+}

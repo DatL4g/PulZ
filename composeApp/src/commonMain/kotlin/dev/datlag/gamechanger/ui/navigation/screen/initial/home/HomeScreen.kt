@@ -1,5 +1,6 @@
 package dev.datlag.gamechanger.ui.navigation.screen.initial.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -11,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -21,12 +23,15 @@ import dev.datlag.gamechanger.LocalPaddingValues
 import dev.datlag.gamechanger.SharedRes
 import dev.datlag.gamechanger.common.plus
 import dev.datlag.gamechanger.game.Game
+import dev.datlag.gamechanger.other.Constants
 import dev.datlag.gamechanger.other.LocalConsentInfo
 import dev.datlag.gamechanger.other.Platform
 import dev.datlag.gamechanger.ui.custom.BannerAd
+import dev.datlag.gamechanger.ui.custom.BrowserClickElevatedCard
 import dev.datlag.gamechanger.ui.navigation.screen.initial.home.component.GameCover
 import dev.datlag.gamechanger.ui.theme.rememberSchemeThemeDominantColor
 import dev.datlag.gamechanger.ui.theme.rememberSchemeThemeDominantColorState
+import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 import io.github.aakira.napier.Napier
 
@@ -73,6 +78,28 @@ private fun Overview(component: HomeComponent) {
                         fallback = SharedRes.images.rl_banner,
                     ) {
                         component.showRocketLeague()
+                    }
+                }
+                item {
+                    BrowserClickElevatedCard(
+                        uri = Constants.GITHUB,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
+                        ) {
+                            Image(
+                                painter = painterResource(SharedRes.images.github),
+                                contentDescription = null,
+                                modifier = Modifier.size(42.dp),
+                                colorFilter = ColorFilter.tint(LocalContentColor.current)
+                            )
+                            Text(
+                                text = stringResource(SharedRes.strings.open_source_info)
+                            )
+                        }
                     }
                 }
             }
