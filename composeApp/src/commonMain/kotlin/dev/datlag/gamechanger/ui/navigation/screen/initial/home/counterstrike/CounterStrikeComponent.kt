@@ -20,4 +20,6 @@ interface CounterStrikeComponent : ContentHolderComponent, SteamGameHolderCompon
     override fun dismissContent() {
         back()
     }
+
+    fun retryLoadingHLTV()
 }

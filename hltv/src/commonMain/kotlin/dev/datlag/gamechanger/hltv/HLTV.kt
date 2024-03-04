@@ -49,9 +49,45 @@ data object HLTV {
             }
         }
 
+        val newsEl = doc.querySelectorAll(".standard-list").flatMap { it.querySelectorAll("a") }
+        val news = newsEl.mapNotNull {
+            val href = it.attr("href")
+
+            val countryFlag = it.querySelector(".newsflag")
+            val countryName = countryFlag?.attr("alt")
+            val countryCode = countryFlag?.attr("src")?.split('/')?.lastOrNull()?.substringBeforeLast('.')
+            val country = if (countryName.isNullOrBlank() || countryCode.isNullOrBlank()) {
+                null
+            } else {
+                Country(
+                    name = countryName,
+                    code = countryCode
+                )
+            }
+
+            val image = it.querySelector(".featured-newsimage")?.attr("src")
+            val title = it.querySelector(".featured-newstext")?.textContent()?.ifBlank {
+                null
+            } ?: it.querySelector(".newstext")?.textContent()?.ifBlank { null }
+            val text = it.querySelector(".featured-small-newstext")?.textContent()?.ifBlank { null }
+
+            if (!href.isNullOrBlank() && !title.isNullOrBlank()) {
+                Home.News(
+                    image = image,
+                    country = country,
+                    title = title,
+                    text = text,
+                    link = href
+                )
+            } else {
+                null
+            }
+        }
+
         return Home(
             event = event,
-            hero = hero
+            hero = hero,
+            news = news ?: emptyList()
         )
     }
 

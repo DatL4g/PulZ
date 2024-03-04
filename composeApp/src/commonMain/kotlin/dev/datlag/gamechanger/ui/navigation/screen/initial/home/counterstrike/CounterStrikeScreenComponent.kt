@@ -75,4 +75,10 @@ class CounterStrikeScreenComponent(
     override fun launch() {
         Game.Steam.CounterStrike.launch()
     }
+
+    override fun retryLoadingHLTV() {
+        launchIO {
+            hltvHomeStateMachine.dispatch(HomeStateMachine.Action.Retry)
+        }
+    }
 }

@@ -120,4 +120,6 @@
     <string name="unknown_map">Unknown Map</string>
     <string name="games">Games</string>
     <string name="games_error">Could not load games.</string>
+    <string name="hltv_error">Could not load HLTV info.</string>
+    <string name="news">News</string>
 </resources>
