@@ -12,7 +12,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class MatchesEventStateMachine(
     private val octane: Octane,
     eventId: String
-) : FlowReduxStateMachine<MatchesEventStateMachine.State, MatchesEventStateMachine.Action>(initialState = State.Loading(eventId)) {
+) : FlowReduxStateMachine<MatchesEventStateMachine.State, MatchesEventStateMachine.Action>(
+    initialState = State.Loading(eventId)
+) {
 
     private var _currentState: State = State.Loading(eventId)
     val currentState: State

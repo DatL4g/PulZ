@@ -3,12 +3,17 @@ package dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague.de
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,15 +27,22 @@ import dev.chrisbanes.haze.haze
 import dev.datlag.gamechanger.LocalHaze
 import dev.datlag.gamechanger.LocalPaddingValues
 import dev.datlag.gamechanger.SharedRes
+import dev.datlag.gamechanger.common.formatDayMon
 import dev.datlag.gamechanger.common.plus
+import dev.datlag.gamechanger.common.shimmer
 import dev.datlag.gamechanger.common.shimmerPainter
+import dev.datlag.gamechanger.octane.state.GamesMatchStateMachine
+import dev.datlag.gamechanger.ui.navigation.screen.initial.component.ErrorContent
+import dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague.details.match.component.GameCard
 import dev.datlag.gamechanger.ui.navigation.screen.initial.home.rocketleague.details.match.component.StatisticSeeker
 import dev.datlag.tooling.compose.TopStartBottomEndCornerShape
+import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun MatchDetailsScreen(component: MatchDetailsComponent) {
     val padding = PaddingValues(16.dp)
+    val gamesState by component.gamesState.collectAsStateWithLifecycle()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize().haze(LocalHaze.current),
@@ -113,6 +125,94 @@ fun MatchDetailsScreen(component: MatchDetailsComponent) {
                     textAlign = TextAlign.Center,
                     maxLines = 3
                 )
+            }
+        }
+        item {
+            Row(
+                modifier = Modifier.fillParentMaxWidth().padding(top = 32.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.height(24.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Event,
+                            contentDescription = null
+                        )
+                        Text(
+                            text = stringResource(SharedRes.strings.date_colon),
+                            fontWeight = FontWeight.SemiBold,
+                            style = MaterialTheme.typography.titleMedium,
+                            maxLines = 1
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.height(24.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Place,
+                            contentDescription = null
+                        )
+                        Text(
+                            text = stringResource(SharedRes.strings.stage_colon),
+                            fontWeight = FontWeight.SemiBold,
+                            style = MaterialTheme.typography.titleMedium,
+                            maxLines = 1
+                        )
+                    }
+                }
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
+                ) {
+                    Text(
+                        modifier = Modifier.height(24.dp),
+                        text = component.match.date?.formatDayMon(true) ?: stringResource(SharedRes.strings.no_date)
+                    )
+                    Text(
+                        modifier = Modifier.height(24.dp),
+                        text = component.match.stage?.title ?: stringResource(SharedRes.strings.no_stage)
+                    )
+                }
+            }
+        }
+        item {
+            Text(
+                modifier = Modifier.padding(top = 16.dp),
+                text = stringResource(SharedRes.strings.games),
+                style = MaterialTheme.typography.headlineSmall
+            )
+        }
+        when (val state = gamesState) {
+            is GamesMatchStateMachine.State.Loading -> {
+                repeat(3) {
+                    item {
+                        Box(modifier = Modifier.fillParentMaxWidth().height(50.dp).shimmer(CardDefaults.shape))
+                    }
+                }
+            }
+            is GamesMatchStateMachine.State.Error -> {
+                item {
+                    ErrorContent(
+                        text = SharedRes.strings.games_error,
+                        modifier = Modifier.fillParentMaxWidth(),
+                        retry = {
+                            component.retryLoadingGames()
+                        }
+                    )
+                }
+            }
+            is GamesMatchStateMachine.State.Success -> {
+                items(state.games.sortedBy { it.date }) { game ->
+                    GameCard(game, Modifier.fillParentMaxWidth())
+                }
             }
         }
         item {

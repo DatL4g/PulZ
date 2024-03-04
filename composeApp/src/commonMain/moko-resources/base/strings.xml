@@ -113,4 +113,11 @@
     <string name="saves">Saves</string>
     <string name="assists">Assists</string>
     <string name="score">Score</string>
+    <string name="date_colon">Date:</string>
+    <string name="stage_colon">Stage:</string>
+    <string name="no_stage">No Stage</string>
+    <string name="no_score">No Score</string>
+    <string name="unknown_map">Unknown Map</string>
+    <string name="games">Games</string>
+    <string name="games_error">Could not load games.</string>
 </resources>

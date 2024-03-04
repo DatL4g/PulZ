@@ -8,6 +8,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MatchesTodayStateMachine(
@@ -25,10 +27,12 @@ class MatchesTodayStateMachine(
                         return@onEnter state.override { MatchesState.Success(it) }
                     }
 
+                    val today = Clock.System.now()
                     val result = CatchResult.result<MatchesState> {
                         MatchesState.Success(
                             octane.matches(
-                                after = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString(),
+                                before = today.plus(12.hours).toString(),
+                                after = Clock.System.now().minus(3.days).toString(),
                                 perPage = 20
                             ).also {
                                 StateSaver.Cache.matchesToday.cache(it)

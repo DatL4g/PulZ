@@ -15,7 +15,11 @@ data class Match(
     @Serializable(DateTimeSerializer::class) @SerialName("date") val date: LocalDateTime? = null,
     @SerialName("blue") val blue: Site? = null,
     @SerialName("orange") val orange: Site? = null,
+    @SerialName("games") private val _games: List<MatchGame>? = null
 ) {
+
+    @Transient
+    val games = _games ?: emptyList()
 
     @Transient
     val title: String? = event?.name?.ifBlank { null } ?: run {
@@ -34,45 +38,10 @@ data class Match(
     }
 
     @Serializable
-    data class Site(
-        @SerialName("score") val score: Int = 0,
-        @SerialName("winner") val winner: Boolean = false,
-        @SerialName("team") val teamContainer: TeamContainer? = null
-    ) {
-
-        @Transient
-        val title: String? = teamContainer?.team?.name?.ifBlank { null }
-    }
-
-    @Serializable
-    data class TeamContainer(
-        @SerialName("team") val team: Team? = null,
-        @SerialName("stats") val stats: StatsContainer? = null
-    ) {
-        @Serializable
-        data class Team(
-            @SerialName("_id") val id: String,
-            @SerialName("slug") val slug: String = id,
-            @SerialName("name") val name: String = slug,
-            @SerialName("region") val region: String? = null,
-            @SerialName("image") val image: String? = null,
-            @SerialName("relevant") val relevant: Boolean = false,
-        )
-    }
-
-    @Serializable
-    data class StatsContainer(
-        @SerialName("core") val core: Core? = null
-    ) {
-
-        @Serializable
-        data class Core(
-            @SerialName("shots") val shots: Int? = null,
-            @SerialName("goals") val goals: Int? = null,
-            @SerialName("saves") val saves: Int? = null,
-            @SerialName("assists") val assists: Int? = null,
-            @SerialName("score") val score: Int? = null,
-            @SerialName("shootingPercentage") val shootingPercentage: Float? = null,
-        )
-    }
+    data class MatchGame(
+        @SerialName("_id") val id: String,
+        @SerialName("blue") val blue: Int? = null,
+        @SerialName("orange") val orange: Int? = null,
+        @SerialName("duration") val duration: Int? = null,
+    )
 }
