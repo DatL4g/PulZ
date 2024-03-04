@@ -36,6 +36,25 @@ sealed interface FirebaseFactory {
 
         val isSignedIn: Boolean
             get() = Firebase.auth(app).currentUser != null
+
+        fun crashlyticsCustomKey(key: String, value: String) {
+            crashlyticsCustomKey(app, key, value)
+        }
+        fun crashlyticsCustomKey(key: String, value: Boolean) {
+            crashlyticsCustomKey(app, key, value)
+        }
+        fun crashlyticsCustomKey(key: String, value: Int) {
+            crashlyticsCustomKey(app, key, value)
+        }
+        fun crashlyticsCustomKey(key: String, value: Long) {
+            crashlyticsCustomKey(app, key, value)
+        }
+        fun crashlyticsCustomKey(key: String, value: Float) {
+            crashlyticsCustomKey(app, key, value)
+        }
+        fun crashlyticsCustomKey(key: String, value: Double) {
+            crashlyticsCustomKey(app, key, value)
+        }
     }
     data object Empty : FirebaseFactory
 

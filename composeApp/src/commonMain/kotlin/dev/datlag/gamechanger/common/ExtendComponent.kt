@@ -1,19 +1,12 @@
 package dev.datlag.gamechanger.common
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import coil3.ImageLoader
-import coil3.SingletonImageLoader
-import coil3.annotation.DelicateCoilApi
+import androidx.compose.runtime.*
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleOwner
 import dev.datlag.gamechanger.LocalDI
 import dev.datlag.gamechanger.ui.navigation.Component
 import dev.datlag.gamechanger.ui.theme.SchemeTheme
 import dev.datlag.tooling.decompose.lifecycle.LocalLifecycleOwner
-import org.kodein.di.instance
 
 /**
  * Can be placed in the Component interface again when
@@ -29,6 +22,9 @@ fun Component.onRender(content: @Composable () -> Unit) {
         }
     ) {
         content()
+    }
+    SideEffect {
+        di.nullableFirebaseInstance()?.screen(this)
     }
 }
 
