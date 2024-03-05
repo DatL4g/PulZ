@@ -1,22 +1,29 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Web, Desktop.
+# PulZ
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+[![Issues](https://img.shields.io/github/issues/DATL4G/PulZ.svg?style=for-the-badge)](https://github.com/DATL4G/PulZ/issues)
+[![Stars](https://img.shields.io/github/stars/DATL4G/PulZ.svg?style=for-the-badge)](https://github.com/DATL4G/PulZ/stargazers)
+[![Forks](https://img.shields.io/github/forks/DATL4G/PulZ.svg?style=for-the-badge)](https://github.com/DATL4G/PulZ/network/members)
+[![Contributors](https://img.shields.io/github/contributors/DATL4G/PulZ.svg?style=for-the-badge)](https://github.com/DATL4G/PulZ/graphs/contributors)
+[![License](https://img.shields.io/github/license/DATL4G/PulZ.svg?style=for-the-badge)](https://github.com/DATL4G/PulZ/blob/master/LICENSE)
 
-* `/iosApp` contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform, 
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+Welcome to the official repository of "PulZ" – your ultimate gaming and esports companion available for Android, iOS, and desktop platforms! Dive into a world of seamless cross-platform gaming, stay updated on the latest esports events, and unleash your competitive spirit.  
+Join our community-driven development journey, contribute your ideas, and help shape the future of gaming.  
+Download now and level up your gaming experience! 🎮✨
 
+<a href="https://play.google.com/store/apps/details?id=dev.datlag.pulz" target="_blank">
+<img src="https://play.google.com/intl/en_gb/badges/static/images/badges/en_badge_web_generic.png" width=240 />
+</a>
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html),
-[Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform/#compose-multiplatform),
-[Kotlin/Wasm](https://kotl.in/wasm/)…
+## Desktop
 
-**Note:** Compose/Web is Experimental and may be changed at any time. Use it only for evaluation purposes.
-We would appreciate your feedback on Compose/Web and Kotlin/Wasm in the public Slack channel [#compose-web](https://slack-chats.kotlinlang.org/c/compose-web).
-If you face any issues, please report them on [GitHub](https://github.com/JetBrains/compose-multiplatform/issues).
+**⚠️ The desktop support is currently under development.**
 
-You can open the web application by running the `:composeApp:wasmJsBrowserDevelopmentRun` Gradle task.
+It will be available for the following targets:
+
+- **Windows**
+- **MacOS**
+- **Linux**
+  - Fedora
+  - AppImage
+  - Debian / Ubuntu
+  - Tarball
