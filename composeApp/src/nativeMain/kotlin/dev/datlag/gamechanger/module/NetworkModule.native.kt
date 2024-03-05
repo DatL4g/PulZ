@@ -1,4 +1,4 @@
-package dev.datlag.gamechanger.module
+package dev.datlag.pulz.module
 
 import coil3.ImageLoader
 

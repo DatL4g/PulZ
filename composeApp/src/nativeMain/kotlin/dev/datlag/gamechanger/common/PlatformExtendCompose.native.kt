@@ -1,4 +1,4 @@
-package dev.datlag.gamechanger.common
+package dev.datlag.pulz.common
 
 import androidx.compose.ui.Modifier
 

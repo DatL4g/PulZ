@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
-    <string name="app_name">Gamechanger</string>
+    <string name="app_name">PulZ</string>
     <string name="home">Home</string>
     <string name="user">User</string>
     <string name="settings">Settings</string>
@@ -119,7 +119,8 @@
     <string name="games_error">Could not load games.</string>
     <string name="hltv_error">Could not load HLTV info.</string>
     <string name="news">News</string>
-    <string name="open_source_info">Our open-source project is constantly evolving, with new games and features in the works.\nWe encourage user engagement and feedback through our GitHub repository, where you can request your favorite games and suggest exciting new features.</string>
+    <string name="open_source">Open-Source</string>
+    <string name="open_source_info">We encourage user engagement and feedback through our GitHub repository, where you can request your favorite games and suggest exciting new features.</string>
     <string name="accounts_advantage">Connect your accounts now to unlock future features, including personalized game statistics.</string>
     <string name="requires_desktop">This requires the desktop application.</string>
 </resources>

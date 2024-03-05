@@ -205,7 +205,7 @@ compose.desktop {
         }
 
         nativeDistributions {
-            packageName = "Gamechanger"
+            packageName = "PulZ"
             packageVersion = appVersion
             outputBaseDir.set(rootProject.layout.buildDirectory.asFile.get().resolve("release"))
             appResourcesRootDir.set(project.layout.projectDirectory.dir("src/desktopMain/jniLibs"))

@@ -1,10 +1,10 @@
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.window.ComposeUIViewController
-import dev.datlag.gamechanger.App
-import dev.datlag.gamechanger.module.NetworkModule
-import dev.datlag.gamechanger.other.ConsentInfo
-import dev.datlag.gamechanger.other.LocalConsentInfo
-import dev.datlag.gamechanger.other.StateSaver
+import dev.datlag.pulz.App
+import dev.datlag.pulz.module.NetworkModule
+import dev.datlag.pulz.other.ConsentInfo
+import dev.datlag.pulz.other.LocalConsentInfo
+import dev.datlag.pulz.other.StateSaver
 import org.kodein.di.DI
 
 private val di = DI {

@@ -1,4 +1,4 @@
-package dev.datlag.gamechanger
+package dev.datlag.pulz
 
 object PackageName { }
 

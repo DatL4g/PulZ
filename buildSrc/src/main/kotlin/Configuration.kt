@@ -3,5 +3,5 @@ object Configuration {
     const val minSdk = 26
     const val targetSdk = 34
 
-    internal const val artifact = "dev.datlag.gamechanger"
+    internal const val artifact = "dev.datlag.pulz"
 }

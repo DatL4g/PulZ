@@ -1,10 +1,10 @@
-package dev.datlag.gamechanger.module
+package dev.datlag.pulz.module
 
 import coil3.PlatformContext
-import dev.datlag.gamechanger.getPackageName
-import dev.datlag.gamechanger.other.Platform
-import dev.datlag.gamechanger.other.StateSaver
-import dev.datlag.gamechanger.rawg
+import dev.datlag.pulz.getPackageName
+import dev.datlag.pulz.other.Platform
+import dev.datlag.pulz.other.StateSaver
+import dev.datlag.pulz.rawg
 import io.ktor.client.*
 import io.ktor.client.engine.darwin.*
 import kotlinx.serialization.json.Json

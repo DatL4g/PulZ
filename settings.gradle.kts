@@ -1,4 +1,4 @@
-rootProject.name = "Gamechanger"
+rootProject.name = "PulZ"
 
 include(":composeApp", ":composeApp:sekret")
 include(":settings")
