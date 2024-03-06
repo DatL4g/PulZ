@@ -35,6 +35,7 @@ kotlin {
             api(libs.tooling.country)
             api(libs.flowredux)
             api(project(":model"))
+            api(project(":firebase"))
         }
     }
 }

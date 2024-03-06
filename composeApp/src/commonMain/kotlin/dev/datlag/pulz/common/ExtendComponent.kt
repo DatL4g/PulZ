@@ -24,7 +24,7 @@ fun Component.onRender(content: @Composable () -> Unit) {
         content()
     }
     SideEffect {
-        di.nullableFirebaseInstance()?.screen(this)
+        di.nullableFirebaseInstance()?.crashlytics?.screen(this)
     }
 }
 

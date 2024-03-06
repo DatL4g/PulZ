@@ -39,3 +39,9 @@ internal actual fun crashlyticsCustomKey(
     value: Double
 ) {
 }
+
+internal actual fun crashlyticsLog(app: FirebaseApp, throwable: Throwable?) {
+}
+
+internal actual fun crashlyticsLog(app: FirebaseApp, message: String?) {
+}

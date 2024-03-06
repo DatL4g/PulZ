@@ -25,7 +25,7 @@ class UserScreenComponent(
         di.nullableFirebaseInstance()
     }
     override val isSignedIn: Boolean
-        get() = firebaseApp?.isSignedIn ?: false
+        get() = firebaseApp?.auth?.isSignedIn ?: false
 
     private val platform by di.instance<Platform>()
     override val isInstantApp: Boolean = platform.isInstantApp()

@@ -8,6 +8,7 @@ import coil3.request.crossfade
 import coil3.svg.SvgDecoder
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.ktorfitBuilder
+import dev.datlag.pulz.common.nullableFirebaseInstance
 import dev.datlag.pulz.hltv.state.HomeStateMachine
 import dev.datlag.pulz.octane.Octane
 import dev.datlag.pulz.octane.state.EventsTodayStateMachine
@@ -62,48 +63,58 @@ data object NetworkModule {
             }.create<RAWG>()
         }
         bindProvider<HomeStateMachine> {
-            HomeStateMachine(instance())
+            HomeStateMachine(
+                client = instance(),
+                crashlytics = nullableFirebaseInstance()?.crashlytics
+            )
         }
         bindProvider<TrendingGamesStateMachine> {
             TrendingGamesStateMachine(
                 rawg = instance(),
-                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null }
+                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null },
+                crashlytics = nullableFirebaseInstance()?.crashlytics
             )
         }
         bindProvider<TopRatedGamesStateMachine> {
             TopRatedGamesStateMachine(
                 rawg = instance(),
-                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null }
+                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null },
+                crashlytics = nullableFirebaseInstance()?.crashlytics
             )
         }
         bindProvider<ESportGamesStateMachine> {
             ESportGamesStateMachine(
                 rawg = instance(),
-                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null }
+                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null },
+                crashlytics = nullableFirebaseInstance()?.crashlytics
             )
         }
         bindProvider<OnlineCoopGamesStateMachine> {
             OnlineCoopGamesStateMachine(
                 rawg = instance(),
-                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null }
+                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null },
+                crashlytics = nullableFirebaseInstance()?.crashlytics
             )
         }
         bindProvider<SearchGamesStateMachine> {
             SearchGamesStateMachine(
                 rawg = instance(),
-                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null }
+                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null },
+                crashlytics = nullableFirebaseInstance()?.crashlytics
             )
         }
         bindProvider<FreeGamesStateMachine> {
             FreeGamesStateMachine(
                 rawg = instance(),
-                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null }
+                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null },
+                crashlytics = nullableFirebaseInstance()?.crashlytics
             )
         }
         bindProvider<MultiplayerGamesStateMachine> {
             MultiplayerGamesStateMachine(
                 rawg = instance(),
-                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null }
+                key = instanceOrNull<String>("RAWG_API_KEY")?.ifBlank { null },
+                crashlytics = nullableFirebaseInstance()?.crashlytics
             )
         }
         bindSingleton<Octane> {
@@ -114,17 +125,20 @@ data object NetworkModule {
         }
         bindProvider<EventsTodayStateMachine> {
             EventsTodayStateMachine(
-                octane = instance()
+                octane = instance(),
+                crashlytics = nullableFirebaseInstance()?.crashlytics
             )
         }
         bindProvider<MatchesTodayStateMachine> {
             MatchesTodayStateMachine(
-                octane = instance()
+                octane = instance(),
+                crashlytics = nullableFirebaseInstance()?.crashlytics
             )
         }
         bindProvider<EventsUpcomingStateMachine> {
             EventsUpcomingStateMachine(
-                octane = instance()
+                octane = instance(),
+                crashlytics = nullableFirebaseInstance()?.crashlytics
             )
         }
     }

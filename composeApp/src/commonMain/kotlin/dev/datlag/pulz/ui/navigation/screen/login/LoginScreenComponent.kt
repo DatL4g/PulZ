@@ -7,6 +7,7 @@ import dev.datlag.pulz.common.onRender
 import dev.datlag.pulz.settings.Settings
 import dev.datlag.tooling.compose.withMainContext
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.kodein.di.DI
 import org.kodein.di.instance
 
@@ -24,6 +25,7 @@ class LoginScreenComponent(
     }
     override val passwordReset = MutableStateFlow(false)
     override val loggingIn = MutableStateFlow(false)
+    override val loginError = MutableStateFlow(false)
 
     init {
         if (firebaseApp == null) {
@@ -47,9 +49,15 @@ class LoginScreenComponent(
             firebaseApp?.let {
                 loggingIn.emit(true)
 
-                it.loginOrCreateEmail(email, pass) {
-                    withMainContext {
-                        onFinish()
+                it.auth.loginOrCreateEmail(email, pass) { success ->
+                    loginError.emit(!success)
+
+                    if (success) {
+                        withMainContext {
+                            onFinish()
+                        }
+                    } else {
+                        loggingIn.emit(false)
                     }
                 }
             }
@@ -65,7 +73,7 @@ class LoginScreenComponent(
             firebaseApp?.let {
                 passwordReset.emit(true)
 
-                it.resetPassword(email)
+                it.auth.resetPassword(email)
             }
         }
     }

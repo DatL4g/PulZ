@@ -3,6 +3,7 @@ package dev.datlag.pulz.ui.navigation.screen.initial.home.rocketleague.details.m
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.backhandler.BackCallback
+import dev.datlag.pulz.common.nullableFirebaseInstance
 import dev.datlag.pulz.common.onRender
 import dev.datlag.pulz.octane.Octane
 import dev.datlag.pulz.octane.model.Match
@@ -27,6 +28,7 @@ class MatchDetailsScreenComponent(
     private val octane by di.instance<Octane>()
     private val gamesMatchStateMachine = GamesMatchStateMachine(
         octane = octane,
+        crashlytics = di.nullableFirebaseInstance()?.crashlytics,
         matchId = match.id,
     )
     override val gamesState: StateFlow<GamesMatchStateMachine.State> = gamesMatchStateMachine.state.flowOn(

@@ -14,6 +14,9 @@ import dev.datlag.pulz.common.onRender
 import dev.datlag.pulz.other.Platform
 import dev.datlag.pulz.settings.Settings
 import dev.datlag.pulz.ui.navigation.screen.initial.InitialScreenComponent
+import dev.datlag.pulz.ui.navigation.screen.initial.home.HomeComponent
+import dev.datlag.pulz.ui.navigation.screen.initial.home.HomeScreenComponent
+import dev.datlag.pulz.ui.navigation.screen.login.LoginComponent
 import dev.datlag.pulz.ui.navigation.screen.login.LoginScreenComponent
 import dev.datlag.pulz.ui.navigation.screen.welcome.WelcomeScreenComponent
 import dev.datlag.tooling.compose.launchIO
@@ -111,10 +114,17 @@ class RootComponent(
     }
 
     private fun goToHome(replace: Boolean, done: () -> Unit = { }) {
-        if (replace) {
-            navigation.replaceCurrent(ScreenConfig.Home, done)
+        val homeInBackStack = stack.backStack.any {
+            it.configuration is ScreenConfig.Home || it.instance is HomeComponent
+        }
+        if (homeInBackStack) {
+            navigation.bringToFront(ScreenConfig.Home, done)
         } else {
-            navigation.push(ScreenConfig.Home, done)
+            if (replace) {
+                navigation.replaceCurrent(ScreenConfig.Home, done)
+            } else {
+                navigation.push(ScreenConfig.Home, done)
+            }
         }
     }
 
@@ -123,10 +133,18 @@ class RootComponent(
             return goToHome(replace = true, done = done)
         }
 
-        if (replace) {
-            navigation.replaceCurrent(ScreenConfig.Login, done)
+        val loginInBackStack = stack.backStack.any {
+            it.configuration is ScreenConfig.Login || it.instance is LoginComponent
+        }
+
+        if (loginInBackStack) {
+            navigation.bringToFront(ScreenConfig.Home, done)
         } else {
-            navigation.push(ScreenConfig.Login, done)
+            if (replace) {
+                navigation.replaceCurrent(ScreenConfig.Login, done)
+            } else {
+                navigation.push(ScreenConfig.Login, done)
+            }
         }
     }
 }

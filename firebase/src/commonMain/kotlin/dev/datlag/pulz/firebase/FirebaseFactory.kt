@@ -1,62 +1,37 @@
 package dev.datlag.pulz.firebase
 
-import dev.datlag.tooling.async.suspendCatching
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.FirebaseApp
-import dev.gitlive.firebase.auth.FirebaseUser
-import dev.gitlive.firebase.auth.auth
+interface FirebaseFactory {
 
-sealed interface FirebaseFactory {
-    data class Initialized(private val app: FirebaseApp) : FirebaseFactory {
-        suspend fun loginOrCreateEmail(email: String, password: String, done: suspend (FirebaseUser?) -> Unit) {
-            val auth = Firebase.auth(app)
+    val auth: Auth
+    val crashlytics: Crashlytics
 
-            val loginResult = suspendCatching {
-                auth.signInWithEmailAndPassword(email, password)
-            }.getOrNull()
+    data object Empty : FirebaseFactory, Auth, Crashlytics {
+        override val auth: Auth = this
+        override val crashlytics: Crashlytics = this
+    }
 
-            if (loginResult?.user == null) {
-                val createResult = suspendCatching {
-                    auth.createUserWithEmailAndPassword(email, password)
-                }.getOrNull()
-
-                done(createResult?.user)
-            } else {
-                done(loginResult.user)
-            }
-        }
-
-        suspend fun signOut() {
-            Firebase.auth(app).signOut()
-        }
-
-        suspend fun resetPassword(email: String) {
-            Firebase.auth(app).sendPasswordResetEmail(email)
-        }
+    interface Auth {
 
         val isSignedIn: Boolean
-            get() = Firebase.auth(app).currentUser != null
+            get() = false
 
-        fun crashlyticsCustomKey(key: String, value: String) {
-            crashlyticsCustomKey(app, key, value)
+        suspend fun loginOrCreateEmail(email: String, password: String, done: suspend (Boolean) -> Unit) {
+            done(false)
         }
-        fun crashlyticsCustomKey(key: String, value: Boolean) {
-            crashlyticsCustomKey(app, key, value)
-        }
-        fun crashlyticsCustomKey(key: String, value: Int) {
-            crashlyticsCustomKey(app, key, value)
-        }
-        fun crashlyticsCustomKey(key: String, value: Long) {
-            crashlyticsCustomKey(app, key, value)
-        }
-        fun crashlyticsCustomKey(key: String, value: Float) {
-            crashlyticsCustomKey(app, key, value)
-        }
-        fun crashlyticsCustomKey(key: String, value: Double) {
-            crashlyticsCustomKey(app, key, value)
-        }
+        suspend fun signOut() { }
+        suspend fun resetPassword(email: String) { }
     }
-    data object Empty : FirebaseFactory
+
+    interface Crashlytics {
+        fun customKey(key: String, value: String) { }
+        fun customKey(key: String, value: Boolean) { }
+        fun customKey(key: String, value: Int) { }
+        fun customKey(key: String, value: Long) { }
+        fun customKey(key: String, value: Float) { }
+        fun customKey(key: String, value: Double) { }
+        fun log(throwable: Throwable?) { }
+        fun log(message: String?) { }
+    }
 
     companion object
 }

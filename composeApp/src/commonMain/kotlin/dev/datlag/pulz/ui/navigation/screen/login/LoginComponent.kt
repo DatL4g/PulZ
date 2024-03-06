@@ -7,6 +7,8 @@ interface LoginComponent : Component {
     val emailRegex: Regex
     val passwordReset: StateFlow<Boolean>
     val loggingIn: StateFlow<Boolean>
+    val loginError: StateFlow<Boolean>
+
     fun login(email: String, pass: String)
     fun skip()
     fun resetPassword(email: String)

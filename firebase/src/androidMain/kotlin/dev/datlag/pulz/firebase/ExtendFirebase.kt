@@ -11,7 +11,7 @@ fun FirebaseFactory.Companion.initialize(
     applicationId: String,
     apiKey: String
 ): FirebaseFactory {
-    return FirebaseFactory.Initialized(
+    return CommonFirebase(
         Firebase.initialize(
             context = context,
             options = FirebaseOptions(

@@ -1,6 +1,7 @@
 package dev.datlag.pulz.octane.state
 
 import com.freeletics.flowredux.dsl.FlowReduxStateMachine
+import dev.datlag.pulz.firebase.FirebaseFactory
 import dev.datlag.pulz.model.CatchResult
 import dev.datlag.pulz.octane.Octane
 import dev.datlag.pulz.octane.StateSaver
@@ -13,7 +14,8 @@ import kotlin.time.Duration.Companion.hours
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MatchesTodayStateMachine(
-    private val octane: Octane
+    private val octane: Octane,
+    private val crashlytics: FirebaseFactory.Crashlytics?
 ) : FlowReduxStateMachine<MatchesState, MatchesAction>(initialState = currentState) {
 
     init {
@@ -38,6 +40,10 @@ class MatchesTodayStateMachine(
                                 StateSaver.Cache.matchesToday.cache(it)
                             }
                         )
+                    }
+
+                    result.onError {
+                        crashlytics?.log(it)
                     }
 
                     state.override {

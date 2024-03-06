@@ -1,6 +1,7 @@
 package dev.datlag.pulz.octane.state
 
 import com.freeletics.flowredux.dsl.FlowReduxStateMachine
+import dev.datlag.pulz.firebase.FirebaseFactory
 import dev.datlag.pulz.model.CatchResult
 import dev.datlag.pulz.octane.Octane
 import dev.datlag.pulz.octane.StateSaver
@@ -11,7 +12,8 @@ import kotlinx.datetime.toLocalDateTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class EventsTodayStateMachine(
-    private val octane: Octane
+    private val octane: Octane,
+    private val crashlytics: FirebaseFactory.Crashlytics?
 ) : FlowReduxStateMachine<EventsState, EventsAction>(initialState = currentState) {
 
     init {
@@ -33,6 +35,10 @@ class EventsTodayStateMachine(
                                 StateSaver.Cache.eventsToday.cache(it)
                             }
                         )
+                    }
+
+                    result.onError {
+                        crashlytics?.log(it)
                     }
 
                     state.override {

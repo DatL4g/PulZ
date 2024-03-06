@@ -1,6 +1,7 @@
 package dev.datlag.pulz.rawg.state
 
 import com.freeletics.flowredux.dsl.FlowReduxStateMachine
+import dev.datlag.pulz.firebase.FirebaseFactory
 import dev.datlag.pulz.model.CatchResult
 import dev.datlag.pulz.rawg.RAWG
 import dev.datlag.pulz.rawg.StateSaver
@@ -9,7 +10,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @OptIn(ExperimentalCoroutinesApi::class)
 class FreeGamesStateMachine(
     private val rawg: RAWG,
-    private val key: String?
+    private val key: String?,
+    private val crashlytics: FirebaseFactory.Crashlytics?
 ) : FlowReduxStateMachine<GamesState, GamesAction>(initialState = currentState) {
     init {
         spec {
@@ -34,6 +36,10 @@ class FreeGamesStateMachine(
                                 StateSaver.Cache.free.cache(it)
                             }
                         )
+                    }
+
+                    result.onError {
+                        crashlytics?.log(it)
                     }
 
                     state.override {

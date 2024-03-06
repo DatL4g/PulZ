@@ -43,6 +43,7 @@ fun LoginScreen(component: LoginComponent) {
     val passValid = remember(pass.value) {
         pass.value.isNotBlank() && pass.value.trim().length >= 8
     }
+    val loginError by component.loginError.collectAsStateWithLifecycle()
 
     when (calculateWindowSizeClass().widthSizeClass) {
         WindowWidthSizeClass.Compact -> CompactScreen(
@@ -50,6 +51,7 @@ fun LoginScreen(component: LoginComponent) {
             emailValid = emailValid,
             pass = pass,
             passValid = passValid,
+            loginError = loginError,
             component = component
         )
         else -> DefaultScreen(
@@ -57,6 +59,7 @@ fun LoginScreen(component: LoginComponent) {
             emailValid = emailValid,
             pass = pass,
             passValid = passValid,
+            loginError = loginError,
             component = component
         )
     }
@@ -68,6 +71,7 @@ private fun CompactScreen(
     emailValid: Boolean,
     pass: MutableState<String>,
     passValid: Boolean,
+    loginError: Boolean,
     component: LoginComponent
 ) {
     LazyColumn(
@@ -94,6 +98,7 @@ private fun CompactScreen(
             emailValid = emailValid,
             pass = pass,
             passValid = passValid,
+            loginError = loginError,
             component = component
         )
     }
@@ -105,6 +110,7 @@ private fun DefaultScreen(
     emailValid: Boolean,
     pass: MutableState<String>,
     passValid: Boolean,
+    loginError: Boolean,
     component: LoginComponent
 ) {
     Row(
@@ -140,6 +146,7 @@ private fun DefaultScreen(
                 emailValid = emailValid,
                 pass = pass,
                 passValid = passValid,
+                loginError = loginError,
                 component = component
             )
         }
@@ -152,6 +159,7 @@ private fun LazyListScope.Content(
     emailValid: Boolean,
     pass: MutableState<String>,
     passValid: Boolean,
+    loginError: Boolean,
     component: LoginComponent
 ) {
     item {
@@ -179,6 +187,7 @@ private fun LazyListScope.Content(
             placeholder = {
                 Text(text = stringResource(SharedRes.strings.enter_your_email))
             },
+            isError = loginError,
             singleLine = true,
             maxLines = 1,
             keyboardOptions = KeyboardOptions.Default.copy(
@@ -206,6 +215,7 @@ private fun LazyListScope.Content(
             placeholder = {
                 Text(text = stringResource(SharedRes.strings.enter_your_password))
             },
+            isError = loginError,
             singleLine = true,
             maxLines = 1,
             visualTransformation = PasswordVisualTransformation(),
@@ -217,7 +227,6 @@ private fun LazyListScope.Content(
         )
     }
     item {
-
         val loggingIn by component.loggingIn.collectAsStateWithLifecycle()
 
         Button(
@@ -225,12 +234,7 @@ private fun LazyListScope.Content(
             onClick = {
                 component.login(email.value, pass.value.trim())
             },
-            enabled = (emailValid && passValid && !loggingIn) || run {
-                Napier.e("Email: $emailValid")
-                Napier.e("Pass: $passValid")
-                Napier.e("Login: $loggingIn")
-                false
-            }
+            enabled = emailValid && passValid && !loggingIn
         ) {
             Text(
                 text = stringResource(SharedRes.strings.login),

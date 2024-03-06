@@ -40,6 +40,7 @@ kotlin {
             implementation(libs.datetime)
             api(libs.flowredux)
             api(project(":model"))
+            api(project(":firebase"))
         }
     }
 }

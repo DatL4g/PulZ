@@ -1,6 +1,7 @@
 package dev.datlag.pulz.octane.state
 
 import com.freeletics.flowredux.dsl.FlowReduxStateMachine
+import dev.datlag.pulz.firebase.FirebaseFactory
 import dev.datlag.pulz.model.Cacheable
 import dev.datlag.pulz.model.CatchResult
 import dev.datlag.pulz.octane.Octane
@@ -11,6 +12,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @OptIn(ExperimentalCoroutinesApi::class)
 class GamesMatchStateMachine(
     private val octane: Octane,
+    private val crashlytics: FirebaseFactory.Crashlytics?,
     matchId: String
 ) : FlowReduxStateMachine<GamesMatchStateMachine.State, GamesMatchStateMachine.Action>(
     initialState = State.Loading(matchId)
@@ -42,6 +44,10 @@ class GamesMatchStateMachine(
                             },
                             matchId = state.snapshot.matchId
                         )
+                    }
+
+                    result.onError {
+                        crashlytics?.log(it)
                     }
 
                     state.override {

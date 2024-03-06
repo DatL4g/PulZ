@@ -1,6 +1,7 @@
 package dev.datlag.pulz.hltv.state
 
 import com.freeletics.flowredux.dsl.FlowReduxStateMachine
+import dev.datlag.pulz.firebase.FirebaseFactory
 import dev.datlag.pulz.hltv.HLTV
 import dev.datlag.pulz.hltv.StateSaver
 import dev.datlag.pulz.hltv.model.Home
@@ -10,7 +11,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeStateMachine(
-    private val client: HttpClient
+    private val client: HttpClient,
+    private val crashlytics: FirebaseFactory.Crashlytics?
 ) : FlowReduxStateMachine<HomeStateMachine.State, HomeStateMachine.Action>(initialState = StateSaver.homeState) {
 
     init {
@@ -23,6 +25,7 @@ class HomeStateMachine(
                     StateSaver.Cache.home?.let {
                         return@onEnter state.override { State.Success(it) }
                     }
+
                     val result = CatchResult.result<State> {
                         State.Success(
                             home = HLTV.home(client).also {
@@ -30,6 +33,11 @@ class HomeStateMachine(
                             }
                         )
                     }
+
+                    result.onError {
+                        crashlytics?.log(it)
+                    }
+
                     state.override { result.asSuccess { State.Error } }
                 }
             }

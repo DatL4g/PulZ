@@ -1,7 +1,6 @@
 package dev.datlag.pulz.firebase
 
 import android.app.Application
-import dev.datlag.pulz.firebase.FirebaseFactory
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseOptions
 import dev.gitlive.firebase.initialize
@@ -11,7 +10,7 @@ fun FirebaseFactory.Companion.initialize(
     applicationId: String,
     apiKey: String
 ): FirebaseFactory {
-    return FirebaseFactory.Initialized(
+    return CommonFirebase(
         Firebase.initialize(
             context = Application(),
             options = FirebaseOptions(

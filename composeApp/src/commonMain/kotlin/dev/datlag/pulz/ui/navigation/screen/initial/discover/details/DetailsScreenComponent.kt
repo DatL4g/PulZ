@@ -6,6 +6,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.*
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
+import dev.datlag.pulz.common.nullableFirebaseInstance
 import dev.datlag.pulz.common.onRenderApplyCommonScheme
 import dev.datlag.pulz.rawg.RAWG
 import dev.datlag.pulz.rawg.model.Game
@@ -34,6 +35,7 @@ class DetailsScreenComponent(
     private val detailsStateMachine = GameInfoStateMachine(
         rawg = rawg,
         key = key,
+        crashlytics = di.nullableFirebaseInstance()?.crashlytics,
         slug = initialGame.slug.ifBlank { initialGame.id.toString() }
     )
     override val state: Flow<GameInfoStateMachine.State> = detailsStateMachine.state.flowOn(ioDispatcher())

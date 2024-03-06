@@ -13,12 +13,38 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+    macosX64()
+    macosArm64()
+
+    linuxX64()
+    linuxArm64()
+
+    mingwX64()
+
+    js(IR) {
+        nodejs()
+        browser()
+        binaries.executable()
+    }
+
     applyDefaultHierarchyTemplate()
 
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.firebase.auth)
             implementation(libs.tooling)
+        }
+
+        val firebaseMain by creating {
+            dependsOn(commonMain.get())
+
+            androidMain.orNull?.dependsOn(this)
+            jvmMain.orNull?.dependsOn(this)
+            iosMain.orNull?.dependsOn(this)
+            jsMain.orNull?.dependsOn(this)
+
+            dependencies {
+                implementation(libs.firebase.auth)
+            }
         }
 
         androidMain.dependencies {
@@ -30,7 +56,7 @@ kotlin {
             implementation(libs.firebase.crashlytics)
         }
 
-        nativeMain.dependencies {
+        iosMain.dependencies {
             implementation(libs.firebase.crashlytics)
         }
     }

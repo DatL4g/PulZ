@@ -8,3 +8,5 @@ internal expect fun crashlyticsCustomKey(app: FirebaseApp, key: String, value: I
 internal expect fun crashlyticsCustomKey(app: FirebaseApp, key: String, value: Long)
 internal expect fun crashlyticsCustomKey(app: FirebaseApp, key: String, value: Float)
 internal expect fun crashlyticsCustomKey(app: FirebaseApp, key: String, value: Double)
+internal expect fun crashlyticsLog(app: FirebaseApp, throwable: Throwable?)
+internal expect fun crashlyticsLog(app: FirebaseApp, message: String?)

@@ -1,6 +1,7 @@
 TODO*
 composeApp/sekret.properties
 composeApp/sekret/src
+composeApp/release/*
 
 *.so
 *.dll

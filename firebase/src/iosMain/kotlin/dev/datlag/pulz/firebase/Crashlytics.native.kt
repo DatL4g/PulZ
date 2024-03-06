@@ -1,7 +1,5 @@
 package dev.datlag.pulz.firebase
 
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseApp
 import dev.gitlive.firebase.crashlytics.crashlytics
@@ -22,11 +20,7 @@ internal actual fun crashlyticsCustomKey(
     Firebase.crashlytics(app).setCustomKey(key, value)
 }
 
-internal actual fun crashlyticsCustomKey(
-    app: FirebaseApp,
-    key: String,
-    value: Int
-) {
+internal actual fun crashlyticsCustomKey(app: FirebaseApp, key: String, value: Int) {
     Firebase.crashlytics(app).setCustomKey(key, value)
 }
 
