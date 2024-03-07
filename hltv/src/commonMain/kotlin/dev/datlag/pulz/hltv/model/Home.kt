@@ -28,7 +28,8 @@ data class Home(
     data class Team(
         val name: String,
         val rank: String,
-        val image: String? = null,
+        val imageLight: String? = null,
+        val imageDark: String? = null,
         val href: String
     )
 }

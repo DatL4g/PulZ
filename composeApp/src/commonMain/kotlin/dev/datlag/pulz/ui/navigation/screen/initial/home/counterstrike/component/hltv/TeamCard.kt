@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.datlag.pulz.common.bottomShadowBrush
+import dev.datlag.pulz.common.image
 import dev.datlag.pulz.hltv.model.Home
 import dev.datlag.pulz.ui.theme.SchemeTheme
 import dev.datlag.pulz.ui.theme.rememberSchemeThemeDominantColorState
@@ -47,7 +48,7 @@ fun TeamCard(
 
                 AsyncImage(
                     modifier = Modifier.fillMaxSize().padding(16.dp),
-                    model = team.image,
+                    model = team.image(),
                     contentDescription = team.name,
                     onSuccess = { state ->
                         SchemeTheme.update(

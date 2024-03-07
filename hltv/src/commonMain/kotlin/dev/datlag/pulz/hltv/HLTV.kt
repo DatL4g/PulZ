@@ -89,7 +89,10 @@ data object HLTV {
         } ?: emptyList()
         val teams = teamEl.mapNotNull {
             val rank = it.querySelector(".rankNum")?.textContent()?.trim()
-            val image = it.querySelector("img")?.attr("src")
+            val images = it.querySelectorAll("img")
+            val imageLight = images.firstOrNull { img -> img.className()?.contains("day-only") == true }
+            val imageDark = images.firstOrNull { img -> img.className()?.contains("night-only") == true }
+            val fallbackImage = images.firstOrNull()?.attr("src")?.ifBlank { null }
 
             val info = it.querySelectorAll("a").firstNotNullOfOrNull { child ->
                 if (child.className()?.contains("rankNum") == true) {
@@ -110,7 +113,8 @@ data object HLTV {
                 Home.Team(
                     name = info.second,
                     rank = rank,
-                    image = image,
+                    imageLight = imageLight?.attr("src")?.ifBlank { null } ?: fallbackImage,
+                    imageDark = imageDark?.attr("src")?.ifBlank { null },
                     href = linkWithBase(info.first)
                 )
             } else {
