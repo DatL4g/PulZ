@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -25,6 +27,7 @@ import androidx.compose.ui.platform.LocalAutofill
 import androidx.compose.ui.platform.LocalAutofillTree
 import androidx.compose.ui.platform.LocalLayoutDirection
 import com.kmpalette.DominantColorState
+import dev.datlag.pulz.LocalDarkMode
 import dev.datlag.tooling.compose.launchIO
 import kotlinx.coroutines.CoroutineScope
 
@@ -155,5 +158,20 @@ fun Modifier.autofill(
                 cancelAutofillForNode(autofillNode)
             }
         }
+    }
+}
+
+@Composable
+fun ButtonDefaults.googleButtonColors(): ButtonColors {
+    return if (LocalDarkMode.current) {
+        buttonColors(
+            containerColor = Color(0xFFFFFFFF),
+            contentColor = Color(0xFF1F1F1F)
+        )
+    } else {
+        buttonColors(
+            containerColor = Color(0xFF131314),
+            contentColor = Color(0xFFE3E3E3)
+        )
     }
 }

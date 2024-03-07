@@ -1,11 +1,12 @@
 package dev.datlag.pulz.module
 
 import android.content.Context
+import androidx.credentials.CredentialManager
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.okio.OkioStorage
 import dev.datlag.pulz.Sekret
-import dev.datlag.pulz.firebase.FirebaseFactory
-import dev.datlag.pulz.firebase.initialize
+import dev.datlag.pulz.common.nullableGoogleAuthProvider
+import dev.datlag.pulz.firebase.*
 import dev.datlag.pulz.getPackageName
 import dev.datlag.pulz.other.Platform
 import dev.datlag.pulz.other.StateSaver
@@ -69,13 +70,28 @@ actual object PlatformModule {
             }
         }
 
+        bindSingleton<CredentialManager> {
+            CredentialManager.create(instance())
+        }
+        bindSingleton {
+            if (StateSaver.sekretLibraryLoaded) {
+                GoogleAuthProvider.create(
+                    credentialManager = instance(),
+                    credentials = GoogleAuthCredentials(Sekret.firebaseGoogleId(getPackageName())!!)
+                )
+            } else {
+                GoogleAuthProvider.Empty
+            }
+        }
+
         bindSingleton<FirebaseFactory> {
             if (StateSaver.sekretLibraryLoaded) {
                 FirebaseFactory.initialize(
                     context = instance<Context>(),
                     projectId = Sekret.firebaseProject(getPackageName()),
                     applicationId = Sekret.firebaseAndroidApplication(getPackageName())!!,
-                    apiKey = Sekret.firebaseAndroidApiKey(getPackageName())!!
+                    apiKey = Sekret.firebaseAndroidApiKey(getPackageName())!!,
+                    googleAuthProvider = nullableGoogleAuthProvider()
                 )
             } else {
                 FirebaseFactory.Empty

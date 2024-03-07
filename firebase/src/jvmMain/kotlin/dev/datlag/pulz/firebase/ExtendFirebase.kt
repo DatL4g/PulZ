@@ -18,6 +18,7 @@ fun FirebaseFactory.Companion.initialize(
                 applicationId = applicationId,
                 apiKey = apiKey
             )
-        )
+        ),
+        null
     )
 }

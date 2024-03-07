@@ -123,4 +123,5 @@
     <string name="open_source_info">We encourage user engagement and feedback through our GitHub repository, where you can request your favorite games and suggest exciting new features.</string>
     <string name="accounts_advantage">Connect your accounts now to unlock future features, including personalized game statistics.</string>
     <string name="requires_desktop">This requires the desktop application.</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
 </resources>

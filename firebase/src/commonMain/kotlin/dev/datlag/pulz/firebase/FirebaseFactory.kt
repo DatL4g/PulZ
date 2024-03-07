@@ -15,11 +15,18 @@ interface FirebaseFactory {
         val isSignedIn: Boolean
             get() = false
 
+        val googleAuthSupported: Boolean
+            get() = false
+
         suspend fun loginOrCreateEmail(email: String, password: String, done: suspend (Boolean) -> Unit) {
             done(false)
         }
         suspend fun signOut() { }
         suspend fun resetPassword(email: String) { }
+
+        suspend fun googleSignIn(googleUser: GoogleUser?, done: suspend (Boolean) -> Unit) {
+            done(false)
+        }
     }
 
     interface Crashlytics {

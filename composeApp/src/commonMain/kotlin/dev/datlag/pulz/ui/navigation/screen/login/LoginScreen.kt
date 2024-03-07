@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import dev.datlag.pulz.LocalDarkMode
 import dev.datlag.pulz.SharedRes
 import dev.datlag.pulz.common.autofill
+import dev.datlag.pulz.firebase.GoogleUser
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
@@ -242,6 +243,24 @@ private fun LazyListScope.Content(
             )
         }
     }
+    if (component.googleLoginSupported) {
+        item {
+            GoogleLoginButton(
+                modifier = Modifier.fillParentMaxWidth(0.75F),
+                onClick = {
+                    component.googleLogin(it)
+                }
+            ) {
+                Image(
+                    painter = painterResource(SharedRes.images.google_logo),
+                    modifier = Modifier.size(ButtonDefaults.IconSize),
+                    contentDescription = stringResource(SharedRes.strings.sign_in_with_google)
+                )
+                Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                Text(text = stringResource(SharedRes.strings.sign_in_with_google))
+            }
+        }
+    }
     item {
         val passwordReset by component.passwordReset.collectAsStateWithLifecycle()
 
@@ -272,3 +291,10 @@ private fun LazyListScope.Content(
         }
     }
 }
+
+@Composable
+expect fun GoogleLoginButton(
+    onClick: (GoogleUser?) -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable RowScope.() -> Unit
+)

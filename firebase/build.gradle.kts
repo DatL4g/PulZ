@@ -54,10 +54,15 @@ kotlin {
             implementation(libs.firebase.android.crashlytics)
 
             implementation(libs.firebase.crashlytics)
+
+            api(libs.android.credentials)
+            api(libs.google.identity)
         }
 
-        iosMain.dependencies {
-            implementation(libs.firebase.crashlytics)
+        val iosMain by getting {
+            dependencies {
+                implementation(libs.firebase.crashlytics)
+            }
         }
     }
 }

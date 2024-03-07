@@ -144,6 +144,7 @@ kotlin {
                 implementation(libs.webview.multiplatform)
 
                 implementation(libs.instantapps)
+                implementation(libs.android.credentials.play.services)
             }
         }
 

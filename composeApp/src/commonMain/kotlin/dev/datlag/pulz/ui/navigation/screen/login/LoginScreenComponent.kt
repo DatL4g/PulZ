@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
 import dev.datlag.pulz.common.nullableFirebaseInstance
 import dev.datlag.pulz.common.onRender
+import dev.datlag.pulz.firebase.GoogleUser
 import dev.datlag.pulz.settings.Settings
 import dev.datlag.tooling.compose.withMainContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +27,9 @@ class LoginScreenComponent(
     override val passwordReset = MutableStateFlow(false)
     override val loggingIn = MutableStateFlow(false)
     override val loginError = MutableStateFlow(false)
+
+    override val googleLoginSupported: Boolean
+        get() = firebaseApp?.auth?.googleAuthSupported == true
 
     init {
         if (firebaseApp == null) {
@@ -74,6 +78,28 @@ class LoginScreenComponent(
                 passwordReset.emit(true)
 
                 it.auth.resetPassword(email)
+            }
+        }
+    }
+
+    override fun googleLogin(user: GoogleUser?) {
+        launchIO {
+            if (user == null) {
+                loginError.emit(true)
+            } else {
+                firebaseApp?.let {
+                    loggingIn.emit(true)
+
+                    it.auth.googleSignIn(user) { success ->
+                        if (success) {
+                            withMainContext {
+                                onFinish()
+                            }
+                        } else {
+                            loggingIn.emit(false)
+                        }
+                    }
+                }
             }
         }
     }

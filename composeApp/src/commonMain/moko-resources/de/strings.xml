@@ -123,4 +123,5 @@
     <string name="open_source_info">Wir fördern das Engagement und Feedback der Benutzer über unser GitHub-Repository, wo du deine Lieblingsspiele anfordern und aufregende neue Funktionen vorschlagen kannst.</string>
     <string name="accounts_advantage">Verknüpfe jetzt deine Konten, um zukünftige Funktionen freizuschalten, einschließlich personalisierter Spielstatistiken.</string>
     <string name="requires_desktop">Dafür ist die Desktop-Anwendung erforderlich.</string>
+    <string name="sign_in_with_google">Mit Google einloggen</string>
 </resources>

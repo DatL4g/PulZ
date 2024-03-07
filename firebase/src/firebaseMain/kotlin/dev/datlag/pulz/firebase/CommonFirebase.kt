@@ -4,16 +4,26 @@ import dev.datlag.tooling.async.suspendCatching
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseApp
 import dev.gitlive.firebase.auth.auth
+import dev.gitlive.firebase.auth.GoogleAuthProvider as FirebaseGoogleProvider
 
-open class CommonFirebase(private val app: FirebaseApp) : FirebaseFactory {
+open class CommonFirebase(
+    private val app: FirebaseApp,
+    private val googleAuthProvider: GoogleAuthProvider?
+) : FirebaseFactory {
 
-    override val auth: Auth = Auth(app)
+    override val auth: Auth = Auth(app, googleAuthProvider)
     override val crashlytics: Crashlytics = Crashlytics(app)
 
-    data class Auth(private val app: FirebaseApp) : FirebaseFactory.Auth {
+    data class Auth(
+        private val app: FirebaseApp,
+        private val googleAuthProvider: GoogleAuthProvider?
+    ) : FirebaseFactory.Auth {
 
         override val isSignedIn: Boolean
             get() = Firebase.auth(app).currentUser != null
+
+        override val googleAuthSupported: Boolean
+            get() = googleAuthProvider != null
 
         override suspend fun loginOrCreateEmail(email: String, password: String, done: suspend (Boolean) -> Unit) {
             val auth = Firebase.auth(app)
@@ -35,10 +45,22 @@ open class CommonFirebase(private val app: FirebaseApp) : FirebaseFactory {
 
         override suspend fun signOut() {
             Firebase.auth(app).signOut()
+            googleAuthProvider?.signOut()
         }
 
         override suspend fun resetPassword(email: String) {
             Firebase.auth(app).sendPasswordResetEmail(email)
+        }
+
+        override suspend fun googleSignIn(googleUser: GoogleUser?, done: suspend (Boolean) -> Unit) {
+            if (googleUser != null) {
+                val authCredential = FirebaseGoogleProvider.credential(googleUser.idToken, googleUser.accessToken)
+                val result = suspendCatching {
+                    Firebase.auth(app).signInWithCredential(authCredential)
+                }.getOrNull()
+
+                done(result?.user != null)
+            }
         }
     }
 
