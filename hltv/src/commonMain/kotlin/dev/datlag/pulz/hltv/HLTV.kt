@@ -84,10 +84,45 @@ data object HLTV {
             }
         }
 
+        val teamEl = doc.querySelector(".leftCol")?.querySelectorAll("aside")?.flatMap {
+            it.querySelectorAll(".rank")
+        } ?: emptyList()
+        val teams = teamEl.mapNotNull {
+            val rank = it.querySelector(".rankNum")?.textContent()?.trim()
+            val image = it.querySelector("img")?.attr("src")
+
+            val info = it.querySelectorAll("a").firstNotNullOfOrNull { child ->
+                if (child.className()?.contains("rankNum") == true) {
+                    return@firstNotNullOfOrNull null
+                }
+
+                val href = child.attr("href")
+                val name = child.textContent().trim()
+
+                if (href.isNullOrBlank() || name.isBlank()) {
+                    null
+                } else {
+                    href to name
+                }
+            }
+
+            if (info != null && !rank.isNullOrBlank()) {
+                Home.Team(
+                    name = info.second,
+                    rank = rank,
+                    image = image,
+                    href = linkWithBase(info.first)
+                )
+            } else {
+                null
+            }
+        }
+
         return Home(
             event = event,
             hero = hero,
-            news = news ?: emptyList()
+            news = news,
+            teams = teams
         )
     }
 

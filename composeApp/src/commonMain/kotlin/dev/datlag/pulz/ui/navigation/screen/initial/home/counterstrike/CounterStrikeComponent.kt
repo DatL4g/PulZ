@@ -2,6 +2,7 @@ package dev.datlag.pulz.ui.navigation.screen.initial.home.counterstrike
 
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.value.Value
+import dev.datlag.pulz.hltv.model.Home
 import dev.datlag.pulz.hltv.state.HomeStateMachine
 import dev.datlag.pulz.ui.navigation.Component
 import dev.datlag.pulz.ui.navigation.ContentHolderComponent
@@ -28,4 +29,5 @@ interface CounterStrikeComponent : ContentHolderComponent, SteamGameHolderCompon
 
     fun retryLoadingHLTV()
     fun showArticle(link: String)
+    fun showTeam(team: Home.Team)
 }

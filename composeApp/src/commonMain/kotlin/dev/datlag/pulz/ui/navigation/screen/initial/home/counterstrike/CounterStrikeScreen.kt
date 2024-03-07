@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
@@ -25,11 +26,13 @@ import dev.datlag.pulz.common.plus
 import dev.datlag.pulz.common.shimmerPainter
 import dev.datlag.pulz.game.SteamLauncher
 import dev.datlag.pulz.hltv.state.HomeStateMachine
+import dev.datlag.pulz.other.StateSaver
 import dev.datlag.pulz.ui.custom.RoundTab
 import dev.datlag.pulz.ui.navigation.screen.initial.home.counterstrike.component.DropReset
 import dev.datlag.pulz.ui.navigation.screen.initial.home.counterstrike.component.HLTVContent
 import dev.datlag.tooling.compose.TopStartBottomEndCornerShape
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
+import dev.datlag.tooling.safeSubList
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
@@ -44,7 +47,27 @@ private fun MainView(component: CounterStrikeComponent) {
     val padding = PaddingValues(16.dp)
     val hltvHome by component.hltvHomeState.collectAsStateWithLifecycle(initialValue = HomeStateMachine.currentState)
 
+    val listState = rememberLazyListState(
+        initialFirstVisibleItemIndex = StateSaver.List.counterStrikeOverview,
+        initialFirstVisibleItemScrollOffset = StateSaver.List.counterStrikeOverviewOffset
+    )
+
+    val news = remember(hltvHome) {
+        (hltvHome as? HomeStateMachine.State.Success)?.home?.news ?: emptyList()
+    }
+    val newsSize = remember(news) {
+        news.size
+    }
+    var newsShowing by remember { mutableIntStateOf(5) }
+    val canShowMoreNews = remember(newsSize, newsShowing) {
+        newsSize > newsShowing
+    }
+    val newsSubList = remember(news, newsShowing) {
+        news.safeSubList(0, newsShowing)
+    }
+
     LazyColumn(
+        state = listState,
         modifier = Modifier.fillMaxSize().haze(LocalHaze.current),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = LocalPaddingValues.current?.plus(padding) ?: padding
@@ -86,12 +109,27 @@ private fun MainView(component: CounterStrikeComponent) {
         }
         HLTVContent(
             homeState = hltvHome,
+            news = newsSubList,
+            canShowMoreNews = canShowMoreNews,
+            onShowMoreNews = {
+                newsShowing += 5
+            },
             retry = {
                 component.retryLoadingHLTV()
             },
             articleClick = {
                 component.showArticle(it)
+            },
+            teamClick = {
+                component.showTeam(it)
             }
         )
+    }
+
+    DisposableEffect(listState) {
+        onDispose {
+            StateSaver.List.counterStrikeOverview = listState.firstVisibleItemIndex
+            StateSaver.List.counterStrikeOverviewOffset = listState.firstVisibleItemScrollOffset
+        }
     }
 }

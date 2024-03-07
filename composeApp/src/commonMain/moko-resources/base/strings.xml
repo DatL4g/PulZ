@@ -124,4 +124,5 @@
     <string name="accounts_advantage">Connect your accounts now to unlock future features, including personalized game statistics.</string>
     <string name="requires_desktop">This requires the desktop application.</string>
     <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="teams">Teams</string>
 </resources>

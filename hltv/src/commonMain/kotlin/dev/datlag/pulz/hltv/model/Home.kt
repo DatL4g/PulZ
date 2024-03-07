@@ -3,7 +3,8 @@ package dev.datlag.pulz.hltv.model
 data class Home(
     val event: Event?,
     val hero: Hero?,
-    val news: List<News>
+    val news: List<News>,
+    val teams: List<Team>
 ) {
     data class Event(
         val live: Boolean,
@@ -22,5 +23,12 @@ data class Home(
         val title: String,
         val text: String? = null,
         val link: String,
+    )
+
+    data class Team(
+        val name: String,
+        val rank: String,
+        val image: String? = null,
+        val href: String
     )
 }

@@ -11,9 +11,11 @@ import dev.datlag.pulz.common.onRenderApplyCommonScheme
 import dev.datlag.pulz.common.onRenderWithScheme
 import dev.datlag.pulz.game.Game
 import dev.datlag.pulz.game.SteamLauncher
+import dev.datlag.pulz.hltv.model.Home
 import dev.datlag.pulz.hltv.state.HomeStateMachine
 import dev.datlag.pulz.ui.navigation.Component
 import dev.datlag.pulz.ui.navigation.screen.initial.home.counterstrike.article.ArticleScreenComponent
+import dev.datlag.pulz.ui.navigation.screen.initial.home.counterstrike.details.team.TeamDetailsScreenComponent
 import dev.datlag.tooling.compose.ioDispatcher
 import dev.datlag.tooling.decompose.ioScope
 import kotlinx.coroutines.currentCoroutineContext
@@ -69,6 +71,16 @@ class CounterStrikeScreenComponent(
                 link = config.link,
                 onBack = navigation::dismiss
             )
+            is CounterStrikeConfig.Details -> {
+                when (config) {
+                    is CounterStrikeConfig.Details.Team -> TeamDetailsScreenComponent(
+                        componentContext = context,
+                        di = di,
+                        initialTeam = config.initial,
+                        onBack = navigation::dismiss
+                    )
+                }
+            }
         }
     }
 
@@ -103,5 +115,9 @@ class CounterStrikeScreenComponent(
 
     override fun showArticle(link: String) {
         navigation.activate(CounterStrikeConfig.Article(link))
+    }
+
+    override fun showTeam(team: Home.Team) {
+        navigation.activate(CounterStrikeConfig.Details.Team(team))
     }
 }
