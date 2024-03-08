@@ -125,4 +125,8 @@
     <string name="requires_desktop">Dafür ist die Desktop-Anwendung erforderlich.</string>
     <string name="sign_in_with_google">Mit Google einloggen</string>
     <string name="teams">Teams</string>
+    <string name="team_details_error">Konnte Team Details nicht laden.</string>
+    <string name="facebook_colon">Facebook:</string>
+    <string name="twitter_colon">Twitter:</string>
+    <string name="instagram_colon">Instagram:</string>
 </resources>

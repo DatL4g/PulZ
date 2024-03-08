@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.android.library)
+    alias(libs.plugins.serialization)
 }
 
 val artifact = VersionCatalog.artifactName("hltv")
@@ -34,6 +35,7 @@ kotlin {
             api(libs.datetime)
             api(libs.tooling.country)
             api(libs.flowredux)
+            implementation(libs.serialization.json)
             api(project(":model"))
             api(project(":firebase"))
         }

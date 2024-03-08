@@ -3,10 +3,14 @@ package dev.datlag.pulz.hltv
 import dev.datlag.pulz.hltv.model.Country
 import dev.datlag.pulz.hltv.model.Home
 import dev.datlag.pulz.hltv.model.NewsPreview
+import dev.datlag.pulz.hltv.model.Team
+import dev.datlag.tooling.async.scopeCatching
 import dev.datlag.tooling.async.suspendCatching
 import dev.datlag.tooling.getDigitsOrNull
 import io.ktor.client.*
 import kotlinx.datetime.toLocalDate
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonNull
 import ktsoup.*
 
 data object HLTV {
@@ -92,7 +96,7 @@ data object HLTV {
             val images = it.querySelectorAll("img")
             val imageLight = images.firstOrNull { img -> img.className()?.contains("day-only") == true }
             val imageDark = images.firstOrNull { img -> img.className()?.contains("night-only") == true }
-            val fallbackImage = images.firstOrNull()?.attr("src")?.ifBlank { null }
+            val fallbackImage = images.firstNotNullOfOrNull { i -> i.attr("src")?.ifBlank { null } }
 
             val info = it.querySelectorAll("a").firstNotNullOfOrNull { child ->
                 if (child.className()?.contains("rankNum") == true) {
@@ -128,6 +132,61 @@ data object HLTV {
             news = news,
             teams = teams
         )
+    }
+
+    suspend fun team(
+        client: HttpClient,
+        json: Json,
+        href: String
+    ): Team? {
+        KtSoupParser.setClient(client)
+
+        val doc = KtSoupParser.parseRemote(urlString = href)
+        val name = doc.querySelector(".profile-team-name")?.textContent()
+
+        val teamLogos = doc.querySelectorAll(".teamlogo")
+        val teamLogoLight = teamLogos.firstOrNull { it.className()?.contains("day-only") == true }
+        val teamLogoDark = teamLogos.firstOrNull { it.className()?.contains("night-only") == true }
+        val fallbackLogo = teamLogos.firstNotNullOfOrNull { it.attr("src")?.ifBlank { null } }
+
+        val facebook = (doc.querySelector(".facebook")?.parent() as? KtSoupElement)?.attr("href")
+        val twitter = (doc.querySelector(".twitter")?.parent() as? KtSoupElement)?.attr("href")
+        val instagram = (doc.querySelector(".instagram")?.parent() as? KtSoupElement)?.attr("href")
+
+        val countryFlag = doc.querySelector(".team-country")?.querySelector("img")
+        val countryName = countryFlag?.attr("alt")?.ifBlank { null } ?: countryFlag?.attr("title")?.ifBlank { null }
+        val countryCode = countryFlag?.attr("src")?.split('/')?.lastOrNull()?.substringBeforeLast('.')
+        val country = if (countryName.isNullOrBlank() || countryCode.isNullOrBlank()) {
+            null
+        } else {
+            Country(
+                name = countryName,
+                code = countryCode
+            )
+        }
+
+        val chart = doc.querySelector(".graph")?.attr("data-fusionchart-config")?.let {
+            suspendCatching {
+                json.decodeFromString<Team.Chart>(it)
+            }.getOrNull()
+        }
+
+        return if (!name.isNullOrBlank()) {
+            Team(
+                name = name,
+                imageLight = teamLogoLight?.attr("src")?.ifBlank { null } ?: fallbackLogo,
+                imageDark = teamLogoDark?.attr("src")?.ifBlank { null },
+                social = Team.Social(
+                    facebook = facebook?.ifBlank { null },
+                    twitter = twitter?.ifBlank { null },
+                    instagram = instagram?.ifBlank { null }
+                ),
+                country = country,
+                chart = chart
+            )
+        } else {
+            null
+        }
     }
 
     private fun linkWithBase(link: String): String {
