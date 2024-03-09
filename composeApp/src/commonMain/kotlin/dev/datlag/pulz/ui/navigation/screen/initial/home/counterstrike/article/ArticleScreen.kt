@@ -13,10 +13,6 @@ import io.github.aakira.napier.Napier
 
 @Composable
 fun ArticleScreen(component: ArticleComponent) {
-    LaunchedEffect(component.link) {
-        Napier.e("Browser URL: ${component.link}")
-    }
-
     BrowserView(
         url = component.link,
         modifier = Modifier.fillMaxSize().padding(LocalPaddingValues.current ?: PaddingValues(0.dp))

@@ -82,10 +82,6 @@ fun TeamDetailsScreen(component: TeamDetailsComponent) {
             )
         }
         is TeamStateMachine.State.Success -> {
-            SideEffect {
-                Napier.e(state.team.toString())
-            }
-
             LazyColumn(
                 modifier = Modifier.fillMaxSize().haze(LocalHaze.current),
                 contentPadding = LocalPaddingValues.current?.plus(padding) ?: padding,
