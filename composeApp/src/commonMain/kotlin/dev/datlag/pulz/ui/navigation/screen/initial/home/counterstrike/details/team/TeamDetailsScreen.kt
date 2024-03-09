@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +29,8 @@ import dev.datlag.pulz.common.plus
 import dev.datlag.pulz.common.shimmer
 import dev.datlag.pulz.game.DEFAULT
 import dev.datlag.pulz.game.HOME
+import dev.datlag.pulz.hltv.model.Country
+import dev.datlag.pulz.hltv.model.Team
 import dev.datlag.pulz.hltv.state.TeamStateMachine
 import dev.datlag.pulz.other.CountryImage
 import dev.datlag.pulz.ui.navigation.screen.initial.component.ErrorContent
@@ -52,6 +55,14 @@ fun TeamDetailsScreen(component: TeamDetailsComponent) {
                 contentPadding = LocalPaddingValues.current?.plus(padding) ?: padding,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                item {
+                    TeamHeader(
+                        image = component.initialTeam.image(),
+                        country = null,
+                        name = component.initialTeam.name,
+                        modifier = Modifier.fillParentMaxWidth()
+                    )
+                }
                 repeat(5) {
                     item {
                         Box(modifier = Modifier.fillParentMaxWidth().height(100.dp).shimmer(CardDefaults.shape))
@@ -81,45 +92,12 @@ fun TeamDetailsScreen(component: TeamDetailsComponent) {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
-                    Row(
-                        modifier = Modifier.fillParentMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        AsyncImage(
-                            modifier = Modifier.size(100.dp),
-                            model = state.team.image(),
-                            contentDescription = state.team.name
-                        )
-                        Column(
-                            modifier = Modifier.weight(1F),
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            state.team.country?.let {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    val res = remember(it) { CountryImage.getByCode(it.code) }
-
-                                    Image(
-                                        painter = painterResource(res),
-                                        contentDescription = it.name,
-                                        modifier = Modifier
-                                            .size(16.dp)
-                                            .clip(MaterialTheme.shapes.extraSmall)
-                                            .border(1.dp, LocalContentColor.current, MaterialTheme.shapes.extraSmall)
-                                    )
-                                    Text(text = it.name)
-                                }
-                            }
-                            Text(
-                                text = state.team.name,
-                                fontWeight = FontWeight.Bold,
-                                style = MaterialTheme.typography.headlineLarge
-                            )
-                        }
-                    }
+                    TeamHeader(
+                        image = state.team.image(),
+                        country = state.team.country,
+                        name = state.team.name,
+                        modifier = Modifier.fillParentMaxWidth()
+                    )
                 }
                 if (!state.team.social.isEmpty()) {
                     item {
@@ -213,6 +191,49 @@ fun TeamDetailsScreen(component: TeamDetailsComponent) {
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun TeamHeader(image: String?, name: String, country: Country?, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        AsyncImage(
+            modifier = Modifier.size(100.dp),
+            model = image,
+            contentDescription = name
+        )
+        Column(
+            modifier = Modifier.weight(1F),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            country?.let {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    val res = remember(it) { CountryImage.getByCode(it.code) }
+
+                    Image(
+                        painter = painterResource(res),
+                        contentDescription = it.name,
+                        modifier = Modifier
+                            .size(16.dp)
+                            .clip(MaterialTheme.shapes.extraSmall)
+                            .border(1.dp, LocalContentColor.current, MaterialTheme.shapes.extraSmall)
+                    )
+                    Text(text = it.name)
+                }
+            }
+            Text(
+                text = name,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineLarge
+            )
         }
     }
 }

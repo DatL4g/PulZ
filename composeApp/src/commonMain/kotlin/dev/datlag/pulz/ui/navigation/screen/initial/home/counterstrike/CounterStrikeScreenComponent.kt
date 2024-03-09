@@ -14,6 +14,7 @@ import dev.datlag.pulz.game.SteamLauncher
 import dev.datlag.pulz.hltv.model.Home
 import dev.datlag.pulz.hltv.state.HomeStateMachine
 import dev.datlag.pulz.ui.navigation.Component
+import dev.datlag.pulz.ui.navigation.ContentHolderComponent
 import dev.datlag.pulz.ui.navigation.screen.initial.home.counterstrike.article.ArticleScreenComponent
 import dev.datlag.pulz.ui.navigation.screen.initial.home.counterstrike.details.team.TeamDetailsScreenComponent
 import dev.datlag.tooling.compose.ioDispatcher
@@ -105,6 +106,14 @@ class CounterStrikeScreenComponent(
 
     override fun launch() {
         Game.Steam.CounterStrike.launch()
+    }
+
+    override fun dismissContent() {
+        (child.value.child?.instance as? ContentHolderComponent)?.dismissContent() ?: navigation.dismiss { active ->
+            if (!active) {
+                back()
+            }
+        }
     }
 
     override fun retryLoadingHLTV() {
