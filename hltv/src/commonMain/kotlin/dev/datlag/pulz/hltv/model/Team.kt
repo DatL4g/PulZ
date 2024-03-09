@@ -12,7 +12,8 @@ data class Team(
     val imageDark: String? = null,
     val social: Social,
     val country: Country? = null,
-    val chart: Chart?
+    val chart: Chart?,
+    val players: List<Player>
 ) {
     data class Social(
         val facebook: String? = null,
@@ -107,6 +108,41 @@ data class Team(
                 data class Data(
                     @SerialName("value") val value: Float
                 )
+            }
+        }
+    }
+
+    data class Player(
+        val name: String,
+        val image: String?,
+        val country: Country?,
+        val rating: Float,
+        val type: Type
+    ) {
+
+        sealed interface Type {
+            data object Coach : Type
+            data object Starter : Type {
+                override val isActive: Boolean
+                    get() = true
+            }
+            data object Substitute : Type
+            data object Benched : Type
+
+            val isActive: Boolean
+                get() = false
+
+            companion object {
+                fun valueOf(value: String?): Type? {
+                    return when {
+                        value == null -> null
+                        value.trim().equals("coach", ignoreCase = true) -> Coach
+                        value.trim().equals("starter", ignoreCase = true) -> Starter
+                        value.trim().equals("substitute", ignoreCase = true) -> Substitute
+                        value.trim().equals("substitute", ignoreCase = true) -> Benched
+                        else -> null
+                    }
+                }
             }
         }
     }

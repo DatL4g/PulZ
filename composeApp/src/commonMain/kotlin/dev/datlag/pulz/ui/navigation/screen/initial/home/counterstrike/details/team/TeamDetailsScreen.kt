@@ -31,6 +31,7 @@ import dev.datlag.pulz.game.HOME
 import dev.datlag.pulz.hltv.state.TeamStateMachine
 import dev.datlag.pulz.other.CountryImage
 import dev.datlag.pulz.ui.navigation.screen.initial.component.ErrorContent
+import dev.datlag.pulz.ui.navigation.screen.initial.home.counterstrike.details.team.component.PlayerCard
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
@@ -38,6 +39,7 @@ import io.github.aakira.napier.Napier
 import kotlinx.serialization.json.JsonNull
 import okio.FileSystem
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TeamDetailsScreen(component: TeamDetailsComponent) {
     val padding = PaddingValues(16.dp)
@@ -190,8 +192,25 @@ fun TeamDetailsScreen(component: TeamDetailsComponent) {
                         }
                     }
                 }
-                if (state.team.chart != null) {
-                    Napier.e(state.team.chart.toString())
+                if (state.team.players.any { it.type.isActive }) {
+                    item {
+                        Text(
+                            modifier = Modifier.padding(top = 16.dp),
+                            text = stringResource(SharedRes.strings.players),
+                            style = MaterialTheme.typography.headlineSmall
+                        )
+                    }
+                    item {
+                        FlowRow(
+                            modifier = Modifier.fillParentMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            state.team.players.filter { it.type.isActive }.forEach {
+                                PlayerCard(it, Modifier.size(100.dp))
+                            }
+                        }
+                    }
                 }
             }
         }

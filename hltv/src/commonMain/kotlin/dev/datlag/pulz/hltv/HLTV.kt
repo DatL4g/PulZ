@@ -142,7 +142,7 @@ data object HLTV {
         KtSoupParser.setClient(client)
 
         val doc = KtSoupParser.parseRemote(urlString = href)
-        val name = doc.querySelector(".profile-team-name")?.textContent()
+        val title = doc.querySelector(".profile-team-name")?.textContent()
 
         val teamLogos = doc.querySelectorAll(".teamlogo")
         val teamLogoLight = teamLogos.firstOrNull { it.className()?.contains("day-only") == true }
@@ -153,27 +153,40 @@ data object HLTV {
         val twitter = (doc.querySelector(".twitter")?.parent() as? KtSoupElement)?.attr("href")
         val instagram = (doc.querySelector(".instagram")?.parent() as? KtSoupElement)?.attr("href")
 
-        val countryFlag = doc.querySelector(".team-country")?.querySelector("img")
-        val countryName = countryFlag?.attr("alt")?.ifBlank { null } ?: countryFlag?.attr("title")?.ifBlank { null }
-        val countryCode = countryFlag?.attr("src")?.split('/')?.lastOrNull()?.substringBeforeLast('.')
-        val country = if (countryName.isNullOrBlank() || countryCode.isNullOrBlank()) {
-            null
-        } else {
-            Country(
-                name = countryName,
-                code = countryCode
-            )
-        }
-
         val chart = doc.querySelector(".graph")?.attr("data-fusionchart-config")?.let {
             suspendCatching {
                 json.decodeFromString<Team.Chart>(it)
             }.getOrNull()
         }
 
-        return if (!name.isNullOrBlank()) {
+        val players = doc.querySelector(".players-table")?.querySelector("tbody")?.querySelectorAll("tr")?.mapNotNull {
+            val name = it.querySelector(".playersBox-playernick")?.querySelector(".text-ellipsis")?.textContent()?.ifBlank { null }
+            val image = it.querySelector(".playersBox-img-wrapper")?.querySelector("img")?.attr("src")?.ifBlank { null }
+
+            val countryFlag = it.querySelector(".playersBox-playernick")?.querySelector("img")
+            val country = getCountry(countryFlag)
+            val rating = it.querySelector(".rating-cell")?.textContent()?.toFloatOrNull()
+            val type = Team.Player.Type.valueOf(it.querySelector(".player-status")?.textContent())
+
+            if (name.isNullOrBlank() || type == null) {
+                null
+            } else {
+                Team.Player(
+                    name = name,
+                    image = image,
+                    country = country,
+                    rating = rating ?: -1F,
+                    type = type
+                )
+            }
+        } ?: emptyList()
+
+        val countryFlag = doc.querySelector(".team-country")?.querySelector("img")
+        val country = getCountry(countryFlag)
+
+        return if (!title.isNullOrBlank()) {
             Team(
-                name = name,
+                name = title,
                 imageLight = teamLogoLight?.attr("src")?.ifBlank { null } ?: fallbackLogo,
                 imageDark = teamLogoDark?.attr("src")?.ifBlank { null },
                 social = Team.Social(
@@ -182,10 +195,24 @@ data object HLTV {
                     instagram = instagram?.ifBlank { null }
                 ),
                 country = country,
-                chart = chart
+                chart = chart,
+                players = players
             )
         } else {
             null
+        }
+    }
+
+    private fun getCountry(element: KtSoupElement?): Country? {
+        val countryName = element?.attr("alt")?.ifBlank { null } ?: element?.attr("title")?.ifBlank { null }
+        val countryCode = element?.attr("src")?.split('/')?.lastOrNull()?.substringBeforeLast('.')
+        return if (countryName.isNullOrBlank() || countryCode.isNullOrBlank()) {
+            null
+        } else {
+            Country(
+                name = countryName,
+                code = countryCode
+            )
         }
     }
 
